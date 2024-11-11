@@ -4,6 +4,8 @@ import java.util.List;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,6 +36,7 @@ public class ProductRegistDTO {
     private Integer quantity;
     
     @NotBlank(message = "상품 상태는 필수입니다")
+    @Pattern(regexp = "^(NEW|LIKE_NEW|GOOD|FAIR)$", message = "상품 상태는 NEW, LIKE_NEW, GOOD, FAIR 중 하나여야 합니다")
     private String quality;
     
     private List<String> imagePaths;  // 상품 이미지 경로들
