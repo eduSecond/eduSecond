@@ -51,4 +51,6 @@ public class MemberMapperTests {
         log.info(member);
         assertEquals("테스터", member.getUserName());
     }
+
+
 }

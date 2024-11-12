@@ -45,6 +45,25 @@
     FROM tbl_product
     WHERE productId = #{productId}
   </select>
+
+  <insert id="insertProduct" useGeneratedKeys="true" keyProperty="productId">
+    INSERT INTO tbl_product (sellerId, productName, productDesc, price, quantity, quality)
+    VALUES (#{sellerId}, #{productName}, #{productDesc}, #{price}, #{quantity}, #{quality});
+  </insert>
+  <insert id="insertProductImageMain">
+    INSERT INTO tbl_product_image (productId, imagePath, isMain)
+    VALUES ( @lastProductId, #{imagePath}, 'Y')
+  </insert>
+  <insert id="insertProductImage">
+    INSERT INTO tbl_product_image (productId, imagePath)
+    VALUES ( @lastProductId, #{imagePath})
+  </insert>
+  <select id="getLastProductId" resultType="java.lang.Integer">
+    SELECT productId
+    FROM tbl_product
+    ORDER BY regDate DESC
+    LIMIT 1
+  </select>
   <!--위시리스트 조회, 추가, 삭제-->
   <!--주문 조회, 등록, 수정, 삭제-->
   <!--리뷰 조회, 등록, 수정, 삭제-->

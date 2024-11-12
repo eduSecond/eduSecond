@@ -2,10 +2,14 @@ package net.fullstack7.edusecond.edusecond.service.product;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.fullstack7.edusecond.edusecond.domain.product.ProductImageVO;
 import net.fullstack7.edusecond.edusecond.domain.product.ProductVO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
+import net.fullstack7.edusecond.edusecond.dto.product.ProductImageDTO;
+import net.fullstack7.edusecond.edusecond.dto.product.ProductRegistDTO;
 import net.fullstack7.edusecond.edusecond.mapper.ProductMapper;
 import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
+import net.fullstack7.edusecond.edusecond.util.CommonFileUtil;
 import net.fullstack7.edusecond.edusecond.util.Paging;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -55,5 +59,37 @@ public class ProductServiceImpl  implements ProductServiceIf {
         ProductVO vo = productMapper.selectProductById(productId);
         ProductDTO dto = modelMapper.map(vo, ProductDTO.class);
         return dto;
+    }
+
+    public int insertProduct(ProductRegistDTO productRegistDTO) {
+        ProductVO vo = modelMapper.map(productRegistDTO, ProductVO.class);
+        productMapper.insertProduct(vo);
+        return vo.getProductId();
+    }
+
+    public void insertProductImage(int productId, List<String> imagePaths) {
+        String saveDir = "C:\\Users\\Jerry\\Desktop\\java7\\eduSecondUploads";
+        for(int i = 0; i<imagePaths.size();i++){
+            if(i==0){
+                String imagePath = imagePaths.get(i);
+                CommonFileUtil.fileRename(saveDir, imagePath);
+                ProductImageVO productImageVo = ProductImageVO.builder()
+                                        .productId(productId)
+                                        .imagePath(imagePath).build();
+                productMapper.insertProductImageMain(productImageVo);
+                continue;
+            }
+            String imagePath = imagePaths.get(i);
+            CommonFileUtil.fileRename(saveDir, imagePath);
+            ProductImageVO productImageVo = ProductImageVO.builder()
+                    .productId(productId)
+                    .imagePath(imagePath).build();
+            productMapper.insertProductImage(productImageVo);
+        }
+    }
+
+    @Override
+    public int getLastProductId() {
+        return productMapper.getLastProductId();
     }
 }
