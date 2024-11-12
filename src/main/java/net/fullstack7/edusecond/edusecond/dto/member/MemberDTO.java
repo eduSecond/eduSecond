@@ -35,6 +35,6 @@ public class MemberDTO {
     private LocalDateTime modifyDate;
     
     public boolean isEnabled() {
-        return "Y".equals(enabled);
+        return "Y".equalsIgnoreCase(enabled);
     }
 }
