@@ -1,4 +1,4 @@
-package net.fullstack7.edusecond.edusecond.domain;
+package net.fullstack7.edusecond.edusecond.domain.member;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

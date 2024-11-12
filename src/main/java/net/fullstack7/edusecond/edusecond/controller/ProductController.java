@@ -41,11 +41,11 @@ public class ProductController {
                 return null;
             }
 
-            List<ProductDTO> products = productService.list(pageNo, 10, 6, searchType, searchValue);
+            List<ProductDTO> pList = productService.list(pageNo, 10, 6, searchType, searchValue);
             int totalCount = productService.totalCount(searchType, searchValue);
             Paging paging = new Paging(pageNo, 10, 6, totalCount);
             
-            model.addAttribute("products", products);
+            model.addAttribute("pList", pList);
             model.addAttribute("paging", paging);
             model.addAttribute("searchType", searchType);
             model.addAttribute("searchValue", searchValue);

@@ -72,11 +72,10 @@
     </style>
 </head>
 <body>
-
 <div class="container">
     <div class="header">
         <%@include file="/main/header.jsp" %>
-        <form class="d-flex" role="search" action="/es/product/list" method="GET">
+        <form class="d-flex" role="search" action="/product/list" method="GET">
             <select class="form-select" name="searchCategory" aria-label="Default select example">
                 <option value="productName" selected>상품명</option>
                 <option value="sellerId">판매자</option>
@@ -85,47 +84,27 @@
             <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
   </div>
-    <div class="side">
-        <br>
-        <ul>
-            <li><a href="../teacher/list.do?&subjectCode=KO" class="${(param.subjectCode eq 'KO') ? 'active' : ''}">국어</a></li>
-            <li><a href="../teacher/list.do?&subjectCode=MA" class="${(param.subjectCode eq 'MA') ? 'active' : ''}">수학</a></li>
-            <li><a href="../teacher/list.do?&subjectCode=EN" class="${(param.subjectCode eq 'EN') ? 'active' : ''}">영어</a></li>
-            <li><a href="../teacher/list.do?&subjectCode=SO" class="${(param.subjectCode eq 'SO') ? 'active' : ''}">사회</a></li>
-            <li><a href="../teacher/list.do?&subjectCode=SC" class="${(param.subjectCode eq 'SC') ? 'active' : ''}">과학</a></li>
-        </ul>
-    </div>
-    <div class="main">
-        <table class="table">
-            <thead class="thead-dark">
-            <tr>
-                <th scope="col">썸네일</th>
-                <th scope="col">상품명</th>
-                <th scope="col">가격</th>
-                <th scope="col">조회수</th>
-                <th scope="col">등록일</th>
-            </tr>
-            </thead>
-            <tbody>
-            <c:if test="${not empty products}">
-                <c:forEach var="product" items="${products}" varStatus="loop">
-                    <tr>
-                        <td>
-                            <c:if test="${not empty product.thumbnail}">
-                                <img src="${product.thumbnail.imagePath}" 
-                                     alt="상품 썸네일" 
-                                     style="width: 50px; height: 50px; object-fit: cover;">
-                            </c:if>
-                        </td>
-                        <td><a href="/es/product/view?productId=${product.productId}">${product.productName}</a></td>
-                        <td>${product.price}</td>
-                        <td>${product.viewCount}</td>
-                        <td>${product.regDate}</td>
-                    </tr>
+  <div class="main">
+            <div class="card-body">
+                <c:if test="${not empty pList}">
+                <c:forEach var="dto" items="${pList}" varStatus="loop">
+                <a href="/product/view?productId=${dto.productId}">
+                    <div class="card" style="width: 18rem; margin-bottom: 20px;">
+                        <c:if test="${not empty dto.thumbnail}">
+                            <img src="${dto.thumbnail.imagePath}"
+                                 alt="상품 썸네일"
+                                 style="width: 50px; height: 50px; object-fit: cover;">
+                        </c:if>
+                        <div class="card-body">
+                            <p class="card-title"><a href="/product/view?productId=${dto.productId}">${dto.productName}</a></p>
+                            <p class="card-text">가격: ${dto.price}원</p>
+                            <p class="card-text">조회수: ${dto.viewCount}</p>
+                            <p class="card-text">등록일: ${dto.regDate}</p>
+                        </div>
+                    </div>
+                </a>
                 </c:forEach>
-            </c:if>
-            </tbody>
-        </table>
+                </c:if>
         <!-- 페이징 영역 -->
         <%@ include file="../common/paging.jsp"%>
         <!-- //페이징 영역 -->

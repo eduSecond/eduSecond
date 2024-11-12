@@ -88,7 +88,7 @@
           <h5 class="card-title">Special title treatment</h5>
           <p class="card-text">구매하려면 버튼 눌러라</p>
           <a href="#" class="btn btn-primary">1:1 문의하기</a>
-          <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#purchaseModal">구매하기</a>
+          <a href="/es/payment/view?productId=${dto.productId}" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#purchaseModal">구매하기</a>
         </div>
       </div>
     </div>
@@ -102,7 +102,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body justify-content center">
-          <button type="button" class="btn btn-primary" onclick="javascript:location.href='/pay/view?productId=${dto.productId}'">바로구매</button>
+          <button type="button" class="btn btn-primary" onclick="javascript:location.href='/es/payment/view?productId=${dto.productId}'">바로구매</button>
           <button type="button" class="btn btn-primary">직거래</button>
         </div>
       </div>
