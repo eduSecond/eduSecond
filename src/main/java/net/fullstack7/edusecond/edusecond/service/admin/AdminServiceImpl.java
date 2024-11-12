@@ -1,4 +1,4 @@
-package net.fullstack7.edusecond.edusecond.service;
+package net.fullstack7.edusecond.edusecond.service.admin;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -10,10 +10,11 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Log4j2
-public class AdminService {
+public class AdminServiceImpl implements AdminServiceIf {
     
     private final AdminMapper adminMapper;
     
+    @Override
     public boolean loginAdmin(AdminLoginDTO loginDTO) {
         AdminVO admin = adminMapper.selectAdminById(loginDTO.getAdminId());
         

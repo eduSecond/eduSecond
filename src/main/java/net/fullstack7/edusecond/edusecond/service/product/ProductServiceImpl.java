@@ -11,85 +11,87 @@ import net.fullstack7.edusecond.edusecond.mapper.ProductMapper;
 import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
 import net.fullstack7.edusecond.edusecond.util.CommonFileUtil;
 import net.fullstack7.edusecond.edusecond.util.Paging;
+import net.fullstack7.edusecond.edusecond.domain.product.ProductVO;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
+import net.fullstack7.edusecond.edusecond.util.Paging;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import net.fullstack7.edusecond.edusecond.dto.product.ProductImageDTO;
+import net.fullstack7.edusecond.edusecond.domain.product.ProductImageVO;
 
-@Log4j2
+
 @Service
 @RequiredArgsConstructor
-public class ProductServiceImpl  implements ProductServiceIf {
+@Log4j2
+public class ProductServiceImpl implements ProductServiceIf {
     private final ProductMapper productMapper;
     private final ModelMapper modelMapper;
 
     @Override
-    public int totalCount(String searchCategory, String searchValue){
-        if(searchCategory != null && !searchCategory.trim().isEmpty() && searchValue != null && !searchValue.trim().isEmpty()){
-            if (!("productName".equals(searchCategory) || "sellerId".equals(searchCategory))) {
-                throw new IllegalArgumentException("검색 카테고리 없음 " + searchCategory);
-            }
-        }
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("searchCategory", searchCategory);
-        map.put("searchValue", searchValue);
-        int result = productMapper.totalCount(map);
-        return result;
-    }
+    public List<ProductDTO> list(int pageNo, int pageSize, int pageNavSize, String searchType, String searchValue) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("offset", (pageNo - 1) * pageSize);
+        params.put("limit", pageSize);
+        params.put("searchType", searchType);
+        params.put("searchValue", searchValue);
 
-
-    @Override
-    public List<ProductDTO> list(int pageNo, int pageSize, int blockSize, String searchCategory, String searchValue) {
-        Paging paging = new Paging(pageNo, pageSize, blockSize, this.totalCount(searchCategory, searchValue));
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("pageSize", pageSize);
-        map.put("startIdx", paging.getStartIdx());
-        map.put("searchCategory", searchCategory);
-        map.put("searchValue", searchValue);
-        List<ProductVO> voList = productMapper.selectAllProducts(map);
-        List<ProductDTO> dtoList = voList.stream().map(vo -> modelMapper.map(vo, ProductDTO.class)).collect(Collectors.toList());
-        return dtoList;
+        List<ProductVO> voList = productMapper.selectAllProducts(params);
+        return voList.stream()
+                .map(vo -> {
+                    ProductDTO dto = modelMapper.map(vo, ProductDTO.class);
+                    // 썸네일 이미지 설정
+                    ProductImageVO thumbnailImage = productMapper.selectThumbnailImage(vo.getProductId());
+                    if (thumbnailImage != null) {
+                        dto.setThumbnail(modelMapper.map(thumbnailImage, ProductImageDTO.class));
+                    }
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
     public ProductDTO view(Integer productId) {
         ProductVO vo = productMapper.selectProductById(productId);
+        if (vo == null) {
+            return null;
+        }
+
         ProductDTO dto = modelMapper.map(vo, ProductDTO.class);
+
+        // 썸네일 이미지 설정
+        ProductImageVO thumbnailVO = productMapper.selectThumbnailImage(productId);
+        if (thumbnailVO != null) {
+            dto.setThumbnail(modelMapper.map(thumbnailVO, ProductImageDTO.class));
+        }
+
+        // 조회수 증가
+        productMapper.updateViewCount(productId);
+
         return dto;
     }
 
-    public int insertProduct(ProductRegistDTO productRegistDTO) {
-        ProductVO vo = modelMapper.map(productRegistDTO, ProductVO.class);
-        productMapper.insertProduct(vo);
-        return vo.getProductId();
-    }
-
-    public void insertProductImage(int productId, List<String> imagePaths) {
-        String saveDir = "C:\\Users\\Jerry\\Desktop\\java7\\eduSecondUploads";
-        for(int i = 0; i<imagePaths.size();i++){
-            if(i==0){
-                String imagePath = imagePaths.get(i);
-                CommonFileUtil.fileRename(saveDir, imagePath);
-                ProductImageVO productImageVo = ProductImageVO.builder()
-                                        .productId(productId)
-                                        .imagePath(imagePath).build();
-                productMapper.insertProductImageMain(productImageVo);
-                continue;
-            }
-            String imagePath = imagePaths.get(i);
-            CommonFileUtil.fileRename(saveDir, imagePath);
-            ProductImageVO productImageVo = ProductImageVO.builder()
-                    .productId(productId)
-                    .imagePath(imagePath).build();
-            productMapper.insertProductImage(productImageVo);
-        }
+    @Override
+    public int totalCount(String searchCategory, String searchValue) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("searchCategory", searchCategory);
+        map.put("searchValue", searchValue);
+        return productMapper.totalCount(map);
     }
 
     @Override
-    public int getLastProductId() {
-        return productMapper.getLastProductId();
+    public List<ProductImageDTO> getProductImages(int productId) {
+        List<ProductImageVO> voList = productMapper.selectProductImages(productId);
+        return voList.stream()
+                .map(vo -> modelMapper.map(vo, ProductImageDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ProductImageDTO getThumbnailImage(int productId) {
+        ProductImageVO vo = productMapper.selectThumbnailImage(productId);
+        return vo != null ? modelMapper.map(vo, ProductImageDTO.class) : null;
     }
 }

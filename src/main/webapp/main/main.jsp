@@ -389,16 +389,14 @@
 </head>
 <body>
 <%@include file="header.jsp"%>
-
 <section class="hero">
   <div class="hero-content">
     <div class="main-banner" id="mainBanner">
-      <img src="<%= request.getContextPath() %>/resources/images/banner7.png" class="active">
-      <img src="<%= request.getContextPath() %>/resources/images/banner4.png">
-      <img src="<%= request.getContextPath() %>/resources/images/banner6.png">
+      <img src="<%= request.getContextPath() %>/resources/images/mainbanner/banner1.png" class="active">
+      <img src="<%= request.getContextPath() %>/resources/images/mainbanner/banner4.png">
+      <img src="<%= request.getContextPath() %>/resources/images/mainbanner/banner6.png">
       <div class="banner-dots" id="bannerDots"></div>
     </div>
-
     <p class="highlight">실시간 중고시세를 확인해 보세요.</p>
     <div class="tags">
       <span># 초등 교과서</span>
@@ -410,7 +408,7 @@
   </div>
   <div class="floating-button">
     <a href="#">
-      <img src="<%= request.getContextPath() %>/resources/images/selltalk.png" alt="매각 접수 아이콘" class="process-icon">
+      <img src="<%= request.getContextPath() %>/resources/images/mainbanner/selltalk.png" alt="상담사" class="process-icon">
     </a>
   </div>
 </section>
@@ -419,25 +417,25 @@
   <h2>당신마켓의 <span class="highlight">중고 거래 절차</span>를 고객님께 알려드립니다.</h2>
   <div class="process-container">
     <div class="process-step">
-      <img src="<%= request.getContextPath() %>/resources/images/proc1.png" alt="매각 접수 아이콘" class="process-icon">
+      <img src="<%= request.getContextPath() %>/resources/images/mainbanner/proc1.png" alt="매각 접수 아이콘" class="process-icon">
       <h3>원하는 상품 찜</h3>
       <p>증고 거래를 원하는 상품 찜하기</p>
     </div>
     <div class="arrow">&#10140;</div>
     <div class="process-step">
-      <img src="<%= request.getContextPath() %>/resources/images/proc2.png" alt="제품 회수 아이콘" class="process-icon">
+      <img src="<%= request.getContextPath() %>/resources/images/mainbanner/proc2.png" alt="제품 회수 아이콘" class="process-icon">
       <h3>채팅 하기</h3>
       <p>상품을 판매하는 판매자와 채팅하기</p>
     </div>
     <div class="arrow">&#10140;</div>
     <div class="process-step">
-      <img src="<%= request.getContextPath() %>/resources/images/proc3.png" alt="제품 검사 아이콘" class="process-icon">
+      <img src="<%= request.getContextPath() %>/resources/images/mainbanner/proc3.png" alt="제품 검사 아이콘" class="process-icon">
       <h3>약속 잡기</h3>
       <p>판매자와 약속 잡기(직거래 or 택배거래)</p>
     </div>
     <div class="arrow">&#10140;</div>
     <div class="process-step">
-      <img src="<%= request.getContextPath() %>/resources/images/proc4.png" alt="보상 지급 아이콘" class="process-icon">
+      <img src="<%= request.getContextPath() %>/resources/images/mainbanner/proc4.png" alt="보상 지급 아이콘" class="process-icon">
       <h3>구매 완료</h3>
       <p>원하는 상품을 받아보기</p>
     </div>
@@ -485,6 +483,7 @@
 </section>
 
 <%@include file="footer.jsp"%>
+
 
 <script>
   const images = document.querySelectorAll('.main-banner img');

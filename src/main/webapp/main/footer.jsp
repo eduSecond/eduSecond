@@ -72,29 +72,11 @@
             color: #aaa;
         }
 
-        .footer-extras {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .family-site {
-            background-color: #444;
-            color: #ddd;
-            border: none;
-            padding: 5px 10px;
-            font-size: 13px;
-        }
-
         .family-site option {
             background-color: #333;
             color: #ddd;
         }
 
-        .blog-icon {
-            width: 30px;
-            height: auto;
-        }
 
     </style>
 </head>
@@ -102,9 +84,9 @@
 <footer class="footer">
     <div class="footer-top">
         <nav class="footer-nav">
-            <a href="#">회사소개</a>
-            <a href="#">회원약관</a>
-            <a href="#">개인정보 처리방침</a>
+            <a href="/footer/intro.jsp">회사소개</a>
+            <a href="/footer/memberterms.jsp">회원약관</a>
+            <a href="/footer/personalinfo.jsp">개인정보 처리방침</a>
             <a href="#">이메일 수집거부</a>
             <a href="#">고객 센터</a>
         </nav>
@@ -122,7 +104,5 @@
         <p>COPYRIGHT ⓒ 당신마켓. ALL RIGHTS RESERVED.</p>
     </div>
 </footer>
-
-
 </body>
 </html>

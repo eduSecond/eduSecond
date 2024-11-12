@@ -7,11 +7,9 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "fileData")
 public class ProductImageDTO {
     private Integer imageId;
     private Integer productId;
     private String imagePath;
     private String isMain;    // 'Y' or 'N'
-
 }
