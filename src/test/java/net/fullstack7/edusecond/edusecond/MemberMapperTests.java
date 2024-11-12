@@ -1,7 +1,7 @@
 package net.fullstack7.edusecond.edusecond;
 
 import lombok.extern.log4j.Log4j2;
-import net.fullstack7.edusecond.edusecond.domain.member.MemberVO;
+import net.fullstack7.edusecond.edusecond.domain.MemberVO;
 import net.fullstack7.edusecond.edusecond.mapper.MemberMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
