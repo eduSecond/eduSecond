@@ -8,19 +8,12 @@ import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductImageDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductRegistDTO;
 import net.fullstack7.edusecond.edusecond.mapper.ProductMapper;
-import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
-import net.fullstack7.edusecond.edusecond.util.CommonFileUtil;
-import net.fullstack7.edusecond.edusecond.util.Paging;
-import net.fullstack7.edusecond.edusecond.domain.product.ProductVO;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import net.fullstack7.edusecond.edusecond.util.Paging;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import net.fullstack7.edusecond.edusecond.dto.product.ProductImageDTO;
-import net.fullstack7.edusecond.edusecond.domain.product.ProductImageVO;
 
 
 @Service
@@ -94,4 +87,40 @@ public class ProductServiceImpl implements ProductServiceIf {
         ProductImageVO vo = productMapper.selectThumbnailImage(productId);
         return vo != null ? modelMapper.map(vo, ProductImageDTO.class) : null;
     }
+
+    @Override
+    public int insertProduct(ProductRegistDTO productRegistDTO) {
+        return productMapper.insertProduct(modelMapper.map(productRegistDTO, ProductVO.class));
+    }
+
+    @Override
+    public int getLastProductId(){
+        return productMapper.getLastProductId();
+    }
+
+    @Override
+    public void insertProductImage(int productId, List<String> uploadFilePaths) {
+        if (uploadFilePaths == null || uploadFilePaths.isEmpty()) {
+            return;
+        }
+
+        ProductImageVO mainImage = ProductImageVO.builder()
+                .productId(productId)
+                .imagePath(uploadFilePaths.get(0))
+                .build();
+        productMapper.insertProductImageMain(mainImage);
+
+
+        for (int i = 1; i < uploadFilePaths.size(); i++) {
+            ProductImageVO productImage = ProductImageVO.builder()
+                    .productId(productId)
+                    .imagePath(uploadFilePaths.get(i))
+                    .build();
+            productMapper.insertProductImage(productImage);
+        }
+    }
+
+
+
+
 }

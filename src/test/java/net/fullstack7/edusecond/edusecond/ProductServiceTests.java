@@ -40,16 +40,15 @@ public class ProductServiceTests {
     }
 
     @Test
-    public void testInsertProductImage(){
-        List<String> list = new ArrayList<>();
-        list.add("mainImage1");
-        list.add("subImage1");
-        list.add("subImage2");
-        list.add("subImage3");
-        ProductRegistDTO product = ProductRegistDTO.builder()
-                .imagePaths(list).build();
-        productService.insertProductImage(product);
+    public void testProductImage(){
+        List<String> uploadFilePaths = new ArrayList<>();
+        uploadFilePaths.add("filePath1");
+        uploadFilePaths.add("filePath2");
+        uploadFilePaths.add("filePath3");
+        uploadFilePaths.add("filePath4");
+        productService.insertProductImage(2,uploadFilePaths);
     }
+
 
 }
 
