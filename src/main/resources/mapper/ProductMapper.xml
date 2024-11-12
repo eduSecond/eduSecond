@@ -61,17 +61,17 @@
     WHERE p.productId = #{productId}
   </select>
 
-  <insert id="insertProduct" useGeneratedKeys="true" keyProperty="productId">
+  <insert id="insertProduct" >
     INSERT INTO tbl_product (sellerId, productName, productDesc, price, quantity, quality)
     VALUES (#{sellerId}, #{productName}, #{productDesc}, #{price}, #{quantity}, #{quality});
   </insert>
   <insert id="insertProductImageMain">
     INSERT INTO tbl_product_image (productId, imagePath, isMain)
-    VALUES ( @lastProductId, #{imagePath}, 'Y')
+    VALUES ( #{productId}, #{imagePath}, 'Y')
   </insert>
   <insert id="insertProductImage">
     INSERT INTO tbl_product_image (productId, imagePath)
-    VALUES ( @lastProductId, #{imagePath})
+    VALUES ( #{productId}, #{imagePath})
   </insert>
   <select id="getLastProductId" resultType="java.lang.Integer">
     SELECT productId

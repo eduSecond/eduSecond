@@ -4,28 +4,28 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class CommonFileUtil {
 
-    private static final String UPLOAD_DIRECTORY = "C:\\Users\\Jerry\\Desktop\\java7\\eduSecondUploads"; // 저장할 디렉토리 경로
+    private static final String UPLOAD_DIRECTORY = "C:\\Users\\Jerry\\Desktop\\java7\\eduSecondUploads\\"; // 저장할 디렉토리 경로
 
     // 다중 파일 업로드 메서드
     public static List<String> uploadFiles(List<MultipartFile> files) throws IOException {
-        List<String> uploadedFileNames = new ArrayList<>();
+        List<String> uploadedFilePaths = new ArrayList<>();
         for (MultipartFile file : files) {
             String originalFileName = file.getOriginalFilename();
             if (originalFileName != null && !originalFileName.isEmpty()) {
                 String uniqueFileName = generateUniqueFileName(originalFileName);
-                File destinationFile = new File(UPLOAD_DIRECTORY + uniqueFileName);
+                String fullPath = UPLOAD_DIRECTORY + uniqueFileName;
+                File destinationFile = new File(fullPath);
                 file.transferTo(destinationFile);
-                uploadedFileNames.add(uniqueFileName);
+                uploadedFilePaths.add(fullPath); // 경로를 포함한 파일명을 추가
             }
         }
-        return uploadedFileNames;
+        return uploadedFilePaths;
     }
 
     // 파일 삭제 메서드
@@ -48,7 +48,7 @@ public class CommonFileUtil {
         }
 
         if (oldFile.exists() && oldFile.renameTo(newFile)) {
-            return newFileName;
+            return newFilePath; // 전체 경로를 반환
         } else {
             throw new IOException("파일명을 변경할 수 없습니다.");
         }

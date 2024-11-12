@@ -153,7 +153,6 @@ public class ProductController {
                 int lastProductId = productService.getLastProductId(); // 마지막에 삽입한 ProductId 가져오기
                 productService.insertProductImage(lastProductId, uploadFileNames); // 파일 정보를 DB에 삽입
             }
-            
             log.info("[ProductController] >> registOk [SUCCESS] >> /product/list");
             return "redirect:/product/list"; // 성공 시 리다이렉트
         } else {

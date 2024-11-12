@@ -12,7 +12,7 @@
     <title>상품 등록</title>
 </head>
 <body>
-<form action="/es/product/registOk" method="post" enctype="multipart/form-data">
+<form action="/product/registOk" method="post" enctype="multipart/form-data">
     <div class="form-group">
         <label for="sellerId">아이디</label>
         <input type="text" class="form-control" id="sellerId" name="sellerId">
