@@ -3,6 +3,48 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.fullstack7.edusecond.edusecond.mapper.ProductMapper">
   <!--상품 조회, 등록, 수정, 삭제-->
+  <select id="totalCount" parameterType="map" resultType="int">
+    SELECT COUNT(productId) AS total_count
+    FROM tbl_product
+    <where>
+      <if test="searchCategory != null and !searchCategory.trim().isEmpty() and searchValue != null and !searchValue.trim().isEmpty()">
+        ${searchCategory} LIKE CONCAT('%', #{searchValue}, '%')
+      </if>
+    </where>
+  </select>
+  <select id="selectAllProducts" parameterType="map" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductVO">
+    SELECT p.productId,
+    p.sellerId,
+    p.productName,
+    p.productDesc,
+    p.price,
+    p.quantity,
+    p.quality,
+    p.productStatus,
+    p.viewCount,
+    p.regDate,
+    p.modifyDate,
+    pi.imageId,
+    pi.imagePath,
+    pi.isMain
+    FROM tbl_product p
+    LEFT JOIN tbl_product_image pi ON p.productId = pi.productId
+    <where>
+      <if test="searchCategory != null and !searchCategory.trim().isEmpty() and searchValue != null and !searchValue.trim().isEmpty()">
+        ${searchCategory} LIKE CONCAT('%', #{searchValue}, '%')
+      </if>
+      <if test="productId != null">
+        AND p.productId = #{productId}
+      </if>
+    </where>
+    ORDER BY productId DESC
+    LIMIT #{startIdx}, #{pageSize}
+  </select>
+  <select id="selectProductById" parameterType="java.lang.Integer" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductVO">
+    SELECT productId, sellerId, productName, productDesc, price, quantity, quality, productStatus, viewCount, regDate, modifyDate
+    FROM tbl_product
+    WHERE productId = #{productId}
+  </select>
   <!--위시리스트 조회, 추가, 삭제-->
   <!--주문 조회, 등록, 수정, 삭제-->
   <!--리뷰 조회, 등록, 수정, 삭제-->

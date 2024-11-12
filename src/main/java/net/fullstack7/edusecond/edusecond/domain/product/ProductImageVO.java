@@ -1,4 +1,4 @@
-package net.fullstack7.edusecond.edusecond.domain;
+package net.fullstack7.edusecond.edusecond.domain.product;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
