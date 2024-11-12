@@ -22,4 +22,9 @@ public class MemberVO {
     private LocalDate userBirth;
     private LocalDateTime regDate;
     private LocalDateTime modifyDate;
+    private String enabled;
+    
+    public boolean isEnabled() {
+        return "Y".equals(enabled);
+    }
 }

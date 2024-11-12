@@ -1,6 +1,7 @@
 package net.fullstack7.edusecond.edusecond.dto.member;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,4 +30,11 @@ public class MemberDTO {
     private int reviewCount;
     private double avgRating;
     private List<ProductDTO> wishlist;
+    private String enabled;
+    private LocalDateTime regDate;
+    private LocalDateTime modifyDate;
+    
+    public boolean isEnabled() {
+        return "Y".equals(enabled);
+    }
 }
