@@ -1,16 +1,15 @@
-package net.fullstack7.edusecond.edusecond.controller;
+package net.fullstack7.edusecond.edusecond.controller.product;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.fullstack7.edusecond.edusecond.dto.ProductDTO;
-import net.fullstack7.edusecond.edusecond.service.ProductServiceIf;
+import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
+import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
 import net.fullstack7.edusecond.edusecond.util.Paging;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 @RequestMapping("/es/product")

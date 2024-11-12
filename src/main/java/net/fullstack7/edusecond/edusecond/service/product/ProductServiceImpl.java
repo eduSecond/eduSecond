@@ -1,10 +1,11 @@
-package net.fullstack7.edusecond.edusecond.service;
+package net.fullstack7.edusecond.edusecond.service.product;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.fullstack7.edusecond.edusecond.domain.ProductVO;
-import net.fullstack7.edusecond.edusecond.dto.ProductDTO;
+import net.fullstack7.edusecond.edusecond.domain.product.ProductVO;
+import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
 import net.fullstack7.edusecond.edusecond.mapper.ProductMapper;
+import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
 import net.fullstack7.edusecond.edusecond.util.Paging;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;

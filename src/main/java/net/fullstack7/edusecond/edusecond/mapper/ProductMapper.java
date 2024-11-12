@@ -1,10 +1,9 @@
 package net.fullstack7.edusecond.edusecond.mapper;
 
-import net.fullstack7.edusecond.edusecond.domain.ProductVO;
+import net.fullstack7.edusecond.edusecond.domain.product.ProductVO;
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Mapper
 public interface ProductMapper {

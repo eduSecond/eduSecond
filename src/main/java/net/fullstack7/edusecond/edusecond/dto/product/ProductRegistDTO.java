@@ -1,7 +1,8 @@
-package net.fullstack7.edusecond.edusecond.dto;
+package net.fullstack7.edusecond.edusecond.dto.product;
 
 import java.util.List;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -16,25 +17,27 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductUpdateDTO {
-    @NotNull(message = "상품 ID는 필수입니다")
-    private Integer productId;
+public class ProductRegistDTO {
+    @NotBlank(message = "판매자 ID는 필수입니다")
+    private String sellerId;
 
+    @NotBlank(message = "상품명은 필수입니다")
     private String productName;
+
+    @NotBlank(message = "상품 설명은 필수입니다")
     private String productDesc;
 
+    @NotNull(message = "가격은 필수입니다")
     @Min(value = 0, message = "가격은 0 이상이어야 합니다")
     private Integer price;
 
-    @Min(value = 0, message = "수량은 0 이상이어야 합니다")
+    @NotNull(message = "수량은 필수입니다")
+    @Min(value = 1, message = "수량은 1 이상이어야 합니다")
     private Integer quantity;
 
+    @NotBlank(message = "상품 상태는 필수입니다")
     @Pattern(regexp = "^(NEW|LIKE_NEW|GOOD|FAIR)$", message = "상품 상태는 NEW, LIKE_NEW, GOOD, FAIR 중 하나여야 합니다")
     private String quality;
 
-    @Pattern(regexp = "^(AVAILABLE|RESERVED|SOLD)$", message = "판매 상태는 AVAILABLE, RESERVED, SOLD 중 하나여야 합니다")
-    private String productStatus;
-
-    private List<String> imagePaths;
-    private List<Integer> deleteImageIds;  // 삭제할 이미지 ID 목록
+    private List<String> imagePaths;  // 상품 이미지 경로들
 }

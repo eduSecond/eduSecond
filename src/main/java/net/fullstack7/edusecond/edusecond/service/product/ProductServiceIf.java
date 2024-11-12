@@ -1,9 +1,8 @@
-package net.fullstack7.edusecond.edusecond.service;
+package net.fullstack7.edusecond.edusecond.service.product;
 
-import net.fullstack7.edusecond.edusecond.dto.ProductDTO;
+import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
 
 import java.util.List;
-import java.util.Map;
 
 public interface ProductServiceIf {
 

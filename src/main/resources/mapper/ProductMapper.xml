@@ -12,7 +12,7 @@
       </if>
     </where>
   </select>
-  <select id="selectAllProducts" parameterType="map" resultType="net.fullstack7.edusecond.edusecond.domain.ProductVO">
+  <select id="selectAllProducts" parameterType="map" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductVO">
     SELECT p.productId,
     p.sellerId,
     p.productName,
@@ -40,7 +40,7 @@
     ORDER BY productId DESC
     LIMIT #{startIdx}, #{pageSize}
   </select>
-  <select id="selectProductById" parameterType="java.lang.Integer" resultType="net.fullstack7.edusecond.edusecond.domain.ProductVO">
+  <select id="selectProductById" parameterType="java.lang.Integer" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductVO">
     SELECT productId, sellerId, productName, productDesc, price, quantity, quality, productStatus, viewCount, regDate, modifyDate
     FROM tbl_product
     WHERE productId = #{productId}

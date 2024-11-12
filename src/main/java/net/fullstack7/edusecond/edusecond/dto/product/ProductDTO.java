@@ -1,4 +1,4 @@
-package net.fullstack7.edusecond.edusecond.dto;
+package net.fullstack7.edusecond.edusecond.dto.product;
 
 import java.time.LocalDateTime;
 import java.util.List;
