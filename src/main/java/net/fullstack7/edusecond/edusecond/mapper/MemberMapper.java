@@ -1,9 +1,10 @@
 package net.fullstack7.edusecond.edusecond.mapper;
 
-import net.fullstack7.edusecond.edusecond.domain.MemberVO;
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import net.fullstack7.edusecond.edusecond.domain.member.MemberVO;
 
 @Mapper
 public interface MemberMapper {
