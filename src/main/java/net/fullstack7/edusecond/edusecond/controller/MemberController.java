@@ -2,7 +2,7 @@ package net.fullstack7.edusecond.edusecond.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.fullstack7.edusecond.edusecond.service.member.MemberService;
+import net.fullstack7.edusecond.edusecond.service.member.MemberServiceIf;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Log4j2
 public class MemberController {
-    private final MemberService memberService;
+    private final MemberServiceIf memberService;
 }

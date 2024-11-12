@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import net.fullstack7.edusecond.edusecond.dto.product.ProductImageDTO;
+import net.fullstack7.edusecond.edusecond.domain.product.ProductImageVO;
 
 @Service
 @RequiredArgsConstructor
@@ -21,27 +23,46 @@ public class ProductServiceImpl implements ProductServiceIf {
     private final ModelMapper modelMapper;
 
     @Override
-    public List<ProductDTO> list(int pageNo, int pageSize, int blockSize, 
-                               String searchCategory, String searchValue) {
-        Paging paging = new Paging(pageNo, pageSize, blockSize, 
-                                 this.totalCount(searchCategory, searchValue));
-        
-        Map<String, Object> map = new HashMap<>();
-        map.put("pageSize", pageSize);
-        map.put("startIdx", paging.getStartIdx());
-        map.put("searchCategory", searchCategory);
-        map.put("searchValue", searchValue);
-        
-        List<ProductVO> voList = productMapper.selectAllProducts(map);
+    public List<ProductDTO> list(int pageNo, int pageSize, int pageNavSize, String searchType, String searchValue) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("offset", (pageNo - 1) * pageSize);
+        params.put("limit", pageSize);
+        params.put("searchType", searchType);
+        params.put("searchValue", searchValue);
+
+        List<ProductVO> voList = productMapper.selectAllProducts(params);
         return voList.stream()
-                    .map(vo -> modelMapper.map(vo, ProductDTO.class))
-                    .collect(Collectors.toList());
+                .map(vo -> {
+                    ProductDTO dto = modelMapper.map(vo, ProductDTO.class);
+                    // 썸네일 이미지 설정
+                    ProductImageVO thumbnailImage = productMapper.selectThumbnailImage(vo.getProductId());
+                    if (thumbnailImage != null) {
+                        dto.setThumbnail(modelMapper.map(thumbnailImage, ProductImageDTO.class));
+                    }
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
     public ProductDTO view(Integer productId) {
         ProductVO vo = productMapper.selectProductById(productId);
-        return modelMapper.map(vo, ProductDTO.class);
+        if (vo == null) {
+            return null;
+        }
+        
+        ProductDTO dto = modelMapper.map(vo, ProductDTO.class);
+        
+        // 썸네일 이미지 설정
+        ProductImageVO thumbnailVO = productMapper.selectThumbnailImage(productId);
+        if (thumbnailVO != null) {
+            dto.setThumbnail(modelMapper.map(thumbnailVO, ProductImageDTO.class));
+        }
+        
+        // 조회수 증가
+        productMapper.updateViewCount(productId);
+        
+        return dto;
     }
 
     @Override
@@ -50,5 +71,19 @@ public class ProductServiceImpl implements ProductServiceIf {
         map.put("searchCategory", searchCategory);
         map.put("searchValue", searchValue);
         return productMapper.totalCount(map);
+    }
+
+    @Override
+    public List<ProductImageDTO> getProductImages(int productId) {
+        List<ProductImageVO> voList = productMapper.selectProductImages(productId);
+        return voList.stream()
+                .map(vo -> modelMapper.map(vo, ProductImageDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ProductImageDTO getThumbnailImage(int productId) {
+        ProductImageVO vo = productMapper.selectThumbnailImage(productId);
+        return vo != null ? modelMapper.map(vo, ProductImageDTO.class) : null;
     }
 }

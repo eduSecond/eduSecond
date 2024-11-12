@@ -28,10 +28,10 @@ public class ProductServiceTests {
 
     @Test
     public void testView(){
-        ProductDTO product = productService.view(1);
+        ProductDTO product = productService.view(7);
         assertNotNull(product);
         log.info(product);
-        assertEquals("공책", product.getProductName());
+        assertEquals("상품6", product.getProductName());
     }
 }
 

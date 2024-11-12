@@ -11,8 +11,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class ProductDTO {
     private Integer productId;
     private String sellerId;
@@ -28,7 +28,8 @@ public class ProductDTO {
     private LocalDateTime modifyDate;
     
     // 추가 정보
-    private List<String> imagePaths;  // 상품 이미지 경로들
+    private ProductImageDTO thumbnail;  // 썸네일 이미지
+    private List<ProductImageDTO> images;  // 모든 이미지
     private Integer wishCount;        // 찜 수
     private Double avgRating;         // 판매자 평균 평점
     private Integer reviewCount;      // 판매자 리뷰 수
