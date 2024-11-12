@@ -389,7 +389,6 @@
 </head>
 <body>
 <%@include file="header.jsp"%>
-
 <section class="hero">
   <div class="hero-content">
     <div class="main-banner" id="mainBanner">
@@ -398,7 +397,6 @@
       <img src="<%= request.getContextPath() %>/resources/images/banner6.png">
       <div class="banner-dots" id="bannerDots"></div>
     </div>
-
     <p class="highlight">실시간 중고시세를 확인해 보세요.</p>
     <div class="tags">
       <span># 초등 교과서</span>

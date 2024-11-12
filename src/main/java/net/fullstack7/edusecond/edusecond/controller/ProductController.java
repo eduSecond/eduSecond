@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.fullstack7.edusecond.edusecond.util.JSFunc;
 import java.util.List;
+
 @Controller
 @RequestMapping("/es/product")
 @RequiredArgsConstructor
@@ -23,6 +24,7 @@ public class ProductController {
 
     @GetMapping("/list")
     public String list(Model model,
+
                       @RequestParam(defaultValue = "1") int pageNo,
                       @RequestParam(required = false) String searchCategory,
                       @RequestParam(required = false) String searchValue,
