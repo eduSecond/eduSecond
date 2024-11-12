@@ -17,5 +17,4 @@
         <property name="suffix" value=".jsp"/>
     </bean>
     <context:component-scan base-package="net.fullstack7.edusecond.edusecond.controller"/>
-    <!-- 파일 업로드를 위한 MultipartResolver 설정 -->
 </beans>
