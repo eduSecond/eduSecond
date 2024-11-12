@@ -4,7 +4,7 @@
 <mapper namespace="net.fullstack7.edusecond.edusecond.mapper.MemberMapper">
     
     <!--회원 조회-->
-    <select id="selectMemberById" resultType="net.fullstack7.edusecond.edusecond.domain.MemberVO">
+    <select id="selectMemberById" resultType="net.fullstack7.edusecond.edusecond.domain.member.MemberVO">
         SELECT * FROM tbl_member WHERE userId = #{userId}
     </select>
     
@@ -39,7 +39,7 @@
     </delete>
 
     <!--어드민용 전체 회원 조회 + 페이징-->
-    <select id="selectAllMember" resultType="net.fullstack7.edusecond.edusecond.domain.MemberVO">
+    <select id="selectAllMember" resultType="net.fullstack7.edusecond.edusecond.domain.member.MemberVO">
         SELECT * FROM tbl_member
         ORDER BY regDate DESC
     </select>

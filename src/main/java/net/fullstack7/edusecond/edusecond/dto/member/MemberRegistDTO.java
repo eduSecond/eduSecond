@@ -1,4 +1,4 @@
-package net.fullstack7.edusecond.edusecond.dto;
+package net.fullstack7.edusecond.edusecond.dto.member;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

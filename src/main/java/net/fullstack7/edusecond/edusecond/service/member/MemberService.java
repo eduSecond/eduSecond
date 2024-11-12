@@ -1,10 +1,10 @@
-package net.fullstack7.edusecond.edusecond.service;
+package net.fullstack7.edusecond.edusecond.service.member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.fullstack7.edusecond.edusecond.domain.MemberVO;
-import net.fullstack7.edusecond.edusecond.dto.MemberDTO;
-import net.fullstack7.edusecond.edusecond.dto.MemberRegistDTO;
+import net.fullstack7.edusecond.edusecond.domain.member.MemberVO;
+import net.fullstack7.edusecond.edusecond.dto.member.MemberDTO;
+import net.fullstack7.edusecond.edusecond.dto.member.MemberRegistDTO;
 import net.fullstack7.edusecond.edusecond.mapper.MemberMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
