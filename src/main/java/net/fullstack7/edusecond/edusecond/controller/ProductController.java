@@ -10,6 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import javax.servlet.http.HttpServletResponse;
+
+import net.fullstack7.edusecond.edusecond.util.JSFunc;
+import java.util.List;
 
 @Controller
 @RequestMapping("/es/product")
@@ -20,22 +24,72 @@ public class ProductController {
 
     @GetMapping("/list")
     public String list(Model model,
-                       @RequestParam(defaultValue = "1") int pageNo,
-                       @RequestParam(required = false) String searchCategory,
-                       @RequestParam(required = false) String searchValue){
-        int blockSize = 6;
-        int pageSize = 10;
-        int totalCnt = productService.totalCount(searchCategory, searchValue);
-        Paging paging = new Paging(pageNo, pageSize, blockSize, totalCnt);
-        model.addAttribute("pList", productService.list(pageNo, pageSize, blockSize, searchCategory, searchValue));
-        model.addAttribute("paging", paging);
-        return "product/list";
+
+                      @RequestParam(defaultValue = "1") int pageNo,
+                      @RequestParam(required = false) String searchCategory,
+                      @RequestParam(required = false) String searchValue,
+                      HttpServletResponse response) {
+                      
+        try {
+            if (!validateListParameters(pageNo, searchCategory, searchValue, response)) {
+                return null;
+            }
+
+            List<ProductDTO> productList = productService.list(pageNo, 10, 6, searchCategory, searchValue);
+            int totalCnt = productService.totalCount(searchCategory, searchValue);
+            Paging paging = new Paging(pageNo, 10, 6, totalCnt);
+            
+            model.addAttribute("pList", productList);
+            model.addAttribute("paging", paging);
+            return "product/list";
+            
+        } catch (Exception e) {
+            log.error("상품 목록 조회 중 오류 발생: ", e);
+            JSFunc.alertBack("상품 목록을 불러오는 중 오류가 발생했습니다.", response);
+            return null;
+        }
+    }
+
+    private boolean validateListParameters(int pageNo, String searchCategory, 
+                                        String searchValue, HttpServletResponse response) {
+        if (pageNo < 1) {
+            JSFunc.alertBack("페이지 번호는 1 이상이어야 합니다.", response);
+            return false;
+        }
+        
+        if (searchCategory != null && !searchCategory.trim().isEmpty() 
+            && searchValue != null && !searchValue.trim().isEmpty()) {
+            if (!("productName".equals(searchCategory) || "sellerId".equals(searchCategory))) {
+                JSFunc.alertBack("유효하지 않은 검색 카테고리입니다: " + searchCategory, response);
+                return false;
+            }
+        }
+        return true;
     }
 
     @GetMapping("/view")
-    public String view(Model model, @RequestParam int productId){
-        ProductDTO dto = productService.view(productId);
-        model.addAttribute("dto", dto);
-        return "product/view";
+    public String view(Model model, 
+                      @RequestParam int productId,
+                      HttpServletResponse response) {
+        try {
+            if (productId <= 0) {
+                JSFunc.alertBack("유효하지 않은 상품 ID입니다.", response);
+                return null;
+            }
+
+            ProductDTO dto = productService.view(productId);
+            if (dto == null) {
+                JSFunc.alertBack("존재하지 않는 상품입니다.", response);
+                return null;
+            }
+
+            model.addAttribute("dto", dto);
+            return "product/view";
+            
+        } catch (Exception e) {
+            log.error("상품 상세 조회 중 오류 발생: ", e);
+            JSFunc.alertBack("상품 정보를 불러오는 중 오류가 발생했습니다.", response);
+            return null;
+        }
     }
 }

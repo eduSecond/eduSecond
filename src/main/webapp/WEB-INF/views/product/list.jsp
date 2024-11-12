@@ -72,6 +72,7 @@
     </style>
 </head>
 <body>
+
 <div class="container">
     <div class="header">
         <%@include file="/main/header.jsp" %>
@@ -83,7 +84,7 @@
             <input class="form-control me-2" type="search"  name="searchValue"  placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
-    </div>
+  </div>
     <div class="side">
         <br>
         <ul>
