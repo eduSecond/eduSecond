@@ -47,7 +47,7 @@
       text-decoration: none;
       color: #333;
       font-weight: bold;
-      font-size: 23px;
+      font-size: 21px;
     }
 
     .auth-links {
@@ -66,11 +66,14 @@
 <header>
   <div class="navbar">
     <div class="logo">
-      <img src="/images/logo.png" alt="IT Shop Logo">
+      <a href="/main/main.jsp">
+      <img src="<%= request.getContextPath() %>/resources/images/mainbanner/logo.png" alt="IT Shop Logo">
+      </a>
       <span style="font-size: 13px;">선생님들을 위한 중고거래 사이트 </span><span style="margin-left: 5px;">당신마켓</span>
     </div>
     <nav>
       <ul>
+        <li><a href="/footer/intro.jsp">회사소개</a></li>
         <li><a href="#">상품</a></li>
         <li><a href="#">내상품</a></li>
         <li><a href="#">셀파톡</a></li>
@@ -79,7 +82,7 @@
     </nav>
     <div class="auth-links">
       <!--로그인 전-->
-      <a href="#">로그인</a> | <a href="#">회원가입</a>
+      <a href="/login/login.jsp">로그인</a> | <a href="/login/agreeregist.jsp">회원가입</a>
       <!--로그인 시-->
       <a href="#">마이페이지</a>| <a href="#">로그아웃</a>
     </div>
