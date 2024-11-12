@@ -108,11 +108,50 @@
       </div>
     </div>
   </div>
+  <img src="../../../resources/images/heart/heart.png" id="heartImage" height="30px" width="30px" onclick="Heart()">
 </section>
 <%@include file="/main/footer.jsp"%>
-
-
 </body>
+<script>
+  function Heart() {
+    const heartImage = document.getElementById("heartImage");
+    const productId = "${dto.productId}"; // JavaScript 내에서 JSP 변수를 사용합니다.
+    const userId = "tester1"; // 사용자의 ID를 설정합니다 (예시로 하드코딩한 상태입니다. 실제로는 세션 등에서 가져올 수 있음).
+
+    // AJAX 요청 설정
+    const xhr = new XMLHttpRequest();
+    let url = "";
+
+    // 하트가 빈 상태인지 채워진 상태인지 확인
+    if (heartImage.src.includes("heart.png")) {
+      // 좋아요 추가 요청
+      url = "/like/insert";
+      heartImage.src = "../../../resources/images/heart/heartRed.png"; // 채워진 하트로 이미지 변경
+    } else {
+      // 좋아요 삭제 요청
+      url = "/like/delete";
+      heartImage.src = "../../../resources/images/heart/heart.png"; // 빈 하트로 이미지 변경
+    }
+
+    // 비동기 요청 전송
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if (xhr.status !== 200) {
+          // 요청이 실패한 경우 하트 이미지를 원래 상태로 되돌립니다.
+          if (url.includes("insert")) {
+            heartImage.src = "../../../resources/images/heart/heart.png";
+          } else {
+            heartImage.src = "../../../resources/images/heart/heartRed.png";
+          }
+          alert("좋아요 요청에 실패했습니다. 다시 시도해주세요.");
+        }
+      }
+    };
+    xhr.send("userId=" + user1 + "&productId=" + ${dto.productId});
+  }
+</script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </html>
