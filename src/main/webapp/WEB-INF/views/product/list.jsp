@@ -52,7 +52,7 @@
                     <form class="d-flex" role="search" action="/es/product/list" method="GET">
                         <select class="form-select" name="searchCategory" aria-label="Default select example">
                             <option value="productName" selected>상품명</option>
-                            <option value="productId">판매자</option>
+                            <option value="sellerId">판매자</option>
                         </select>
                         <input class="form-control me-2" type="search"  name="searchValue"  placeholder="Search" aria-label="Search">
                         <button class="btn btn-outline-success" type="submit">Search</button>

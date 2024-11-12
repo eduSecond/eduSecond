@@ -3,7 +3,7 @@ package net.fullstack7.edusecond.edusecond.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.fullstack7.edusecond.edusecond.dto.AdminLoginDTO;
-import net.fullstack7.edusecond.edusecond.service.AdminService;
+import net.fullstack7.edusecond.edusecond.service.admin.AdminService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

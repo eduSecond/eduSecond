@@ -28,7 +28,6 @@ public class ProductUpdateDTO {
 
     @Min(value = 0, message = "수량은 0 이상이어야 합니다")
     private Integer quantity;
-<<<<<<< HEAD:src/main/java/net/fullstack7/edusecond/edusecond/dto/product/ProductUpdateDTO.java
 
     @Pattern(regexp = "^(NEW|LIKE_NEW|GOOD|FAIR)$", message = "상품 상태는 NEW, LIKE_NEW, GOOD, FAIR 중 하나여야 합니다")
     private String quality;
@@ -36,15 +35,6 @@ public class ProductUpdateDTO {
     @Pattern(regexp = "^(AVAILABLE|RESERVED|SOLD)$", message = "판매 상태는 AVAILABLE, RESERVED, SOLD 중 하나여야 합니다")
     private String productStatus;
 
-=======
-    
-    @Pattern(regexp = "^(NEW|LIKE_NEW|GOOD|FAIR)$", message = "상품 상태는 NEW, LIKE_NEW, GOOD, FAIR 중 하나여야 합니다")
-    private String quality;
-    
-    @Pattern(regexp = "^(AVAILABLE|RESERVED|SOLD)$", message = "판매 상태는 AVAILABLE, RESERVED, SOLD 중 하나여야 합니다")
-    private String productStatus;
-    
->>>>>>> origin/gm:src/main/java/net/fullstack7/edusecond/edusecond/dto/ProductUpdateDTO.java
     private List<String> imagePaths;
     private List<Integer> deleteImageIds;  // 삭제할 이미지 ID 목록
 }
