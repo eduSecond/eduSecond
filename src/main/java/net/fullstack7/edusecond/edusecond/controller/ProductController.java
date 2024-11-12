@@ -7,16 +7,15 @@ import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
 import net.fullstack7.edusecond.edusecond.util.Paging;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletResponse;
 
 import net.fullstack7.edusecond.edusecond.util.JSFunc;
 import java.util.List;
 
 @Controller
-@RequestMapping("/es/product")
+@RequestMapping("/product")
 @RequiredArgsConstructor
 @Log4j2
 public class ProductController {
@@ -92,4 +91,29 @@ public class ProductController {
             return null;
         }
     }
+
+    @GetMapping("/es/pay")
+    public String payment(Model model,
+                          @RequestParam int productId,
+                          HttpServletResponse response){
+        try{
+            if (productId <= 0) {
+                JSFunc.alertBack("유효하지 않은 상품 ID입니다.", response);
+                return null;
+            }
+            ProductDTO dto = productService.view(productId);
+            if (dto == null) {
+                JSFunc.alertBack("존재하지 않는 상품입니다.", response);
+                return null;
+            }
+            model.addAttribute("dto", dto);
+            return "product/pay";
+        }catch(Exception e){
+            log.error("상품 상세 조회 중 오류 발생: ", e);
+            JSFunc.alertBack("상품 정보를 불러오는 중 오류가 발생했습니다.", response);
+            return null;
+        }
+
+    }
+
 }
