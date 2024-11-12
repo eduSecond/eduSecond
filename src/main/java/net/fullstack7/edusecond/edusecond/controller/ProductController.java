@@ -134,40 +134,35 @@ public class ProductController {
     public String registOk(
             @Valid ProductRegistDTO productRegistDTO,
             BindingResult bindingResult,
-            @RequestParam("files") List<MultipartFile> files,
+            @RequestParam(value = "files", required = false) List<MultipartFile> files,
             RedirectAttributes redirectAttributes
-            ) throws IOException {
-        if(bindingResult.hasErrors()) {
+    ) throws IOException {
+
+        if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
             log.info("RegistOk에서 Validation error");
             return "redirect:/product/regist";
         }
 
+        int result = productService.insertProduct(productRegistDTO); // 상품 삽입
 
-        int result = productService.insertProduct(productRegistDTO); // 상품에 삽입. 여기에는 파일이 존재하지 않음
-        int lastProductId = 0;
-        if (result > 0){ //상품 테이블에 잘 들어갔을 때 tbl_product insert 성공. 여기에서 파일 업로드 해줘야 함.
-            //파일 업로드를 먼저 함
-            List<String> uploadFileNames = CommonFileUtil.uploadFiles(files);
-            lastProductId = productService.getLastProductId(); // 마지막에 삽입한 ProductId를 가져옴
-            productService.insertProductImage(lastProductId, uploadFileNames);
-
-        } else {
-            // 상품 테이블에 등록을 실패함. tbl_product insert 실패
-        }
-
-
-
-
-
-        if(result > 0){
+        if (result > 0) { // 상품이 정상적으로 등록되었을 때
+            // 파일이 있는 경우에만 업로드 및 DB 삽입 수행
+            if (files != null && !files.isEmpty()) {
+                List<String> uploadFileNames = CommonFileUtil.uploadFiles(files); // 파일 업로드 완료
+                int lastProductId = productService.getLastProductId(); // 마지막에 삽입한 ProductId 가져오기
+                productService.insertProductImage(lastProductId, uploadFileNames); // 파일 정보를 DB에 삽입
+            }
+            
             log.info("[ProductController] >> registOk [SUCCESS] >> /product/list");
-            return "product/list";
+            return "redirect:/product/list"; // 성공 시 리다이렉트
         } else {
+            // 상품 테이블에 등록 실패 시
             log.info("[ProductController] >> registOk [FAIL] >> /product/list");
-            return "redirect:/es/product/regist";
+            return "redirect:/product/regist";
         }
     }
+
 
 
 
