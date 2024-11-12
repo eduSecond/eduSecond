@@ -19,17 +19,16 @@ public class Paging {
     public int getStartBlockPage(){
         return ((pageNo - 1) / blockSize) * blockSize + 1;
     }
-    public int getEndBlockPage(){
+    public int getEndBlockPage() {
         int endPage = getStartBlockPage() + blockSize - 1;
-        return  Math.min(endPage, getTotalPage());
+        return Math.min(endPage, getTotalPage());
     }
 
-    public boolean getPrevBlock() {
+    public boolean getPrevBlock () {
         return getStartBlockPage() > 1;
     }
 
-    public boolean getNextBlock() {
+    public boolean getNextBlock () {
         return getEndBlockPage() < getTotalPage();
     }
-
 }
