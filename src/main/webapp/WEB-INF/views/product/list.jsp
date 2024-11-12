@@ -99,6 +99,7 @@
         <table class="table">
             <thead class="thead-dark">
             <tr>
+                <th scope="col">썸네일</th>
                 <th scope="col">상품명</th>
                 <th scope="col">가격</th>
                 <th scope="col">조회수</th>
@@ -106,13 +107,20 @@
             </tr>
             </thead>
             <tbody>
-            <c:if test="${not empty pList}">
-                <c:forEach var="dto" items="${pList}" varStatus="loop">
+            <c:if test="${not empty products}">
+                <c:forEach var="product" items="${products}" varStatus="loop">
                     <tr>
-                        <td><a href="/bbs/view.do?idx=${dto.productId}">${dto.productName}</a></td>
-                        <td>${dto.price}</td>
-                        <td>${dto.viewCount}</td>
-                        <td>${dto.regDate}</td>
+                        <td>
+                            <c:if test="${not empty product.thumbnail}">
+                                <img src="${product.thumbnail.imagePath}" 
+                                     alt="상품 썸네일" 
+                                     style="width: 50px; height: 50px; object-fit: cover;">
+                            </c:if>
+                        </td>
+                        <td><a href="/es/product/view?productId=${product.productId}">${product.productName}</a></td>
+                        <td>${product.price}</td>
+                        <td>${product.viewCount}</td>
+                        <td>${product.regDate}</td>
                     </tr>
                 </c:forEach>
             </c:if>

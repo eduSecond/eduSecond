@@ -13,39 +13,80 @@
     </where>
   </select>
   <select id="selectAllProducts" parameterType="map" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductVO">
-    SELECT p.productId,
-    p.sellerId,
-    p.productName,
-    p.productDesc,
-    p.price,
-    p.quantity,
-    p.quality,
-    p.productStatus,
-    p.viewCount,
-    p.regDate,
-    p.modifyDate,
-    pi.imageId,
-    pi.imagePath,
-    pi.isMain
+    SELECT 
+        p.productId,
+        p.sellerId,
+        p.productName,
+        p.price,
+        p.quantity,
+        p.quality,
+        p.productStatus,
+        p.viewCount,
+        p.regDate,
+        p.modifyDate,
+        m.userName as sellerName,
+        (SELECT imagePath 
+         FROM tbl_product_image 
+         WHERE productId = p.productId 
+         AND isMain = 'Y' 
+         LIMIT 1) as thumbnailPath
     FROM tbl_product p
-    LEFT JOIN tbl_product_image pi ON p.productId = pi.productId
-    <where>
-      <if test="searchCategory != null and !searchCategory.trim().isEmpty() and searchValue != null and !searchValue.trim().isEmpty()">
-        ${searchCategory} LIKE CONCAT('%', #{searchValue}, '%')
-      </if>
-      <if test="productId != null">
-        AND p.productId = #{productId}
-      </if>
-    </where>
-    ORDER BY productId DESC
-    LIMIT #{startIdx}, #{pageSize}
+    LEFT JOIN tbl_member m ON p.sellerId = m.userId
+    WHERE 1=1
+    <if test="searchType != null and searchType == 'productName'">
+        AND p.productName LIKE CONCAT('%', #{searchValue}, '%')
+    </if>
+    <if test="searchType != null and searchType == 'sellerId'">
+        AND p.sellerId LIKE CONCAT('%', #{searchValue}, '%')
+    </if>
+    ORDER BY p.productId DESC
+    LIMIT #{offset}, #{limit}
   </select>
   <select id="selectProductById" parameterType="java.lang.Integer" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductVO">
-    SELECT productId, sellerId, productName, productDesc, price, quantity, quality, productStatus, viewCount, regDate, modifyDate
-    FROM tbl_product
-    WHERE productId = #{productId}
+    SELECT 
+        p.productId, 
+        p.sellerId, 
+        p.productName, 
+        p.productDesc, 
+        p.price, 
+        p.quantity, 
+        p.quality, 
+        p.productStatus, 
+        p.viewCount, 
+        p.regDate, 
+        p.modifyDate,
+        m.userName as sellerName
+    FROM tbl_product p
+    LEFT JOIN tbl_member m ON p.sellerId = m.userId
+    WHERE p.productId = #{productId}
   </select>
   <!--위시리스트 조회, 추가, 삭제-->
   <!--주문 조회, 등록, 수정, 삭제-->
   <!--리뷰 조회, 등록, 수정, 삭제-->
+  <select id="selectThumbnailImage" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductImageVO">
+    SELECT 
+        imageId,
+        productId,
+        imagePath,
+        isMain
+    FROM tbl_product_image
+    WHERE productId = #{productId}
+    AND isMain = 'Y'
+    LIMIT 1
+  </select>
+  <select id="selectProductImages" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductImageVO">
+    SELECT 
+        imageId,
+        productId,
+        imagePath,
+        isMain
+    FROM tbl_product_image
+    WHERE productId = #{productId}
+    ORDER BY isMain DESC, imageId ASC
+  </select>
+  <update id="updateViewCount">
+    UPDATE tbl_product 
+    SET viewCount = viewCount + 1 
+    WHERE productId = #{productId}
+  </update>
 </mapper>

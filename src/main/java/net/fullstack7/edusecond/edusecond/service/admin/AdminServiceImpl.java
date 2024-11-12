@@ -10,10 +10,11 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Log4j2
-public class AdminService {
+public class AdminServiceImpl implements AdminServiceIf {
     
     private final AdminMapper adminMapper;
     
+    @Override
     public boolean loginAdmin(AdminLoginDTO loginDTO) {
         AdminVO admin = adminMapper.selectAdminById(loginDTO.getAdminId());
         

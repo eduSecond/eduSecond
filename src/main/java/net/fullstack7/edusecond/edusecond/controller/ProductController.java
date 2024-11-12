@@ -24,25 +24,25 @@ public class ProductController {
 
     @GetMapping("/list")
     public String list(Model model,
-
-                      @RequestParam(defaultValue = "1") int pageNo,
-                      @RequestParam(required = false) String searchCategory,
-                      @RequestParam(required = false) String searchValue,
-                      HttpServletResponse response) {
-                      
+                  @RequestParam(defaultValue = "1") int pageNo,
+                  @RequestParam(required = false) String searchType,
+                  @RequestParam(required = false) String searchValue,
+                  HttpServletResponse response) {
         try {
-            if (!validateListParameters(pageNo, searchCategory, searchValue, response)) {
+            if (!validateListParameters(pageNo, searchType, searchValue, response)) {
                 return null;
             }
 
-            List<ProductDTO> productList = productService.list(pageNo, 10, 6, searchCategory, searchValue);
-            int totalCnt = productService.totalCount(searchCategory, searchValue);
-            Paging paging = new Paging(pageNo, 10, 6, totalCnt);
+            List<ProductDTO> products = productService.list(pageNo, 10, 6, searchType, searchValue);
+            int totalCount = productService.totalCount(searchType, searchValue);
+            Paging paging = new Paging(pageNo, 10, 6, totalCount);
             
-            model.addAttribute("pList", productList);
+            model.addAttribute("products", products);
             model.addAttribute("paging", paging);
-            return "product/list";
+            model.addAttribute("searchType", searchType);
+            model.addAttribute("searchValue", searchValue);
             
+            return "product/list";
         } catch (Exception e) {
             log.error("상품 목록 조회 중 오류 발생: ", e);
             JSFunc.alertBack("상품 목록을 불러오는 중 오류가 발생했습니다.", response);
@@ -50,17 +50,17 @@ public class ProductController {
         }
     }
 
-    private boolean validateListParameters(int pageNo, String searchCategory, 
+    private boolean validateListParameters(int pageNo, String searchType, 
                                         String searchValue, HttpServletResponse response) {
         if (pageNo < 1) {
             JSFunc.alertBack("페이지 번호는 1 이상이어야 합니다.", response);
             return false;
         }
         
-        if (searchCategory != null && !searchCategory.trim().isEmpty() 
+        if (searchType != null && !searchType.trim().isEmpty() 
             && searchValue != null && !searchValue.trim().isEmpty()) {
-            if (!("productName".equals(searchCategory) || "sellerId".equals(searchCategory))) {
-                JSFunc.alertBack("유효하지 않은 검색 카테고리입니다: " + searchCategory, response);
+            if (!("productName".equals(searchType) || "sellerId".equals(searchType))) {
+                JSFunc.alertBack("유효하지 않은 검색 카테고리입니다: " + searchType, response);
                 return false;
             }
         }

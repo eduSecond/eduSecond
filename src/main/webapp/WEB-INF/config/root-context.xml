@@ -8,7 +8,7 @@
                             http://www.springframework.org/schema/context
                             http://www.springframework.org/schema/context/spring-context.xsd
                             http://mybatis.org/schema/mybatis-spring
-                            https://mybatis.org/schema/mybatis-spring.xsd">
+                            http://mybatis.org/schema/mybatis-spring.xsd">
 
     <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
         <property name="driverClassName" value="org.mariadb.jdbc.Driver"/>
