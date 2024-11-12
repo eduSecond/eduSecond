@@ -31,7 +31,7 @@ public class ProductUpdateDTO {
 
     @Pattern(regexp = "^(NEW|LIKE_NEW|GOOD|FAIR)$", message = "상품 상태는 NEW, LIKE_NEW, GOOD, FAIR 중 하나여야 합니다")
     private String quality;
-
+    
     @Pattern(regexp = "^(AVAILABLE|RESERVED|SOLD)$", message = "판매 상태는 AVAILABLE, RESERVED, SOLD 중 하나여야 합니다")
     private String productStatus;
 
