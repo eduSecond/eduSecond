@@ -122,7 +122,5 @@
         <p>COPYRIGHT ⓒ 당신마켓. ALL RIGHTS RESERVED.</p>
     </div>
 </footer>
-
-
 </body>
 </html>

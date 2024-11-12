@@ -1,4 +1,4 @@
-package net.fullstack7.edusecond.edusecond.controller.product;
+package net.fullstack7.edusecond.edusecond.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
