@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 public class PaymentDTO {
     private int orderId;
     private int productId;
+    private int unitPrice;
+    private int totalPrice;
     private String buyerId;
     private int orderQuantity;
     private String recipientName;
@@ -22,7 +24,6 @@ public class PaymentDTO {
     private String paymentMethod;
     private String paymentCompany;
     private String paymentNumber;
-    private String orderStatus;
     private String deliveryStatus;
     private LocalDateTime regDate;
 

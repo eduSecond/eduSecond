@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import net.fullstack7.edusecond.edusecond.util.JSFunc;
@@ -141,6 +142,7 @@ public class ProductController {
 
     @PostMapping("/registOk")
     public String registOk(
+            HttpSession session,
             @Valid ProductRegistDTO productRegistDTO,
             BindingResult bindingResult,
             @RequestParam(value = "files", required = false) List<MultipartFile> files,
@@ -152,6 +154,8 @@ public class ProductController {
             log.info("RegistOk에서 Validation error");
             return "redirect:/product/regist";
         }
+        String userId = session.getAttribute("userId").toString();
+        productRegistDTO.setSellerId(userId);
 
         int result = productService.insertProduct(productRegistDTO); // 상품 삽입
 
