@@ -7,9 +7,9 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface LikeMapper {
     void insertLike(@Param("userId") String userId, @Param("productId") Integer productId);
-    void deleteLike(Integer wishId);
+    void deleteLike(@Param("userId") String userId, @Param("productId") Integer productId);
 
-    int checkExists(@Param("userId") String userId, @Param("productId") Integer productId);
+    boolean checkExists(@Param("userId") String userId, @Param("productId") Integer productId);
     //특정 조회
     LikeVO getLike(Integer productId, String userId);
 }

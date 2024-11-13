@@ -8,14 +8,14 @@
     </insert>
     <delete id="deleteLike">
         DELETE FROM tbl_wishlist
-        WHERE wishId = #{wishId}
+        WHERE userId = #{userId} AND productId = #{productId}
     </delete>
     <select id="getLike" resultType="net.fullstack7.edusecond.edusecond.domain.product.LikeVO">
         SELECT wishId, userId, productId, regDate
         FROM tbl_wishlist
         WHERE userId = #{userId} AND productId = #{productId}
     </select>
-    <select id="checkExists" resultType="int">
+    <select id="checkExists" resultType="boolean">
         SELECT COUNT(wishId)
         FROM tbl_wishlist
         WHERE userId = #{userId} AND productId = #{productId}

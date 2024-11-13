@@ -1,14 +1,7 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: full5-4
-  Date: 2024-11-12
-  Time: 오전 11:02
-  To change this template use File | Settings | File Templates.
---%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-  <title>툴</title>
   <style>
     * {
       margin: 0;
@@ -36,12 +29,11 @@
       border: 1px solid red;
       align-content: center;
     }
-
   </style>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
 <%@ include file="/main/header.jsp"%>
-
 <section class="privacy-policy">
   <div id="carouselExampleIndicators" class="carousel slide">
     <div class="carousel-indicators">
@@ -108,50 +100,34 @@
       </div>
     </div>
   </div>
-  <img src="../../../resources/images/heart/heart.png" id="heartImage" height="30px" width="30px" onclick="Heart()">
+  <c:choose>
+    <c:when test="${isLiked}">
+      <img src="../../../resources/images/heart/heartRed.png" id="heartImageRed" height="30px" width="30px" onclick="Heart()">
+    </c:when>
+    <c:otherwise>
+      <img src="../../../resources/images/heart/heart.png" id="heartImage" height="30px" width="30px" onclick="Heart()">
+    </c:otherwise>
+  </c:choose>
 </section>
 <%@include file="/main/footer.jsp"%>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
+</html>
 <script>
   function Heart() {
+    const heartImageRed = document.getElementById("heartImageRed");
     const heartImage = document.getElementById("heartImage");
-    const productId = "${dto.productId}"; // JavaScript 내에서 JSP 변수를 사용합니다.
-    const userId = "tester1"; // 사용자의 ID를 설정합니다 (예시로 하드코딩한 상태입니다. 실제로는 세션 등에서 가져올 수 있음).
-
-    // AJAX 요청 설정
-    const xhr = new XMLHttpRequest();
-    let url = "";
-
-    // 하트가 빈 상태인지 채워진 상태인지 확인
-    if (heartImage.src.includes("heart.png")) {
-      // 좋아요 추가 요청
-      url = "/like/insert";
-      heartImage.src = "../../../resources/images/heart/heartRed.png"; // 채워진 하트로 이미지 변경
-    } else {
-      // 좋아요 삭제 요청
-      url = "/like/delete";
-      heartImage.src = "../../../resources/images/heart/heart.png"; // 빈 하트로 이미지 변경
+    const productId = ${dto.productId}
+    const userId = "user1" //우선 고정값
+    if (heartImageRed) {
+      // 현재 빨간 하트인 경우 (좋아요를 취소하는 경우)
+      window.location.href = "/like/delete?productId=" + productId + "&userId=" + userId;
+      heartImageRed.src = "../../../resources/images/heart/heart.png";
+    } else if (heartImage) {
+      // 현재 빈 하트인 경우 (좋아요를 추가하는 경우)
+      window.location.href = "/like/insert?productId=" + productId + "&userId=" + userId;
+      heartImage.src = "../../../resources/images/heart/heartRed.png";
     }
-
-    // 비동기 요청 전송
-    xhr.open("POST", url, true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status !== 200) {
-          // 요청이 실패한 경우 하트 이미지를 원래 상태로 되돌립니다.
-          if (url.includes("insert")) {
-            heartImage.src = "../../../resources/images/heart/heart.png";
-          } else {
-            heartImage.src = "../../../resources/images/heart/heartRed.png";
-          }
-          alert("좋아요 요청에 실패했습니다. 다시 시도해주세요.");
-        }
-      }
-    };
-    xhr.send("userId=" + user1 + "&productId=" + ${dto.productId});
   }
 </script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-</html>
+

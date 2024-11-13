@@ -30,7 +30,7 @@ public class MemberMapperTests {
     @Test
     public void testInsert() {
         MemberVO member = MemberVO.builder()
-                .userId("tester2")
+                .userId("tester251915")
                 .userPw("test123!@#")
                 .userName("테스터")
                 .userEmail("test@test.com")

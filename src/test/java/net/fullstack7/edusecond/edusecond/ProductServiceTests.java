@@ -1,7 +1,9 @@
 package net.fullstack7.edusecond.edusecond;
 
 import lombok.extern.log4j.Log4j2;
+import net.fullstack7.edusecond.edusecond.dto.product.LikeDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
+import net.fullstack7.edusecond.edusecond.service.Like.LikeServiceIf;
 import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,11 +16,17 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Log4j2
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "file:src/main/webapp/WEB-INF/config/root-context.xml")
+@ContextConfiguration(locations = {
+        "file:src/main/webapp/WEB-INF/config/root-context.xml"
+})
 public class ProductServiceTests {
 
     @Autowired(required = false)
     private ProductServiceIf productService;
+
+
+
+
 
 //    @Test
 //    public void testList(){
@@ -28,11 +36,12 @@ public class ProductServiceTests {
 
     @Test
     public void testView(){
-        ProductDTO product = productService.view(7);
+        ProductDTO product = productService.view(17);
         assertNotNull(product);
         log.info(product);
-        assertEquals("상품6", product.getProductName());
+        assertEquals("상품13 노트북", product.getProductName());
     }
+
 }
 
 
