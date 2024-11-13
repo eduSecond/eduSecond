@@ -18,7 +18,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductRegistDTO {
-    @NotBlank(message = "판매자 ID는 필수입니다")
+
     private String sellerId;
 
     @NotBlank(message = "상품명은 필수입니다")

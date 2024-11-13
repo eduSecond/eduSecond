@@ -4,6 +4,7 @@ package net.fullstack7.edusecond.edusecond.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberDTO;
+import net.fullstack7.edusecond.edusecond.dto.member.MemberLoginDTO;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberRegistDTO;
 import net.fullstack7.edusecond.edusecond.service.member.MemberServiceIf;
 import net.fullstack7.edusecond.edusecond.service.member.MemberServiceImpl;
@@ -48,10 +49,7 @@ public class LoginController extends HttpServlet {
 
     @PostMapping("/login")
     public String loginOk (
-            @Valid MemberDTO dto
-            , BindingResult bindingResult
-            , RedirectAttributes redirectAttributes
-            , @RequestParam String userId
+             @RequestParam String userId
             , @RequestParam String password
 //          , @RequestParam String saveId
             , HttpServletRequest req, HttpServletResponse res, HttpSession session
@@ -64,7 +62,6 @@ public class LoginController extends HttpServlet {
 //            return "redirect:/login/login";
 //        }
 
-
         try{
 //            if("Y".equals(saveId)){
 //                session.setAttribute("userId", userId);
@@ -73,7 +70,8 @@ public class LoginController extends HttpServlet {
 //            }
             boolean result = MemberService.loginMember(userId, password);
             if(result == true){
-                session.setAttribute("userId", userId);
+                MemberLoginDTO mdto = MemberService.getLoginMember(userId);
+                session.setAttribute("memberInfo", mdto);
                 return "redirect:/main/main";
             } else{
                 res.setContentType("text/html;charset=UTF-8");

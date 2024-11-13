@@ -15,6 +15,7 @@
             color: #ddd;
             padding: 20px 40px;
             font-size: 14px;
+            min-width: 1000px;
         }
 
         .footer-top {

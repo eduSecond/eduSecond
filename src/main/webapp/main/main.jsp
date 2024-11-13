@@ -524,18 +524,6 @@
 
   let slideInterval = setInterval(autoSlide, 3000);
 
-  // Prev/Next button event listeners
-  prevBtn.addEventListener('click', () => {
-    clearInterval(slideInterval);
-    showSlide(currentIndex - 1);
-    slideInterval = setInterval(autoSlide, 3000);
-  });
-
-  nextBtn.addEventListener('click', () => {
-    clearInterval(slideInterval);
-    showSlide(currentIndex + 1);
-    slideInterval = setInterval(autoSlide, 3000);
-  });
 </script>
 
 </body>

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.fullstack7.edusecond.edusecond.domain.member.MemberVO;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberDTO;
+import net.fullstack7.edusecond.edusecond.dto.member.MemberLoginDTO;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberModifyDTO;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberRegistDTO;
 import net.fullstack7.edusecond.edusecond.mapper.MemberMapper;
@@ -45,6 +46,8 @@ public class MemberServiceImpl implements MemberServiceIf {
         }
         return false;
     }
+
+
     
     @Override
     public int getTotalCount(String searchType, String searchValue) {
@@ -79,5 +82,11 @@ public class MemberServiceImpl implements MemberServiceIf {
     public int modifyMember(MemberModifyDTO memberModifyDTO) {
         MemberVO vo = modelMapper.map(memberModifyDTO, MemberVO.class);
         return memberMapper.updateMember(vo);
+    }
+
+    @Override
+    public MemberLoginDTO getLoginMember(String userId){
+        MemberVO vo = memberMapper.getLoginMember(userId);
+        return modelMapper.map(vo, MemberLoginDTO.class);
     }
 }
