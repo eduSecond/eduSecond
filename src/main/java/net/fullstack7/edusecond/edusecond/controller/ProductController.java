@@ -3,16 +3,26 @@ package net.fullstack7.edusecond.edusecond.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
+import net.fullstack7.edusecond.edusecond.dto.product.ProductRegistDTO;
 import net.fullstack7.edusecond.edusecond.service.Like.LikeServiceIf;
 import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
+import net.fullstack7.edusecond.edusecond.util.CommonFileUtil;
 import net.fullstack7.edusecond.edusecond.util.Paging;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import net.fullstack7.edusecond.edusecond.util.JSFunc;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -123,5 +133,45 @@ public class ProductController {
         }
 
     }
+    @GetMapping("/regist")
+    public String regist(){
+        return "product/regist";
+    }
+
+
+    @PostMapping("/registOk")
+    public String registOk(
+            @Valid ProductRegistDTO productRegistDTO,
+            BindingResult bindingResult,
+            @RequestParam(value = "files", required = false) List<MultipartFile> files,
+            RedirectAttributes redirectAttributes
+    ) throws IOException {
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
+            log.info("RegistOk에서 Validation error");
+            return "redirect:/product/regist";
+        }
+
+        int result = productService.insertProduct(productRegistDTO); // 상품 삽입
+
+        if (result > 0) { // 상품이 정상적으로 등록되었을 때
+            // 파일이 있는 경우에만 업로드 및 DB 삽입 수행
+            if (files != null && !files.isEmpty()) {
+                List<String> uploadFileNames = CommonFileUtil.uploadFiles(files); // 파일 업로드 완료
+                int lastProductId = productService.getLastProductId(); // 마지막에 삽입한 ProductId 가져오기
+                productService.insertProductImage(lastProductId, uploadFileNames); // 파일 정보를 DB에 삽입
+            }
+            log.info("[ProductController] >> registOk [SUCCESS] >> /product/list");
+            return "redirect:/product/list"; // 성공 시 리다이렉트
+        } else {
+            // 상품 테이블에 등록 실패 시
+            log.info("[ProductController] >> registOk [FAIL] >> /product/list");
+            return "redirect:/product/regist";
+        }
+    }
+
+
+
 
 }

@@ -76,11 +76,11 @@
     <div class="header">
         <%@include file="/main/header.jsp" %>
         <form class="d-flex" role="search" action="/product/list" method="GET">
-            <select class="form-select" name="searchCategory" aria-label="Default select example">
-                <option value="productName" selected>상품명</option>
-                <option value="sellerId">판매자</option>
+            <select name="searchType" class="form-select" style="width: 120px;">
+                <option value="productName" ${searchType == 'productName' ? 'selected' : ''}>상품명</option>
+                <option value="sellerId" ${searchType == 'sellerId' ? 'selected' : ''}>판매자</option>
             </select>
-            <input class="form-control me-2" type="search"  name="searchValue"  placeholder="Search" aria-label="Search">
+            <input class="form-control me-2" type="search" name="searchValue" value="${searchValue}" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
   </div>

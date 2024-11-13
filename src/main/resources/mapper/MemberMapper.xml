@@ -37,7 +37,17 @@
     </select>
 
     <select id="selectList" resultType="net.fullstack7.edusecond.edusecond.domain.member.MemberVO">
-        SELECT *
+        SELECT 
+            userId,
+            userName,
+            userEmail,
+            userPhone,
+            userAddress,
+            userPostcode,
+            userBirth,
+            enabled,
+            regDate,
+            modifyDate
         FROM tbl_member
         <where>
             <if test="searchType != null and searchValue != null">
@@ -55,7 +65,7 @@
             </if>
         </where>
         ORDER BY regDate DESC
-        LIMIT #{offset}, #{size}
+        LIMIT #{offset}, #{limit}
     </select>
 
     <update id="updateEnabled">
@@ -63,4 +73,15 @@
         SET enabled = #{enabled}, modifyDate = NOW()
         WHERE userId = #{userId}
     </update>
+
+    <update id="updateMember">
+        UPDATE tbl_member
+        SET userEmail = #{userEmail}, userPhone = #{userPhone}, userAddress = #{userAddress}, userBirth = #{userBirth}
+        WHERE userId = #{userId}
+    </update>
+
+    <delete id="deleteMember">
+        DELETE FROM tbl_member
+        WHERE userId = #{userId}
+    </delete>
 </mapper>

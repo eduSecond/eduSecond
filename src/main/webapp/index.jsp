@@ -10,10 +10,10 @@
         <ul>
             <li><a href="/product/list">목록</a> </li>
             <li><a href="/bbs/view.do?idx=1&pageNo=&pageSize=&sortField=idx&sortOrder=">조회</a> </li>
-            <li><a href="/bbs/reigst.do">등록</a> </li>
+            <li><a href="/product/regist">등록</a> </li>
             <li><a href="/bbs/modfiy.do">수정</a> </li>
             <li><a href="/admin/login">회원관리</a> </li>
-            <li><a href="/es/mypage/like">마이페이지 찜목록</a> </li>
+            <li><a href="/main/goMain">main</a></li>
         </ul>
     </li>
 </ul>
