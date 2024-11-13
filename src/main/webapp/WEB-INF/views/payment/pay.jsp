@@ -1,7 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>툴</title>
     <style>
         * {
             margin: 0;
@@ -60,8 +59,14 @@
         }
 
         .content {
+            margin: 2%;
+            margin-left: 10%;
             padding: 20px;
             flex-grow: 1;
+            border: 2px solid lightgrey;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: white;
         }
 
         .action-buttons {
@@ -86,33 +91,55 @@
 <div class="mainpage">
     <div class="sidebar col-2">
         <ul>
-            <li>판매자명 : </li>
-            <li>상품명 : </li>
-            <li>가격 : </li>
+            <li>판매자명 : ${dto.sellerId}</li>
+            <li>상품명 : ${dto.productName}</li>
+            <li>가격 : ${dto.price} 원</li>
         </ul>
     </div>
-    <div class="content col-10">
-        <h2>정보 입력란</h2>
+    <div class="content col-7">
+        <h2></h2>
         <br>
         <div class="mb-3">
-            <label for="exampleFormControlInput1" class="form-label">성명</label>
-            <input type="email" class="form-control" id="exampleFormControlInput1">
+            <label for="name" class="form-label">받는 사람</label>
+            <input type="text" class="form-control" id="name">
         </div>
-
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
-            <span class="input-group-text" id="basic-addon2">@example.com</span>
+        <div class="mb-3">
+            <label for="tel" class="form-label">전화번호</label>
+            <input type="text" class="form-control" id="tel">
         </div>
-
-        <div class="input-group mb-3">
-            <span class="input-group-text">$</span>
-            <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
-            <span class="input-group-text">.00</span>
+        <div class="mb-3">
+            <label for="email" class="form-label">이메일</label>
+            <input type="email" class="form-control" id="email" placeholder="name@example.com">
         </div>
-
-        <div class="input-group">
-            <span class="input-group-text">With textarea</span>
-            <textarea class="form-control" aria-label="With textarea"></textarea>
+        <div class="mb-3">
+            <label for="email" class="form-label">주소</label>
+            <input type="text" class="form-control" id="addr">
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">우편번호</label>
+            <input type="text" class="form-control" id="zipcode">
+        </div>
+        <div class="mb-3">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">신용카드</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+                <label class="form-check-label" for="inlineCheckbox2">무통장입금</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3" disabled>
+                <label class="form-check-label" for="inlineCheckbox3">간편결제</label>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">결제회사</label> <!-- 신용카드 체크하면 보여주는게 좋을 듯 -->
+            <input type="text" class="form-control" id="paymentCompany">
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">결제번호</label>
+            <input type="text" class="form-control" id="paymentNumber">
         </div>
     </div>
 </div>

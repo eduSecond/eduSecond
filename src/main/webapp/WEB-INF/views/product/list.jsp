@@ -85,30 +85,31 @@
         </form>
   </div>
   <div class="main">
-            <div class="card-body">
-                <c:if test="${not empty pList}">
-                <c:forEach var="dto" items="${pList}" varStatus="loop">
-                <a href="/product/view?productId=${dto.productId}">
-                    <div class="card" style="width: 18rem; margin-bottom: 20px;">
-                        <c:if test="${not empty dto.thumbnail}">
-                            <img src="${dto.thumbnail.imagePath}"
-                                 alt="상품 썸네일"
-                                 style="width: 50px; height: 50px; object-fit: cover;">
-                        </c:if>
-                        <div class="card-body">
-                            <p class="card-title"><a href="/product/view?productId=${dto.productId}">${dto.productName}</a></p>
-                            <p class="card-text">가격: ${dto.price}원</p>
-                            <p class="card-text">조회수: ${dto.viewCount}</p>
-                            <p class="card-text">등록일: ${dto.regDate}</p>
-                        </div>
+    <div class="card-body">
+        <c:if test="${not empty pList}">
+            <c:forEach var="dto" items="${pList}" varStatus="loop">
+            <a href="/product/view?productId=${dto.productId}">
+                <div class="card" style="width: 18rem; margin-bottom: 20px;">
+                    <c:if test="${not empty dto.thumbnail}">
+                        <img src="${dto.thumbnail.imagePath}"
+                             alt="상품 썸네일"
+                             style="width: 50px; height: 50px; object-fit: cover;">
+                    </c:if>
+                    <div class="card-body">
+                        <p class="card-title">${dto.productName}</p>
+                        <p class="card-text">가격: ${dto.price}원</p>
+                        <p class="card-text">조회수: ${dto.viewCount}</p>
+                        <p class="card-text">등록일: ${dto.regDate}</p>
                     </div>
-                </a>
-                </c:forEach>
-                </c:if>
+                </div>
+            </a>
+            </c:forEach>
+        </c:if>
         <!-- 페이징 영역 -->
         <%@ include file="../common/paging.jsp"%>
         <!-- //페이징 영역 -->
-    </div>
+        </div>
+  </div>
 </div>
 </body>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
