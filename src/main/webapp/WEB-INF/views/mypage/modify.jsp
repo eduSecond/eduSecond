@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
+    <title>툴</title>
     <style>
         * {
             margin: 0;
@@ -94,10 +95,55 @@
     </div>
 
     <div class="content col-10">
-        <h2>여기에 제목</h2>
+        <div class="d-flex justify-content-between" id="additional" >
+            <div class="asdr">
+                <h2>내가 등록한 상품</h2>
+            </div>
+            <div class="asdr">
+                <h2>내가 찜한 상품</h2>
+                <p>d아앙ㄱ</p>
+            </div>
+            <div class="asdr">
+                <h2>내가 받은 리뷰</h2>
+                <p>d아앙ㄱ</p>
+            </div>
+        </div>
+        <h2>내 정보 수정</h2>
         <div>
-            여기에 내용
-
+            <form method="post" action="/es/mypage/modifyOk">
+                <table class="table table-borderless">
+                    <tr>
+                        <th>아이디</th>
+                        <td>${member.userId}</td>
+                    </tr>
+                    <tr>
+                        <th>이름</th>
+                        <td>${member.userName}</td>
+                    </tr>
+                    <tr>
+                        <th>이메일</th>
+                        <td><input type="email" value="${member.userEmail}" name="userEmail"></td>
+                    </tr>
+                    <tr>
+                        <th>전화번호</th>
+                        <td><input type="text" value="${member.userPhone}" name="userPhone"></td>
+                    </tr>
+                    <tr>
+                        <th>주소</th>
+                        <td><input type="text" value="${member.userAddress}" name="userAddress"></td>
+                    </tr>
+                    <tr>
+                        <th>생일</th>
+                        <td><input type="date" value="${member.userBirth}" name="userBirth"></td>
+                    </tr>
+                    <tr>
+                        <th>가입일</th>
+                        <td>${member.regDate}</td>
+                    </tr>
+                </table>
+                <button>등록</button>
+                <button type="button" onclick="location.href='/es/mypage/myInfo'">취소</button>
+            </form>
 
         </div>
     </div>

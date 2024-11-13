@@ -17,4 +17,5 @@ public interface MemberMapper {
     List<MemberVO> selectList(Map<String, Object> params);
     int updateEnabled(@Param("userId") String userId,
                      @Param("enabled") String enabled);
+
 } 

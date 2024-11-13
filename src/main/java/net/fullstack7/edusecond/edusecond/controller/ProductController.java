@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductRegistDTO;
+import net.fullstack7.edusecond.edusecond.service.Like.LikeServiceIf;
 import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
 import net.fullstack7.edusecond.edusecond.util.CommonFileUtil;
 import net.fullstack7.edusecond.edusecond.util.Paging;
@@ -30,6 +31,8 @@ import java.util.List;
 @Log4j2
 public class ProductController {
     private final ProductServiceIf productService;
+    private final LikeServiceIf likeService;
+
     @GetMapping("/list")
     public String list(Model model,
                   @RequestParam(defaultValue = "1") int pageNo,
@@ -76,7 +79,8 @@ public class ProductController {
     }
 
     @GetMapping("/view")
-    public String view(Model model, 
+    public String view(Model model,
+                      //@RequestParam String userId,
                       @RequestParam int productId,
                       HttpServletResponse response) {
         try {
@@ -91,6 +95,10 @@ public class ProductController {
                 return null;
             }
 
+            boolean isLiked = likeService.checkExists("user1", productId);
+            log.info("isLike: " + isLiked);
+            model.addAttribute("isLiked", isLiked);
+
             model.addAttribute("dto", dto);
             return "product/view";
             
@@ -100,6 +108,7 @@ public class ProductController {
             return null;
         }
     }
+
 
     @GetMapping("/es/pay")
     public String payment(Model model,

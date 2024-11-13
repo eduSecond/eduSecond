@@ -30,7 +30,7 @@ public class MemberMapperTests {
     @Test
     public void testInsert() {
         MemberVO member = MemberVO.builder()
-                .userId("tester124")
+                .userId("tester25656456")
                 .userPw("test123!@#")
                 .userName("테스터")
                 .userEmail("test@test.com")
@@ -51,5 +51,4 @@ public class MemberMapperTests {
         log.info(member);
         assertEquals("테스터", member.getUserName());
     }
-
 }

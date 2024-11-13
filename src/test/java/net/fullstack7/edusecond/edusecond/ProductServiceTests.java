@@ -1,7 +1,9 @@
 package net.fullstack7.edusecond.edusecond;
 
 import lombok.extern.log4j.Log4j2;
+import net.fullstack7.edusecond.edusecond.dto.product.LikeDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
+import net.fullstack7.edusecond.edusecond.service.Like.LikeServiceIf;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductRegistDTO;
 import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
 import org.junit.jupiter.api.Assertions;

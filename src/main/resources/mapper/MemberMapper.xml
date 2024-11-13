@@ -73,4 +73,15 @@
         SET enabled = #{enabled}, modifyDate = NOW()
         WHERE userId = #{userId}
     </update>
+
+    <update id="updateMember">
+        UPDATE tbl_member
+        SET userEmail = #{userEmail}, userPhone = #{userPhone}, userAddress = #{userAddress}, userBirth = #{userBirth}
+        WHERE userId = #{userId}
+    </update>
+
+    <delete id="deleteMember">
+        DELETE FROM tbl_member
+        WHERE userId = #{userId}
+    </delete>
 </mapper>
