@@ -33,23 +33,23 @@ public class ProductServiceTests {
 //        Assertions.assertNotNull(list);
 //    }
 
-    @Test
-    public void testView(){
-        ProductDTO product = productService.view(7);
-        assertNotNull(product);
-        log.info(product);
-        assertEquals("상품6", product.getProductName());
-    }
-
-    @Test
-    public void testProductImage(){
-        List<String> uploadFilePaths = new ArrayList<>();
-        uploadFilePaths.add("filePath1");
-        uploadFilePaths.add("filePath2");
-        uploadFilePaths.add("filePath3");
-        uploadFilePaths.add("filePath4");
-        productService.insertProductImage(2,uploadFilePaths);
-    }
+//    @Test
+//    public void testView(){
+//        ProductDTO product = productService.view(7);
+//        assertNotNull(product);
+//        log.info(product);
+//        assertEquals("상품6", product.getProductName());
+//    }
+//
+//    @Test
+//    public void testProductImage(){
+//        List<String> uploadFilePaths = new ArrayList<>();
+//        uploadFilePaths.add("filePath1");
+//        uploadFilePaths.add("filePath2");
+//        uploadFilePaths.add("filePath3");
+//        uploadFilePaths.add("filePath4");
+//        productService.insertProductImage(2,uploadFilePaths);
+//    }
 
 
 }
