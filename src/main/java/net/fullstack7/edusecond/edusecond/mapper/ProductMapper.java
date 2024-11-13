@@ -26,5 +26,7 @@ public interface ProductMapper {
     ProductImageVO selectThumbnailImage(int productId);
 
     List<ProductVO> selectAllWishByUser(Map<String, Object> map);
+    int totalCountLikedProducts(Map<String, Object> map);
+
 
 }

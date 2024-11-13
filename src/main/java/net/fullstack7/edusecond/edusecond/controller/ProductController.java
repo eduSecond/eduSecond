@@ -2,6 +2,7 @@ package net.fullstack7.edusecond.edusecond.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.fullstack7.edusecond.edusecond.dto.member.MemberLoginDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductRegistDTO;
 import net.fullstack7.edusecond.edusecond.service.Like.LikeServiceIf;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import net.fullstack7.edusecond.edusecond.util.JSFunc;
+import org.springframework.web.context.request.SessionScope;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -81,9 +83,10 @@ public class ProductController {
 
     @GetMapping("/view")
     public String view(Model model,
-                      //@RequestParam String userId,
+                      HttpSession session,
                       @RequestParam int productId,
                       HttpServletResponse response) {
+        MemberLoginDTO userDto = (MemberLoginDTO) session.getAttribute("memberInfo");
         try {
             if (productId <= 0) {
                 JSFunc.alertBack("유효하지 않은 상품 ID입니다.", response);
@@ -96,7 +99,7 @@ public class ProductController {
                 return null;
             }
 
-            boolean isLiked = likeService.checkExists("user1", productId);
+            boolean isLiked = likeService.checkExists(userDto.getUserId(), productId);
             log.info("isLike: " + isLiked);
             model.addAttribute("isLiked", isLiked);
 

@@ -10,6 +10,8 @@ import net.fullstack7.edusecond.edusecond.dto.product.ProductRegistDTO;
 import net.fullstack7.edusecond.edusecond.mapper.ProductMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +77,17 @@ public class ProductServiceImpl implements ProductServiceIf {
     }
 
     @Override
+    public int totalCountLikedProducts(String searchCategory, String searchValue, String userId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("searchCategory", searchCategory);
+        map.put("searchValue", searchValue);
+        map.put("userId", userId);
+        return productMapper.totalCountLikedProducts(map);
+    }
+
+
+
+    @Override
     public List<ProductImageDTO> getProductImages(int productId) {
         List<ProductImageVO> voList = productMapper.selectProductImages(productId);
         return voList.stream()
@@ -119,6 +132,12 @@ public class ProductServiceImpl implements ProductServiceIf {
             productMapper.insertProductImage(productImage);
         }
     }
+
+    @Override
+    public int reductionAfterPayment(int productId) {
+        return 0;
+    }
+
     @Override
     public List<ProductDTO> selectAllWishByUser(int pageNo, int pageSize, int pageNavSize, String searchType, String searchValue, String userId) {
         Map<String, Object> params = new HashMap<>();

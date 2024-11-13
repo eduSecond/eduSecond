@@ -93,7 +93,7 @@
         </ul>
     </div>
     <div class="content col-10">
-        <h2>찜</h2>
+        <h2>판매중 상품</h2>
         <form class="d-flex" role="search" action="/es/mypage/wishList" method="GET">
             <select name="searchType" class="form-select" style="width: 120px;">
                 <option value="productName" ${searchType == 'productName' ? 'selected' : ''}>상품명</option>

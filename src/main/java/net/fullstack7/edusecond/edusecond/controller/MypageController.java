@@ -3,10 +3,12 @@ package net.fullstack7.edusecond.edusecond.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberDTO;
+import net.fullstack7.edusecond.edusecond.dto.member.MemberLoginDTO;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberModifyDTO;
 import net.fullstack7.edusecond.edusecond.dto.member.MypageDTO;
 import net.fullstack7.edusecond.edusecond.mapper.MemberMapper;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
+import net.fullstack7.edusecond.edusecond.service.Like.LikeServiceIf;
 import net.fullstack7.edusecond.edusecond.service.member.MemberServiceIf;
 import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
 import net.fullstack7.edusecond.edusecond.util.JSFunc;
@@ -30,7 +32,6 @@ public class MypageController {
     private final MemberServiceIf memberService;
     private final MemberMapper memberMapper;
     private final ProductServiceIf productService;
-
     @GetMapping("/myInfo")
     public String myInfo(HttpSession session, Model model) {
         String userId = (String) session.getAttribute("userId");
@@ -98,16 +99,19 @@ public class MypageController {
 
     @GetMapping("/wishList")
     public String viewWishList(Model model,
+                               HttpSession session,
                                @RequestParam(defaultValue = "1") int pageNo,
                                @RequestParam(required = false) String searchType,
                                @RequestParam(required = false) String searchValue,
                                HttpServletResponse response){
+        MemberLoginDTO loginDto = (MemberLoginDTO) session.getAttribute("memberInfo");
         try{
             if(!validateListParameters(pageNo, searchType, searchValue, response)){
                 return null;
             }
-            List<ProductDTO> pList = productService.selectAllWishByUser(pageNo, 10, 6, searchType, searchValue, "user1");
-            int totalCount = productService.totalCount(searchType, searchValue);
+            List<ProductDTO> pList = productService.selectAllWishByUser(pageNo, 10, 6, searchType, searchValue, loginDto.getUserId());
+            int totalCount = productService.totalCountLikedProducts(searchType, searchValue, loginDto.getUserId());
+            log.info("totalCount: " + totalCount);
             Paging paging = new Paging(pageNo, 10, 6, totalCount);
             model.addAttribute("pList", pList);
             model.addAttribute("paging", paging);
@@ -120,9 +124,4 @@ public class MypageController {
             return null;
         }
     }
-
-
-
-
-
 }

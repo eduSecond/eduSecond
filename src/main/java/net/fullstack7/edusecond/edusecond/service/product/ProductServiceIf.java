@@ -12,6 +12,8 @@ public interface ProductServiceIf {
 
     public ProductDTO view(Integer productId);
     public int totalCount(String searchCategory, String searchValue);
+
+    public int totalCountLikedProducts(String searchCategory, String searchValue, String userId);
     List<ProductImageDTO> getProductImages(int productId);
     ProductImageDTO getThumbnailImage(int productId);
     int insertProduct(ProductRegistDTO productRegistDTO);

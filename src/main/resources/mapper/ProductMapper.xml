@@ -10,9 +10,6 @@
       <if test="searchCategory != null and !searchCategory.trim().isEmpty() and searchValue != null and !searchValue.trim().isEmpty()">
         ${searchCategory} LIKE CONCAT('%', #{searchValue}, '%')
       </if>
-    <if test="userId != null">
-        AND userId = #{userId}
-    </if>
     </where>
   </select>
   <select id="selectAllProducts" parameterType="map" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductVO">
@@ -63,7 +60,6 @@
     LEFT JOIN tbl_member m ON p.sellerId = m.userId
     WHERE p.productId = #{productId}
   </select>
-
   <insert id="insertProduct" >
     INSERT INTO tbl_product (sellerId, productName, productDesc, price, quantity, quality)
     VALUES (#{sellerId}, #{productName}, #{productDesc}, #{price}, #{quantity}, #{quality});
@@ -143,5 +139,18 @@
         ORDER BY p.productId DESC
 
         LIMIT #{offset}, #{limit}
+    </select>
+    <select id="totalCountLikedProducts" parameterType="map" resultType="int">
+        SELECT COUNT(w.wishId) AS total_count
+        FROM tbl_wishlist w
+        LEFT JOIN tbl_product p ON w.productId = p.productId
+        <where>
+            <if test="userId != null">
+                w.userId = #{userId}
+            </if>
+            <if test="searchCategory != null and !searchCategory.trim().isEmpty() and searchValue != null and !searchValue.trim().isEmpty()">
+                AND p.${searchCategory} LIKE CONCAT('%', #{searchValue}, '%')
+            </if>
+        </where>
     </select>
 </mapper>
