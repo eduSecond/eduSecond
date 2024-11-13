@@ -84,4 +84,8 @@
         DELETE FROM tbl_member
         WHERE userId = #{userId}
     </delete>
+
+    <select id="myProductCount" resultType="net.fullstack7.edusecond.edusecond.dto.member.MypageDTO">
+        SELECT
+    </select>
 </mapper>

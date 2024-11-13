@@ -25,7 +25,6 @@ public class MypageController {
     public String myInfo(HttpSession session, Model model) {
         // session.getAttribute("userId");          --아직 로그인 세션 작업 안함.
         MemberDTO memberDTO = memberService.getMember("user1");
-        log.info(memberDTO.getUserId());
         model.addAttribute("member", memberDTO);
         return "mypage/myInfo";
     }
@@ -44,10 +43,6 @@ public class MypageController {
                            RedirectAttributes redirectAttributes) {
 
         // String userId = (String) session.getAttribute("userId");
-        log.info(memberModifyDTO.getUserBirth());
-        log.info(memberModifyDTO.getUserAddress());
-        log.info(memberModifyDTO.getUserId());
-        log.info(memberModifyDTO.getUserPhone());
         memberModifyDTO.setUserId("user1");  //예시임. 바꿔줘야 함
         int result = memberService.modifyMember(memberModifyDTO);
         if(result > 0){
@@ -61,14 +56,13 @@ public class MypageController {
     @GetMapping("/delete")
     public String delete(HttpSession session) {
         // String userId = (String) session.getAttribute("userId");
-        boolean result = memberService.deleteMember("user1");
+        boolean result = memberService.deleteMember("user2");
         if(result){
             return "redirect:/main/goMain";
         } else{
             log.info("탈퇴실패");
             return "redirect:/es/mypage/myInfo";
         }
-
     }
 
 
