@@ -2,18 +2,19 @@ package net.fullstack7.edusecond.edusecond.service.product;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
-import net.fullstack7.edusecond.edusecond.mapper.ProductMapper;
+import net.fullstack7.edusecond.edusecond.domain.product.ProductImageVO;
 import net.fullstack7.edusecond.edusecond.domain.product.ProductVO;
+import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
+import net.fullstack7.edusecond.edusecond.dto.product.ProductImageDTO;
+import net.fullstack7.edusecond.edusecond.dto.product.ProductRegistDTO;
+import net.fullstack7.edusecond.edusecond.mapper.ProductMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import net.fullstack7.edusecond.edusecond.util.Paging;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import net.fullstack7.edusecond.edusecond.dto.product.ProductImageDTO;
-import net.fullstack7.edusecond.edusecond.domain.product.ProductImageVO;
+
 
 @Service
 @RequiredArgsConstructor
@@ -50,18 +51,18 @@ public class ProductServiceImpl implements ProductServiceIf {
         if (vo == null) {
             return null;
         }
-        
+
         ProductDTO dto = modelMapper.map(vo, ProductDTO.class);
-        
+
         // 썸네일 이미지 설정
         ProductImageVO thumbnailVO = productMapper.selectThumbnailImage(productId);
         if (thumbnailVO != null) {
             dto.setThumbnail(modelMapper.map(thumbnailVO, ProductImageDTO.class));
         }
-        
+
         // 조회수 증가
         productMapper.updateViewCount(productId);
-        
+
         return dto;
     }
 
@@ -86,4 +87,40 @@ public class ProductServiceImpl implements ProductServiceIf {
         ProductImageVO vo = productMapper.selectThumbnailImage(productId);
         return vo != null ? modelMapper.map(vo, ProductImageDTO.class) : null;
     }
+
+    @Override
+    public int insertProduct(ProductRegistDTO productRegistDTO) {
+        return productMapper.insertProduct(modelMapper.map(productRegistDTO, ProductVO.class));
+    }
+
+    @Override
+    public int getLastProductId(){
+        return productMapper.getLastProductId();
+    }
+
+    @Override
+    public void insertProductImage(int productId, List<String> uploadFilePaths) {
+        if (uploadFilePaths == null || uploadFilePaths.isEmpty()) {
+            return;
+        }
+
+        ProductImageVO mainImage = ProductImageVO.builder()
+                .productId(productId)
+                .imagePath(uploadFilePaths.get(0))
+                .build();
+        productMapper.insertProductImageMain(mainImage);
+
+
+        for (int i = 1; i < uploadFilePaths.size(); i++) {
+            ProductImageVO productImage = ProductImageVO.builder()
+                    .productId(productId)
+                    .imagePath(uploadFilePaths.get(i))
+                    .build();
+            productMapper.insertProductImage(productImage);
+        }
+    }
+
+
+
+
 }

@@ -2,24 +2,20 @@ package net.fullstack7.edusecond.edusecond.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import javax.servlet.http.HttpSession;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 import net.fullstack7.edusecond.edusecond.dto.AdminLoginDTO;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberDTO;
+import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
+import net.fullstack7.edusecond.edusecond.dto.product.ProductImageDTO;
 import net.fullstack7.edusecond.edusecond.service.admin.AdminServiceIf;
 import net.fullstack7.edusecond.edusecond.service.member.MemberServiceIf;
 import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
 import net.fullstack7.edusecond.edusecond.util.Paging;
+
 import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductImageDTO;
 import net.fullstack7.edusecond.edusecond.service.notice.NoticeServiceIf;
 import net.fullstack7.edusecond.edusecond.dto.notice.NoticeDTO;
+
 
 @Controller
 @RequestMapping("/admin")
@@ -53,14 +49,14 @@ public class AdminController {
         session.invalidate();
         return "redirect:/admin/login";
     }
-    
+
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
         model.addAttribute("productCount", productService.totalCount(null, null));
         model.addAttribute("memberCount", memberService.getTotalCount(null, null));
         return "admin/dashboard";
     }
-    
+
     @GetMapping("/member/list")
     public String memberList(@RequestParam(defaultValue = "1") int pageNo,
                            @RequestParam(required = false) String searchType,
@@ -68,17 +64,17 @@ public class AdminController {
                            Model model) {
         int totalCount = memberService.getTotalCount(searchType, searchValue);
         Paging paging = new Paging(pageNo, 10, 5, totalCount);
-        
+
         List<MemberDTO> members = memberService.getList(pageNo, 10, searchType, searchValue);
-        
+
         model.addAttribute("members", members);
         model.addAttribute("paging", paging);
         model.addAttribute("searchType", searchType);
         model.addAttribute("searchValue", searchValue);
-        
+
         return "admin/member/list";
     }
-    
+
     @GetMapping("/member/status")
     public String updateMemberStatus(
             @RequestParam String userId,
@@ -92,7 +88,7 @@ public class AdminController {
         }
         return "redirect:/admin/member/list";
     }
-    
+
     @GetMapping("/member/delete")
     public String deleteMember(@RequestParam String userId,
                              RedirectAttributes rttr) {
@@ -103,7 +99,7 @@ public class AdminController {
         }
         return "redirect:/admin/member/list";
     }
-    
+
     @GetMapping("/product/list")
     public String productList(
             @RequestParam(defaultValue = "1") int pageNo,
@@ -115,19 +111,19 @@ public class AdminController {
             List<ProductDTO> products = productService.list(pageNo, pageSize, 5, searchType, searchValue);
             int totalCount = productService.totalCount(searchType, searchValue);
             Paging paging = new Paging(pageNo, pageSize, 5, totalCount);
-            
+
             model.addAttribute("products", products);
             model.addAttribute("paging", paging);
             model.addAttribute("searchType", searchType);
             model.addAttribute("searchValue", searchValue);
-            
+
             return "admin/product/list";
         } catch (Exception e) {
             log.error("상품 목록 조회 중 오류 발생: ", e);
             return "redirect:/admin/dashboard";
         }
     }
-    
+
     @GetMapping("/product/view")
     public String productView(@RequestParam int productId, Model model) {
         try {
@@ -135,10 +131,10 @@ public class AdminController {
             if (product == null) {
                 return "redirect:/admin/product/list";
             }
-            
+
             List<ProductImageDTO> images = productService.getProductImages(productId);
             product.setImages(images);
-            
+
             model.addAttribute("product", product);
             return "admin/product/view";
         } catch (Exception e) {

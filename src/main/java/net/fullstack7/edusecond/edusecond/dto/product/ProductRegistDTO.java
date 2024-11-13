@@ -40,4 +40,5 @@ public class ProductRegistDTO {
     private String quality;
 
     private List<String> imagePaths;  // 상품 이미지 경로들
+    private int productId; // 상품 이미지 넣을 때 필요함
 }
