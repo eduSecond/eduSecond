@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <title>Title</title>
@@ -82,9 +83,14 @@
     </nav>
     <div class="auth-links">
       <!--로그인 전-->
-      <a href="/login/login">로그인</a> | <a href="/login/agreeregist">회원가입</a>
+      <c:if test="${empty sessionScope.userId}" var="logout" >
+        <a href="/login/login">로그인</a> | <a href="/login/agreeregist">회원가입</a>
+      </c:if>
+
       <!--로그인 시-->
-      <a href="#">마이페이지</a>| <a href="#">로그아웃</a>
+      <c:if test="${not empty sessionScope.userId}" var="login" >
+        <a href="#">마이페이지</a>| <a href="/main/logout">로그아웃</a>
+      </c:if>
     </div>
   </div>
 </header>
