@@ -73,7 +73,7 @@
     </div>
     <nav>
       <ul>
-        <li><a href="/footer/intro.jsp">회사소개</a></li>
+        <li><a href="/footer/intro">회사소개</a></li>
         <li><a href="#">상품</a></li>
         <li><a href="#">내상품</a></li>
         <li><a href="#">셀파톡</a></li>

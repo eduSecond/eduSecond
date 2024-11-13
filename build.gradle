@@ -1,7 +1,6 @@
 plugins {
     id 'java'
     id 'war'
-    id 'org.jetbrains.kotlin.jvm'
 }
 
 group 'net.fullstack7.eduSecond'
@@ -80,13 +79,17 @@ dependencies {
     implementation group: 'org.hibernate.validator', name: 'hibernate-validator', version: '6.2.5.Final'
     // mysql-connector-java
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.33'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    // https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload
+    implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
 
 }
 
 test {
     useJUnitPlatform()
 }
-kotlin {
-    jvmToolchain(8)
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }

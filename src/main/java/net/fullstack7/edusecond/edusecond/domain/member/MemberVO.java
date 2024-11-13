@@ -1,4 +1,4 @@
-package net.fullstack7.edusecond.edusecond.domain;
+package net.fullstack7.edusecond.edusecond.domain.member;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,8 +23,4 @@ public class MemberVO {
     private LocalDateTime regDate;
     private LocalDateTime modifyDate;
     private String enabled;
-    
-    public boolean isEnabled() {
-        return "Y".equals(enabled);
-    }
 }
