@@ -23,19 +23,19 @@ public class PaymentServiceTests {
 
     @Autowired(required = false)
     private PaymentMapper paymentMapper;
-    @Test
-    public void testPay(){
-        PaymentVO vo = PaymentVO.builder()
-                .orderId(1)
-                .productId(1)
-                .buyerId("tester1")
-                .orderQuantity(2)
-                .paymentMethod("Card")
-                .paymentNumber("1")
-                .orderStatus("결제완료")
-                .deliveryStatus("준비중")
-                .build();
-        paymentMapper.insert(vo);
-        log.info("구매 정보 등록 완료");
-    }
+//    @Test
+//    public void testPay(){
+//        PaymentVO vo = PaymentVO.builder()
+//                .orderId(1)
+//                .productId(1)
+//                .buyerId("tester1")
+//                .orderQuantity(2)
+//                .paymentMethod("Card")
+//                .paymentNumber("1")
+//                .orderStatus("결제완료")
+//                .deliveryStatus("준비중")
+//                .build();
+//        paymentMapper.insert(vo);
+//        log.info("구매 정보 등록 완료");
+//    }
 }

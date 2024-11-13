@@ -13,7 +13,8 @@
             <li><a href="/product/regist">등록</a> </li>
             <li><a href="/bbs/modfiy.do">수정</a> </li>
             <li><a href="/admin/login">회원관리</a> </li>
-            <li><a href="/main/goMain">main</a></li>
+            <li><a href="/main/main">main</a></li>
+            <li><a href="/message/chatting" target="_blank">채팅</a></li>
         </ul>
     </li>
 </ul>

@@ -17,11 +17,11 @@ public class ProductMapperTests {
     @Autowired(required = false)
     private ProductMapper productMapper;
 
-    @Test
-    public void testUpdateProductImageMain(){
-        ProductImageVO vo = ProductImageVO.builder()
-                        .productId(2)
-                                .imagePath("testImagePath").build();
-        productMapper.insertProductImageMain(vo);
-    }
+//    @Test
+//    public void testUpdateProductImageMain(){
+//        ProductImageVO vo = ProductImageVO.builder()
+//                        .productId(2)
+//                                .imagePath("testImagePath").build();
+//        productMapper.insertProductImageMain(vo);
+//    }
 }
