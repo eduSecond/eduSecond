@@ -1,6 +1,7 @@
 package net.fullstack7.edusecond.edusecond.service.member;
 
 import net.fullstack7.edusecond.edusecond.dto.member.MemberDTO;
+import net.fullstack7.edusecond.edusecond.dto.member.MemberModifyDTO;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberRegistDTO;
 import java.util.List;
 
@@ -12,4 +13,5 @@ public interface MemberServiceIf {
   List<MemberDTO> getList(int pageNo, int pageSize, String searchType, String searchValue);
   boolean updateEnabled(String userId, boolean enabled);
   boolean deleteMember(String userId);
+  int modifyMember(MemberModifyDTO memberModifyDTO);
 }

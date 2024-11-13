@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.fullstack7.edusecond.edusecond.domain.member.MemberVO;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberDTO;
+import net.fullstack7.edusecond.edusecond.dto.member.MemberModifyDTO;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberRegistDTO;
 import net.fullstack7.edusecond.edusecond.mapper.MemberMapper;
 import org.modelmapper.ModelMapper;
@@ -72,5 +73,11 @@ public class MemberServiceImpl implements MemberServiceIf {
     @Override
     public boolean deleteMember(String userId) {
         return memberMapper.deleteMember(userId) > 0;
+    }
+
+    @Override
+    public int modifyMember(MemberModifyDTO memberModifyDTO) {
+        MemberVO vo = modelMapper.map(memberModifyDTO, MemberVO.class);
+        return memberMapper.updateMember(vo);
     }
 }

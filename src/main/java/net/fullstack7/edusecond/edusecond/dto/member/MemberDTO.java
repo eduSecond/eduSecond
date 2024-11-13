@@ -3,11 +3,8 @@ package net.fullstack7.edusecond.edusecond.dto.member;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import lombok.*;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
 
 
@@ -16,6 +13,7 @@ import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class MemberDTO {
     private String userId;
     private String userName;
