@@ -14,10 +14,6 @@
 <body>
 <form action="/product/registOk" method="post" enctype="multipart/form-data">
     <div class="form-group">
-        <label for="sellerId">아이디</label>
-        <input type="text" class="form-control" id="sellerId" name="sellerId">
-    </div>
-    <div class="form-group">
         <label for="productName">상품 이름</label>
         <input type="text" class="form-control" id="productName" name="productName">
     </div>

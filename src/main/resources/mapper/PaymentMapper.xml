@@ -4,12 +4,13 @@
 <mapper namespace="net.fullstack7.edusecond.edusecond.mapper.PaymentMapper">
     <insert id="insert">
         INSERT INTO tbl_order(
-            productId, buyerId, orderQuantity, paymentMethod, paymentCompany,
-            paymentNumber, orderStatus, deliveryStatus
+            productId, unitPrice, totalPrice, buyerId, orderQuantity, recipientName, recipientPhone, recipientEmail, shippingAddress, shippingPostcode,
+            paymentMethod, paymentCompany, paymentNumber, deliveryStatus
         )
         VALUES (
-            #{productId}, #{buyerId}, #{orderQuantity}, #{paymentMethod}, #{paymentCompany},
-            #{paymentNumber}, #{orderStatus}, #{deliveryStatus}
-               )
+           #{productId}, #{unitPrice}, #{totalPrice}, #{buyerId}, #{orderQuantity}, #{recipientName}, #{recipientPhone}, #{recipientEmail}, #{shippingAddress}, #{shippingPostcode},
+           #{paymentMethod}, #{paymentCompany}, #{paymentNumber}, #{deliveryStatus}
+           );
+
     </insert>
 </mapper>

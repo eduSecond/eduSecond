@@ -1,5 +1,7 @@
 package net.fullstack7.edusecond.edusecond.mapper;
 
+import net.fullstack7.edusecond.edusecond.dto.member.MemberDTO;
+import net.fullstack7.edusecond.edusecond.dto.member.MypageDTO;
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
@@ -18,5 +20,5 @@ public interface MemberMapper {
     List<MemberVO> selectList(Map<String, Object> params);
     int updateEnabled(@Param("userId") String userId,
                      @Param("enabled") String enabled);
-
+    MypageDTO myProductCount(String userId);
 } 

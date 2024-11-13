@@ -15,4 +15,8 @@ public class MessageController {
   public String chat() {
     return "message/chatting";
   }
+  @GetMapping("/messageList")
+  public String messageList() {
+    return "message/messageList";
+  }
 }

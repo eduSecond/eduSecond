@@ -15,6 +15,7 @@
             <li><a href="/admin/login">회원관리</a> </li>
             <li><a href="/main/main">main</a></li>
             <li><a href="/message/chatting" target="_blank">채팅</a></li>
+            <li><a href="/message/messageList">메시지 리스트</a></li>
         </ul>
     </li>
 </ul>

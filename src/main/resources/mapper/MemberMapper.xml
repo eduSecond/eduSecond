@@ -90,4 +90,16 @@
         DELETE FROM tbl_member
         WHERE userId = #{userId}
     </delete>
+
+    <select id="myProductCount" resultType="net.fullstack7.edusecond.edusecond.dto.member.MypageDTO">
+        SELECT
+            (SELECT COUNT(*) FROM tbl_product WHERE sellerId = #{userId} AND tbl_product.productStatus = 'AVAILABLE') AS productAvailableCount,
+            (SELECT COUNT(*) FROM tbl_product WHERE sellerId = #{userId} AND tbl_product.productStatus = 'RESERVED') AS productReservedCount,
+            (SELECT COUNT(*) FROM tbl_product WHERE sellerId = #{userId} AND tbl_product.productStatus = 'SOLD') AS productSoldCount,
+            (SELECT  COUNT(r.reviewId) FROM tbl_product AS p
+                LEFT OUTER JOIN  tbl_order AS o ON p.productId = o.productId
+                LEFT OUTER join tbl_review AS r ON o.orderId = r.orderId
+             WHERE p.sellerId = #{userId}) AS reviewCount,
+            (SELECT COUNT(*) FROM tbl_wishlist WHERE userId = #{userId}) AS wishListCount
+    </select>
 </mapper>
