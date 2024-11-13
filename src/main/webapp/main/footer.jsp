@@ -84,9 +84,9 @@
 <footer class="footer">
     <div class="footer-top">
         <nav class="footer-nav">
-            <a href="/footer/intro.jsp">회사소개</a>
-            <a href="/footer/memberterms.jsp">회원약관</a>
-            <a href="/footer/personalinfo.jsp">개인정보 처리방침</a>
+            <a href="/footer/intro">회사소개</a>
+            <a href="/footer/memberterms">회원약관</a>
+            <a href="/footer/personalinfo">개인정보 처리방침</a>
             <a href="#">이메일 수집거부</a>
             <a href="#">고객 센터</a>
         </nav>

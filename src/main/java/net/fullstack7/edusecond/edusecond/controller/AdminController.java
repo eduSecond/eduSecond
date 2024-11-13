@@ -2,22 +2,26 @@ package net.fullstack7.edusecond.edusecond.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import javax.servlet.http.HttpSession;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 import net.fullstack7.edusecond.edusecond.dto.AdminLoginDTO;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberDTO;
+import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
+import net.fullstack7.edusecond.edusecond.dto.product.ProductImageDTO;
 import net.fullstack7.edusecond.edusecond.service.admin.AdminServiceIf;
 import net.fullstack7.edusecond.edusecond.service.member.MemberServiceIf;
 import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
 import net.fullstack7.edusecond.edusecond.util.Paging;
-import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
-import net.fullstack7.edusecond.edusecond.dto.product.ProductImageDTO;
+import net.fullstack7.edusecond.edusecond.service.notice.NoticeServiceIf;
+import net.fullstack7.edusecond.edusecond.dto.notice.NoticeDTO;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import javax.servlet.http.HttpSession;
+import java.util.List;
+
 
 @Controller
 @RequestMapping("/admin")
@@ -27,6 +31,7 @@ public class AdminController {
     private final AdminServiceIf adminService;
     private final ProductServiceIf productService;
     private final MemberServiceIf memberService;
+    private final NoticeServiceIf noticeService;
     
     @GetMapping("/login")
     public String loginPage() {
@@ -35,7 +40,7 @@ public class AdminController {
     
     @PostMapping("/login")
     public String loginProcess(AdminLoginDTO loginDTO, 
-                             HttpSession session, 
+                             HttpSession session,
                              Model model) {
         if(adminService.loginAdmin(loginDTO)) {
             session.setAttribute("adminId", loginDTO.getAdminId());
@@ -50,14 +55,14 @@ public class AdminController {
         session.invalidate();
         return "redirect:/admin/login";
     }
-    
+
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
         model.addAttribute("productCount", productService.totalCount(null, null));
         model.addAttribute("memberCount", memberService.getTotalCount(null, null));
         return "admin/dashboard";
     }
-    
+
     @GetMapping("/member/list")
     public String memberList(@RequestParam(defaultValue = "1") int pageNo,
                            @RequestParam(required = false) String searchType,
@@ -65,21 +70,23 @@ public class AdminController {
                            Model model) {
         int totalCount = memberService.getTotalCount(searchType, searchValue);
         Paging paging = new Paging(pageNo, 10, 5, totalCount);
-        
+
         List<MemberDTO> members = memberService.getList(pageNo, 10, searchType, searchValue);
-        
+
         model.addAttribute("members", members);
         model.addAttribute("paging", paging);
         model.addAttribute("searchType", searchType);
         model.addAttribute("searchValue", searchValue);
-        
+
         return "admin/member/list";
     }
-    
+
     @GetMapping("/member/status")
-    public String updateMemberStatus(@RequestParam String userId,
-                                   @RequestParam boolean enabled,
-                                   RedirectAttributes rttr) {
+    public String updateMemberStatus(
+            @RequestParam String userId,
+            @RequestParam boolean enabled,
+            RedirectAttributes rttr) {
+        
         if(memberService.updateEnabled(userId, enabled)) {
             rttr.addFlashAttribute("message", "회원 상태가 변경되었습니다.");
         } else {
@@ -87,7 +94,7 @@ public class AdminController {
         }
         return "redirect:/admin/member/list";
     }
-    
+
     @GetMapping("/member/delete")
     public String deleteMember(@RequestParam String userId,
                              RedirectAttributes rttr) {
@@ -98,7 +105,7 @@ public class AdminController {
         }
         return "redirect:/admin/member/list";
     }
-    
+
     @GetMapping("/product/list")
     public String productList(
             @RequestParam(defaultValue = "1") int pageNo,
@@ -110,19 +117,19 @@ public class AdminController {
             List<ProductDTO> products = productService.list(pageNo, pageSize, 5, searchType, searchValue);
             int totalCount = productService.totalCount(searchType, searchValue);
             Paging paging = new Paging(pageNo, pageSize, 5, totalCount);
-            
+
             model.addAttribute("products", products);
             model.addAttribute("paging", paging);
             model.addAttribute("searchType", searchType);
             model.addAttribute("searchValue", searchValue);
-            
+
             return "admin/product/list";
         } catch (Exception e) {
             log.error("상품 목록 조회 중 오류 발생: ", e);
             return "redirect:/admin/dashboard";
         }
     }
-    
+
     @GetMapping("/product/view")
     public String productView(@RequestParam int productId, Model model) {
         try {
@@ -130,15 +137,112 @@ public class AdminController {
             if (product == null) {
                 return "redirect:/admin/product/list";
             }
-            
+
             List<ProductImageDTO> images = productService.getProductImages(productId);
             product.setImages(images);
-            
+
             model.addAttribute("product", product);
             return "admin/product/view";
         } catch (Exception e) {
             log.error("상품 상세 조회 중 오류 발생: ", e);
             return "redirect:/admin/product/list";
         }
+    }
+    
+    @GetMapping("/notice/list")
+    public String noticeList(
+            @RequestParam(defaultValue = "1") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(required = false) String searchType,
+            @RequestParam(required = false) String searchValue,
+            Model model) {
+        try {
+            List<NoticeDTO> notices = noticeService.getList(pageNo, pageSize, searchType, searchValue);
+            int totalCount = noticeService.getTotalCount(searchType, searchValue);
+            Paging paging = new Paging(pageNo, pageSize, 5, totalCount);
+            
+            model.addAttribute("notices", notices);
+            model.addAttribute("paging", paging);
+            model.addAttribute("searchType", searchType);
+            model.addAttribute("searchValue", searchValue);
+            
+            return "admin/notice/list";
+        } catch (Exception e) {
+            log.error("공지사항 목록 조회 중 오류 발생: ", e);
+            return "redirect:/admin/dashboard";
+        }
+    }
+    
+    @GetMapping("/notice/view")
+    public String noticeView(@RequestParam int noticeId, Model model) {
+        try {
+            NoticeDTO notice = noticeService.getNotice(noticeId);
+            if (notice == null) {
+                return "redirect:/admin/notice/list";
+            }
+            model.addAttribute("notice", notice);
+            return "admin/notice/view";
+        } catch (Exception e) {
+            log.error("공지사항 상세 조회 중 오류 발생: ", e);
+            return "redirect:/admin/notice/list";
+        }
+    }
+    
+    @GetMapping("/notice/register")
+    public String noticeRegisterForm() {
+        return "admin/notice/register";
+    }
+    
+    @PostMapping("/notice/register")
+    public String noticeRegister(NoticeDTO notice, HttpSession session, RedirectAttributes rttr) {
+        try {
+            notice.setAdminId((String) session.getAttribute("adminId"));
+            if (noticeService.create(notice)) {
+                rttr.addFlashAttribute("message", "공지사항이 등록되었습니다.");
+                return "redirect:/admin/notice/list";
+            }
+            rttr.addFlashAttribute("error", "공지사항 등록에 실패했습니다.");
+            return "redirect:/admin/notice/register";
+        } catch (Exception e) {
+            log.error("공지사항 등록 중 오류 발생: ", e);
+            rttr.addFlashAttribute("error", "공지사항 등록 중 오류가 발생했습니다.");
+            return "redirect:/admin/notice/register";
+        }
+    }
+    
+    @GetMapping("/notice/modify")
+    public String noticeModifyForm(@RequestParam int noticeId, Model model) {
+        NoticeDTO notice = noticeService.getNotice(noticeId);
+        if (notice == null) {
+            return "redirect:/admin/notice/list";
+        }
+        model.addAttribute("notice", notice);
+        return "admin/notice/modify";
+    }
+    
+    @PostMapping("/notice/modify")
+    public String noticeModify(NoticeDTO notice, RedirectAttributes rttr) {
+        try {
+            if (noticeService.update(notice)) {
+                rttr.addFlashAttribute("message", "공지사항이 수정되었습니다.");
+                return "redirect:/admin/notice/view?noticeId=" + notice.getNoticeId();
+            }
+            rttr.addFlashAttribute("error", "공지사항 수정에 실패했습니다.");
+            return "redirect:/admin/notice/modify?noticeId=" + notice.getNoticeId();
+        } catch (Exception e) {
+            log.error("공지사항 수정 중 오류 발생: ", e);
+            rttr.addFlashAttribute("error", "공지사항 수정 중 오류가 발생했습니다.");
+            return "redirect:/admin/notice/modify?noticeId=" + notice.getNoticeId();
+        }
+    }
+    
+    @GetMapping("/notice/delete")
+    public String noticeDelete(@RequestParam int noticeId, RedirectAttributes rttr) {
+        if (noticeService.delete(noticeId)) {
+            rttr.addFlashAttribute("message", "공지사항이 삭제되었습니다.");
+        } else {
+            rttr.addFlashAttribute("error", "공지사항 삭제에 실패했습니다.");
+        }
+        return "redirect:/admin/notice/list";
     }
 }
