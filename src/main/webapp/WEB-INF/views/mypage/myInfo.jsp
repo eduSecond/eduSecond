@@ -99,14 +99,17 @@
     <div class="d-flex justify-content-between" id="additional" >
       <div class="asdr">
         <h2>내가 등록한 상품</h2>
+        <p>판매중 : ${mypageDTO.productAvailableCount}</p>
+        <p>예약중 : ${mypageDTO.productReservedCount}</p>
+        <p>판매완료 : ${mypageDTO.productSoldCount}</p>
       </div>
       <div class="asdr">
         <h2>내가 찜한 상품</h2>
-        <p>d아앙ㄱ</p>
+        <p>${mypageDTO.wishListCount}</p>
       </div>
       <div class="asdr">
         <h2>내가 받은 리뷰</h2>
-        <p>d아앙ㄱ</p>
+        <p>${mypageDTO.reviewCount}</p>
       </div>
     </div>
     <h2>내 정보</h2>

@@ -3,6 +3,7 @@ package net.fullstack7.edusecond.edusecond.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import lombok.extern.log4j.Log4j2;
+import net.fullstack7.edusecond.edusecond.dto.payment.PaymentDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
 import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
 import net.fullstack7.edusecond.edusecond.util.JSFunc;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/es/payment")
@@ -26,6 +28,7 @@ public class PaymentController {
         try{
             if(productId <= 0){
                 JSFunc.alertBack("유효하지 않은 상품입니다", response);
+
                 return null;
             }
             ProductDTO dto =  productService.view(productId);
@@ -39,6 +42,13 @@ public class PaymentController {
             JSFunc.alertBack("상품 정보를 불러오는 중 오류가 발생했습니다.", response);
             return null;
         }
+    }
+
+    @PostMapping("/pay")
+    public String pay(HttpSession session, PaymentDTO paymentDTO, HttpServletResponse response){
+        String userId = (String) session.getAttribute("sessionId");
+
+        return "/es/mypage/orderList";
     }
 
 

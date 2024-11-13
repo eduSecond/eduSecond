@@ -137,10 +137,6 @@
             <label for="email" class="form-label">결제회사</label> <!-- 신용카드 체크하면 보여주는게 좋을 듯 -->
             <input type="text" class="form-control" id="paymentCompany">
         </div>
-        <div class="mb-3">
-            <label for="email" class="form-label">결제번호</label>
-            <input type="text" class="form-control" id="paymentNumber">
-        </div>
     </div>
 </div>
 <%@include file="/main/footer.jsp"%>

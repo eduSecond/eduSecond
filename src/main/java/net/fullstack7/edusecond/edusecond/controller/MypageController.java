@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberDTO;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberModifyDTO;
+import net.fullstack7.edusecond.edusecond.dto.member.MypageDTO;
+import net.fullstack7.edusecond.edusecond.mapper.MemberMapper;
 import net.fullstack7.edusecond.edusecond.service.member.MemberServiceIf;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,11 +22,15 @@ import javax.validation.Valid;
 @Log4j2
 public class MypageController {
     private final MemberServiceIf memberService;
+    private final MemberMapper memberMapper;
 
     @GetMapping("/myInfo")
     public String myInfo(HttpSession session, Model model) {
         // session.getAttribute("userId");          --아직 로그인 세션 작업 안함.
+        MypageDTO mypageDTO = memberMapper.myProductCount("user10");
+        log.info(mypageDTO);
         MemberDTO memberDTO = memberService.getMember("user1");
+        model.addAttribute("mypageDTO", mypageDTO);
         model.addAttribute("member", memberDTO);
         return "mypage/myInfo";
     }
@@ -64,6 +70,7 @@ public class MypageController {
             return "redirect:/es/mypage/myInfo";
         }
     }
+
 
 
 }
