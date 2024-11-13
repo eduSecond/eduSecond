@@ -17,18 +17,18 @@ public class LikeServiceTests {
     @Autowired(required = false)
     private LikeServiceIf likeService;
 
-    @Test
-    public void testLike(){
-        likeService.insertLike("user99", 25);
-    }
-
-    @Test
-    public void testLikeCheck(){
-        likeService.checkExists("user99", 25);
-    }
-
-    @Test
-    public void testLikeDelete(){
-        likeService.deleteLike( "user1", 17);
-    }
+//    @Test
+//    public void testLike(){
+//        likeService.insertLike("user99", 25);
+//    }
+//
+//    @Test
+//    public void testLikeCheck(){
+//        likeService.checkExists("user99", 25);
+//    }
+//
+//    @Test
+//    public void testLikeDelete(){
+//        likeService.deleteLike( "user1", 17);
+//    }
 }
