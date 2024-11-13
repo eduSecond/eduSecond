@@ -6,12 +6,15 @@ import lombok.extern.log4j.Log4j2;
 import net.fullstack7.edusecond.edusecond.dto.product.LikeDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
 import net.fullstack7.edusecond.edusecond.service.Like.LikeServiceIf;
+import net.fullstack7.edusecond.edusecond.util.JSFunc;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+
 @Controller
-@RequestMapping("/like")
+@RequestMapping("/es/like")
 @Log4j2
 @RequiredArgsConstructor
 public class LikeController {
@@ -35,6 +38,8 @@ public class LikeController {
     public String deleteLike(Model model,
                              @RequestParam Integer productId,
                              @RequestParam String userId){
+        log.info("productId: " + productId);
+        log.info("userId: " + userId);
         try{
             likeService.deleteLike(userId, productId);
         }catch(Exception e){
@@ -42,8 +47,4 @@ public class LikeController {
         }
         return "redirect:/product/view?productId=" + productId;
     }
-
-
-
-
 }

@@ -112,7 +112,8 @@ public class MypageController {
             model.addAttribute("paging", paging);
             model.addAttribute("searchType", searchType);
             model.addAttribute("searchValue", searchValue);
-            return "/es/mypage/wishList";
+            log.info("pList.size()" + pList.size());
+            return "/mypage/wishList";
         }catch(Exception e){
             log.error("찜 목록 조회 중 오류 발생" + e.getMessage());
             return null;

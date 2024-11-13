@@ -121,11 +121,11 @@
     const userId = "user1" //우선 고정값
     if (heartImageRed) {
       // 현재 빨간 하트인 경우 (좋아요를 취소하는 경우)
-      window.location.href = "/like/delete?productId=" + productId + "&userId=" + userId;
+      window.location.href = "/es/like/delete?productId=" + productId + "&userId=" + userId;
       heartImageRed.src = "../../../resources/images/heart/heart.png";
     } else if (heartImage) {
       // 현재 빈 하트인 경우 (좋아요를 추가하는 경우)
-      window.location.href = "/like/insert?productId=" + productId + "&userId=" + userId;
+      window.location.href = "/es/like/insert?productId=" + productId + "&userId=" + userId;
       heartImage.src = "../../../resources/images/heart/heartRed.png";
     }
   }
