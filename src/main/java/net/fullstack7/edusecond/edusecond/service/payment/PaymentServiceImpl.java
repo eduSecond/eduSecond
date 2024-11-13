@@ -16,8 +16,9 @@ public class PaymentServiceImpl implements PaymentServiceIf{
     private final PaymentMapper paymentMapper;
     private final ModelMapper modelMapper;
     @Override
-    public void insert(PaymentDTO dto) {
+    public int insert(PaymentDTO dto) {
         PaymentVO vo = modelMapper.map(dto, PaymentVO.class);
-        paymentMapper.insert(vo);
+        int result = paymentMapper.insert(vo);
+        return result;
     }
 }

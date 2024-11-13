@@ -91,60 +91,62 @@
 <div class="mainpage">
     <div class="sidebar col-2">
         <ul>
-            <li>판매자명 : ${dto.sellerId}</li>
+            <li>판매자 아이디 : ${dto.sellerId}</li>
             <li>상품명 : ${dto.productName}</li>
             <li>가격 : ${dto.price} 원</li>
         </ul>
     </div>
+
     <div class="content col-7">
+        <form action="/es/payment/pay" method="post">
         <h2></h2>
         <br>
         <div class="mb-3">
             <label for="name" class="form-label">받는 사람</label>
-            <input type="text" class="form-control" id="name">
+            <input type="text" class="form-control" id="name" name="recipientName">
         </div>
         <div class="mb-3">
             <label for="tel" class="form-label">전화번호</label>
-            <input type="text" class="form-control" id="tel">
+            <input type="text" class="form-control" id="tel" name="recipientPhone">
         </div>
         <div class="mb-3">
             <label for="email" class="form-label">이메일</label>
-            <input type="email" class="form-control" id="email" placeholder="name@example.com">
+            <input type="email" class="form-control" id="email" placeholder="name@example.com" name="recipientEmail">
         </div>
         <div class="mb-3">
             <label for="email" class="form-label">주소</label>
-            <input type="text" class="form-control" id="addr">
+            <input type="text" class="form-control" id="addr" name="shippingAddress">
         </div>
         <div class="mb-3">
             <label for="email" class="form-label">우편번호</label>
-            <input type="text" class="form-control" id="zipcode">
+            <input type="text" class="form-control" id="zipcode" name="shippingPostcode">
         </div>
         <div class="mb-3">
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                <input class="form-check-input" type="radio" id="inlineCheckbox1" value="신용카드" name="paymentMethod">
                 <label class="form-check-label" for="inlineCheckbox1">신용카드</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+                <input class="form-check-input" type="radio" id="inlineCheckbox2" value="무통장입금" name="paymentMethod">
                 <label class="form-check-label" for="inlineCheckbox2">무통장입금</label>
             </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3" disabled>
-                <label class="form-check-label" for="inlineCheckbox3">간편결제</label>
-            </div>
         </div>
         <div class="mb-3">
-            <label for="email" class="form-label">결제회사</label> <!-- 신용카드 체크하면 보여주는게 좋을 듯 -->
-            <input type="text" class="form-control" id="paymentCompany">
+            <label for="paymentCompany" class="form-label">결제회사</label> <!-- 신용카드 체크하면 보여주는게 좋을 듯 -->
+            <input type="text" class="form-control" id="paymentCompany" name="paymentCompany">
         </div>
         <div class="mb-3">
-            <label for="email" class="form-label">결제번호</label>
-            <input type="text" class="form-control" id="paymentNumber">
+            <label for="orderQuantity" class="form-label">결제수량(최대 : ${dto.quantity})</label>
+            <input type="number" class="form-control" id="orderQuantity" name="orderQuantity" max="${dto.quantity}">
         </div>
+        <input type="hidden" value="${dto.price}" name="unitPrice">
+        <input type="hidden" value="${dto.productId}" name="productId">
+            <input type="hidden" value="${dto.quantity}" name="totalQuantity">
+            <button>결제하기</button>
+        </form>
     </div>
+
 </div>
 <%@include file="/main/footer.jsp"%>
 </body>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </html>

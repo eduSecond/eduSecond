@@ -14,4 +14,5 @@ public interface MemberServiceIf {
   boolean updateEnabled(String userId, boolean enabled);
   boolean deleteMember(String userId);
   int modifyMember(MemberModifyDTO memberModifyDTO);
+
 }
