@@ -109,7 +109,7 @@
                 <th scope="col">상품명</th>
                 <th scope="col">판매자</th>
                 <th scope="col">가격</th>
-                <th scope="col">항목 삭제</th>
+                <th scope="col">찜 취소</th>
             </tr>
             </thead>
             <tbody>

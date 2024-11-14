@@ -7,6 +7,7 @@ import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductRegistDTO;
 import net.fullstack7.edusecond.edusecond.service.Like.LikeServiceIf;
 import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
+import net.fullstack7.edusecond.edusecond.util.CommonDateUtil;
 import net.fullstack7.edusecond.edusecond.util.CommonFileUtil;
 import net.fullstack7.edusecond.edusecond.util.Paging;
 import org.springframework.stereotype.Controller;
@@ -47,9 +48,13 @@ public class ProductController {
                 return null;
             }
 
-            List<ProductDTO> pList = productService.list(pageNo, 10, 6, searchType, searchValue);
+            List<ProductDTO> pList = productService.list(pageNo, 10, 5, searchType, searchValue);
+            for (ProductDTO dto : pList) {
+                String formatDate = CommonDateUtil.localDateTimeToString(dto.getRegDate(), "yyyy-MM-dd");
+                dto.setFormatRegDate(formatDate);
+            }
             int totalCount = productService.totalCount(searchType, searchValue);
-            Paging paging = new Paging(pageNo, 10, 6, totalCount);
+            Paging paging = new Paging(pageNo, 10, 5, totalCount);
             
             model.addAttribute("pList", pList);
             model.addAttribute("paging", paging);
@@ -99,9 +104,13 @@ public class ProductController {
                 return null;
             }
 
-            boolean isLiked = likeService.checkExists(userDto.getUserId(), productId);
-            log.info("isLike: " + isLiked);
-            model.addAttribute("isLiked", isLiked);
+            if( userDto != null && userDto.getUserId() != null) {
+                boolean isLiked = likeService.checkExists(userDto.getUserId(), productId);
+                //log.info("isLike: " + isLiked);
+                model.addAttribute("isLiked", isLiked);
+            }else{
+                log.info("로그인한 회원이 아님");
+            }
 
             model.addAttribute("dto", dto);
             return "product/view";
