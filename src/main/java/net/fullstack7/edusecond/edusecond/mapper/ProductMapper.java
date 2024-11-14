@@ -11,7 +11,7 @@ import java.util.Map;
 public interface ProductMapper {
     ProductVO selectProductById(Integer productId);
     List<ProductVO> selectAllProducts(Map<String, Object> map);
-    List<ProductVO> selectProductsBySeller(String sellerId);
+    List<ProductVO> selectProductsBySeller(Map<String, Object> map);
     int insertProduct(ProductVO productVO);
     void insertProductImageMain(ProductImageVO productVO);
     void insertProductImage(ProductImageVO productVO);
@@ -28,5 +28,7 @@ public interface ProductMapper {
     List<ProductVO> selectAllWishByUser(Map<String, Object> map);
     int totalCountLikedProducts(Map<String, Object> map);
 
+    List<ProductVO> selectAllByProductStatus(Map<String, Object> map);
+    int totalCountByStatus(Map<String, Object> map);
 
 }

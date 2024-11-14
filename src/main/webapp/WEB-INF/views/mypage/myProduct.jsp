@@ -131,6 +131,46 @@
             </tbody>
         </table>
         <%@ include file="../common/paging.jsp"%>
+        <br>
+        <br>
+        <h2>판매 완료 상품</h2>
+        <form class="d-flex" role="search" action="/es/mypage/wishList" method="GET">
+            <select name="searchType" class="form-select" style="width: 120px;">
+                <option value="productName" ${searchType == 'productName' ? 'selected' : ''}>상품명</option>
+                <option value="sellerId" ${searchType == 'sellerId' ? 'selected' : ''}>판매자</option>
+            </select>
+            <input class="form-control me-2" type="search" name="searchValue" value="${searchValue}" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">상품명</th>
+                <th scope="col">판매자</th>
+                <th scope="col">가격</th>
+                <th scope="col">항목 삭제</th>
+            </tr>
+            </thead>
+            <tbody>
+            <c:if test="${not empty pList}">
+                <c:forEach var="dto" items="${pList}" >
+                    <tr>
+                        <c:if test="${not empty dto.thumbnail}">
+                            <img src="${dto.thumbnail.imagePath}"
+                                 alt="상품 썸네일"
+                                 style="width: 50px; height: 50px; object-fit: cover;">
+                        </c:if>
+                        <td>${dto.productName}</td>
+                        <td>${dto.sellerId}</td>
+                        <td>${dto.price}원</td>
+                        <td><button type="button" onclick="javascript:location.href='/es/like/delete?productId=${dto.productId}&userId=user1&source=mypage'">삭제</button></td>
+                    </tr>
+                </c:forEach>
+            </c:if>
+            </tbody>
+        </table>
+        <%@ include file="../common/paging.jsp"%>
     </div>
 </div>
 <%@include file="/main/footer.jsp"%>

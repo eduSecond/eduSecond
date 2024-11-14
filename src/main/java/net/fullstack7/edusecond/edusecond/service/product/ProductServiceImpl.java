@@ -139,7 +139,13 @@ public class ProductServiceImpl implements ProductServiceIf {
     }
 
     @Override
-    public List<ProductDTO> selectAllWishByUser(int pageNo, int pageSize, int pageNavSize, String searchType, String searchValue, String userId) {
+    public List<ProductDTO> selectAllByUser(int pageNo,
+                                            int pageSize,
+                                            int pageNavSize,
+                                            String searchType,
+                                            String searchValue,
+                                            String userId,
+                                            String type) {
         Map<String, Object> params = new HashMap<>();
         params.put("offset", (pageNo - 1) * pageSize);
         params.put("limit", pageSize);
@@ -147,8 +153,16 @@ public class ProductServiceImpl implements ProductServiceIf {
         params.put("searchValue", searchValue);
         params.put("userId", userId);
 
-        List<ProductVO> voList = productMapper.selectAllWishByUser(params);
-        return voList.stream()
+        List<ProductVO> wishList = productMapper.selectAllWishByUser(params);
+        List<ProductVO> sellList = productMapper.selectProductsBySeller(params);
+        List<ProductVO> list;
+        if("wish".equals(type)){
+            list = wishList;
+        }else{
+            list = sellList;
+        }
+
+        return list.stream()
                 .map(vo -> {
                     ProductDTO dto = modelMapper.map(vo, ProductDTO.class);
                     // 썸네일 이미지 설정
@@ -159,6 +173,43 @@ public class ProductServiceImpl implements ProductServiceIf {
                     return dto;
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDTO> selectAllByProductStatus(int pageNo,
+                                                     int pageSize,
+                                                     int pageNavSize,
+                                                     String searchType,
+                                                     String searchValue,
+                                                     String userId,
+                                                     String status) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("offset", (pageNo - 1) * pageSize);
+        params.put("limit", pageSize);
+        params.put("searchType", searchType);
+        params.put("searchValue", searchValue);
+        params.put("status", status);
+        params.put("userId", userId);
+        List<ProductVO> list = productMapper.selectAllByProductStatus(params);
+        return list.stream().map(vo -> {
+            ProductDTO dto = modelMapper.map(vo, ProductDTO.class);
+            // 썸네일 이미지 설정
+            ProductImageVO thumbnailImage = productMapper.selectThumbnailImage(vo.getProductId());
+            if (thumbnailImage != null) {
+                dto.setThumbnail(modelMapper.map(thumbnailImage, ProductImageDTO.class));
+            }
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public int totalCountByProductStatus(String searchCategory, String searchValue, String userId, String status) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("searchCategory", searchCategory);
+        map.put("searchValue", searchValue);
+        map.put("status", status);
+        map.put("userId", userId);
+        return productMapper.totalCount(map);
     }
 
 

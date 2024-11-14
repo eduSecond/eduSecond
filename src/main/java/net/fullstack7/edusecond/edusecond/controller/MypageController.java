@@ -109,10 +109,10 @@ public class MypageController {
             if(!validateListParameters(pageNo, searchType, searchValue, response)){
                 return null;
             }
-            List<ProductDTO> pList = productService.selectAllWishByUser(pageNo, 10, 6, searchType, searchValue, loginDto.getUserId());
+            List<ProductDTO> pList = productService.selectAllByUser(pageNo, 10, 5, searchType, searchValue, loginDto.getUserId(), "wish");
             int totalCount = productService.totalCountLikedProducts(searchType, searchValue, loginDto.getUserId());
             log.info("totalCount: " + totalCount);
-            Paging paging = new Paging(pageNo, 10, 6, totalCount);
+            Paging paging = new Paging(pageNo, 10, 5, totalCount);
             model.addAttribute("pList", pList);
             model.addAttribute("paging", paging);
             model.addAttribute("searchType", searchType);
@@ -121,6 +121,43 @@ public class MypageController {
             return "/mypage/wishList";
         }catch(Exception e){
             log.error("찜 목록 조회 중 오류 발생" + e.getMessage());
+            return null;
+        }
+    }
+
+    @GetMapping("/myProduct")
+    public String viewMyProduct(Model model,
+                               HttpSession session,
+                               @RequestParam(defaultValue = "1") int pageNo,
+                               @RequestParam(required = false) String searchType,
+                               @RequestParam(required = false) String searchValue,
+                               HttpServletResponse response){
+        MemberLoginDTO loginDto = (MemberLoginDTO) session.getAttribute("memberInfo");
+        try{
+            if(!validateListParameters(pageNo, searchType, searchValue, response)){
+                return null;
+            }
+            //String[] status = {"AVAILABLE", "SOLD"};
+            List<ProductDTO> availableList  = productService.selectAllByProductStatus(pageNo, 10, 6, searchType, searchValue, loginDto.getUserId(), "AVAILABLE");
+            List<ProductDTO> soldOutList  = productService.selectAllByProductStatus(pageNo, 10, 6, searchType, searchValue, loginDto.getUserId(), "SOLD");
+
+            int availableTotalCount = productService.totalCountByProductStatus(searchType, searchValue, loginDto.getUserId(), "AVAILABLE");
+            int soldOutTotalCount = productService.totalCountByProductStatus(searchType, searchValue, loginDto.getUserId(), "SOLD");
+
+            Paging availablePaging = new Paging(pageNo, 10, 5, availableTotalCount);
+            Paging soldOutPaging = new Paging(pageNo, 10, 5, soldOutTotalCount);
+            model.addAttribute("pList", availableList);
+            model.addAttribute("paging", availablePaging);
+
+            model.addAttribute("soldOutList", soldOutList);
+            model.addAttribute("soldOutPaging", soldOutPaging);
+
+            model.addAttribute("searchType", searchType);
+            model.addAttribute("searchValue", searchValue);
+            //log.info("pList.size()" + pList.size());
+            return "/mypage/myProduct";
+        }catch(Exception e){
+            log.error("내 상품 조회 중 오류 발생" + e.getMessage());
             return null;
         }
     }
