@@ -135,7 +135,7 @@
           <td>${notice.regDate}</td>
           <td>${notice.viewCount}</td>
         </tr>
-      <!-- Add more rows as needed -->
+        <!-- Add more rows as needed -->
       </c:forEach>
       </tbody>
     </table>

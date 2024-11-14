@@ -120,7 +120,11 @@ public class ProductServiceImpl implements ProductServiceIf {
         }
     }
 
-
+    //일단 추가
+    @Override
+    public int reductionAfterPayment(int productId) {
+        return 0;
+    }
 
 
 }
