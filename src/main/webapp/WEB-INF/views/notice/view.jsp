@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-  <title>툴</title>
+  <title>공지사항</title>
   <style>
     * {
       margin: 0;

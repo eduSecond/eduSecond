@@ -333,7 +333,7 @@
   <h1 class="section-title">회사소개</h1>
 
   <div class="banner">
-    <img src="<%= request.getContextPath() %>/resources/images/introbanner/intro2.png" alt="IT Shop Cityscape Banner">
+    <img src="<%= request.getContextPath() %>/resources/images/introbanner/intro2.png">
   </div>
 
   <div class="content">
