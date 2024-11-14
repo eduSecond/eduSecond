@@ -20,4 +20,5 @@
         FROM tbl_wishlist
         WHERE userId = #{userId} AND productId = #{productId}
     </select>
+
 </mapper>

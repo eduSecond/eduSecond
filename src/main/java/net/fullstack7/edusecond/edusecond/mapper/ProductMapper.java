@@ -3,6 +3,7 @@ package net.fullstack7.edusecond.edusecond.mapper;
 import net.fullstack7.edusecond.edusecond.domain.product.ProductImageVO;
 import net.fullstack7.edusecond.edusecond.domain.product.ProductVO;
 import net.fullstack7.edusecond.edusecond.domain.product.ProductImageVO;
+import net.fullstack7.edusecond.edusecond.dto.payment.PaymentDTO;
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,7 @@ import java.util.Map;
 public interface ProductMapper {
     ProductVO selectProductById(Integer productId);
     List<ProductVO> selectAllProducts(Map<String, Object> map);
-    List<ProductVO> selectProductsBySeller(String sellerId);
+    List<ProductVO> selectProductsBySeller(Map<String, Object> map);
     int insertProduct(ProductVO productVO);
     void insertProductImageMain(ProductImageVO productVO);
     void insertProductImage(ProductImageVO productVO);
@@ -24,4 +25,12 @@ public interface ProductMapper {
     List<ProductImageVO> selectProductImages(int productId);
 
     ProductImageVO selectThumbnailImage(int productId);
+    int reductionAfterPayment(PaymentDTO paymentDTO);
+
+    List<ProductVO> selectAllWishByUser(Map<String, Object> map);
+    int totalCountLikedProducts(Map<String, Object> map);
+
+    List<ProductVO> selectAllByProductStatus(Map<String, Object> map);
+    int totalCountByProductStatus(Map<String, Object> map);
+
 }

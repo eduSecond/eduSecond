@@ -80,6 +80,7 @@
     LIMIT 1
   </select>
   <!--위시리스트 조회, 추가, 삭제-->
+
   <!--주문 조회, 등록, 수정, 삭제-->
   <!--리뷰 조회, 등록, 수정, 삭제-->
   <select id="selectThumbnailImage" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductImageVO">
@@ -108,4 +109,111 @@
     SET viewCount = viewCount + 1 
     WHERE productId = #{productId}
   </update>
+
+    <update id="reductionAfterPayment">
+        CALL reductAfterPayment(#{productId}, #{orderQuantity})
+    </update>
+    <select id="selectAllWishByUser" parameterType="map" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductVO">
+        SELECT
+        p.productId,
+        p.sellerId,
+        p.productName,
+        p.price,
+        p.quantity,
+        p.quality,
+        p.productStatus,
+        p.viewCount,
+        p.regDate,
+        p.modifyDate,
+        m.userName as sellerName,
+        (SELECT imagePath
+        FROM tbl_product_image
+        WHERE productId = p.productId
+        AND isMain = 'Y'
+        LIMIT 1) as thumbnailPath
+        FROM tbl_product p
+        LEFT JOIN tbl_wishList w ON p.productId = w.productId
+        LEFT JOIN tbl_member m ON p.sellerId = m.userId
+        WHERE w.userId = #{userId}
+        <if test="searchType != null and searchType == 'productName'">
+            AND p.productName LIKE CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchType != null and searchType == 'sellerId'">
+            AND p.sellerId LIKE CONCAT('%', #{searchValue}, '%')
+        </if>
+        ORDER BY p.productId DESC
+
+        LIMIT #{offset}, #{limit}
+    </select>
+    <select id="totalCountLikedProducts" parameterType="map" resultType="int">
+        SELECT COUNT(w.wishId) AS total_count
+        FROM tbl_wishlist w
+        LEFT JOIN tbl_product p ON w.productId = p.productId
+        <where>
+            <if test="userId != null">
+                w.userId = #{userId}
+            </if>
+            <if test="searchCategory != null and !searchCategory.trim().isEmpty() and searchValue != null and !searchValue.trim().isEmpty()">
+                AND p.${searchCategory} LIKE CONCAT('%', #{searchValue}, '%')
+            </if>
+        </where>
+    </select>
+    <select id="selectProductsBySeller" parameterType="map" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductVO">
+        SELECT p.productId, p.price, p.productName, p.productStatus,
+        (SELECT imagePath
+        FROM tbl_product_image
+        WHERE productId = p.productId
+        AND isMain = 'Y'
+        LIMIT 1) as thumbnailPath
+        FROM tbl_product p
+        LEFT JOIN tbl_member m ON p.sellerId = m.userId
+        WHERE m.userId = #{userId}
+        <if test="searchType != null and searchType == 'productName'">
+            AND p.productName LIKE CONCAT('%', #{searchValue}, '%')
+        </if>
+        ORDER BY p.productId DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="selectAllByProductStatus" parameterType="map" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductVO">
+        SELECT p.productId, p.price, p.productName, p.productStatus,
+        (SELECT imagePath
+        FROM tbl_product_image
+        WHERE productId = p.productId
+        AND isMain = 'Y'
+        LIMIT 1) as thumbnailPath
+        FROM tbl_product p
+        LEFT JOIN tbl_member m ON p.sellerId = m.userId
+        <where>
+            <if test="userId != null">
+                AND p.sellerId = #{userId}
+            </if>
+            <if test="productStatus != null and productStatus != ''">
+                AND p.productStatus = #{productStatus}
+            </if>
+            <if test="searchType != null and searchType == 'productName'">
+                AND p.productName LIKE CONCAT('%', #{searchValue}, '%')
+            </if>
+        </where>
+        ORDER BY p.productId DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!-- 상태별 상품 수 카운트 -->
+    <select id="totalCountByProductStatus" parameterType="map" resultType="int">
+        SELECT COUNT(productId) AS total_count
+        FROM tbl_product p
+        LEFT JOIN tbl_member m ON p.sellerId = m.userId
+        <where>
+            <if test="userId != null">
+                AND p.sellerId = #{userId}
+            </if>
+        <if test="productStatus != null and !productStatus.isEmpty()">
+            AND p.productStatus = #{productStatus}
+        </if>
+        <if test="searchType != null and searchType == 'productName'">
+            AND p.productName LIKE CONCAT('%', #{searchValue}, '%')
+        </if>
+        </where>
+    </select>
 </mapper>
