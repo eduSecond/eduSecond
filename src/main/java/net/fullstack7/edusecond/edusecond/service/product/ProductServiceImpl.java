@@ -26,12 +26,13 @@ public class ProductServiceImpl implements ProductServiceIf {
     private final ModelMapper modelMapper;
 
     @Override
-    public List<ProductDTO> list(int pageNo, int pageSize, int pageNavSize, String searchType, String searchValue) {
+    public List<ProductDTO> list(int pageNo, int pageSize, int pageNavSize, String searchType, String searchValue, String productStatus) {
         Map<String, Object> params = new HashMap<>();
         params.put("offset", (pageNo - 1) * pageSize);
         params.put("limit", pageSize);
         params.put("searchType", searchType);
         params.put("searchValue", searchValue);
+        params.put("productStatus", productStatus);
 
         List<ProductVO> voList = productMapper.selectAllProducts(params);
         return voList.stream()
@@ -69,10 +70,11 @@ public class ProductServiceImpl implements ProductServiceIf {
     }
 
     @Override
-    public int totalCount(String searchCategory, String searchValue) {
+    public int totalCount(String searchCategory, String searchValue, String productStatus) {
         Map<String, Object> map = new HashMap<>();
         map.put("searchCategory", searchCategory);
         map.put("searchValue", searchValue);
+        map.put("productStatus", productStatus);
         return productMapper.totalCount(map);
     }
 
