@@ -17,5 +17,4 @@ public interface ProductServiceIf {
     int insertProduct(ProductRegistDTO productRegistDTO);
     int getLastProductId();
     void insertProductImage(int productId, List<String> uploadFilePaths);
-    int reductionAfterPayment(int productId);
 }

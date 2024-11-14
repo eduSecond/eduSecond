@@ -3,8 +3,10 @@ package net.fullstack7.edusecond.edusecond.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import lombok.extern.log4j.Log4j2;
+import net.fullstack7.edusecond.edusecond.dto.member.MemberLoginDTO;
 import net.fullstack7.edusecond.edusecond.dto.payment.PaymentDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
+import net.fullstack7.edusecond.edusecond.mapper.ProductMapper;
 import net.fullstack7.edusecond.edusecond.service.payment.PaymentServiceIf;
 import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
 import net.fullstack7.edusecond.edusecond.util.JSFunc;
@@ -24,6 +26,7 @@ import java.util.UUID;
 public class PaymentController {
     private final ProductServiceIf productService;
     private final PaymentServiceIf paymentService;
+    private final ProductMapper productMapper;
     @GetMapping("/view")
     public String view(Model model, int productId, HttpServletResponse response){
         try{
@@ -53,8 +56,8 @@ public class PaymentController {
             return null;
         }
 
-        String userId = (String) session.getAttribute("userId");
-        paymentDTO.setBuyerId(userId);
+        MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
+        paymentDTO.setBuyerId(memberLoginDTO.getUserId());
 
         String paymentNumber = UUID.randomUUID().toString();
         paymentDTO.setPaymentNumber(paymentNumber);
@@ -65,8 +68,14 @@ public class PaymentController {
         int result = paymentService.insert(paymentDTO);
         if(result > 0){
             //결제 성공 시 product에서 개수만큼 차감시켜 주어야 함.
-            productService.reductionAfterPayment(paymentDTO.getProductId()); // 상품정보에서 개수 차감하는 메서드
-            return "/es/mypage/orderList";
+            int result1 = productMapper.reductionAfterPayment(paymentDTO);// 상품정보에서 개수 차감하는 메서드
+            if(result1 > 0){
+                log.info("여기 탄 거 아님?");
+                return "/es/mypage/orderList";
+            } else{
+                log.info("상품 결제 후 상품 차감 실패");
+                return "/es/mypage/orderList";
+            }
         } else{
             log.info("상품 결제 중 오류 발생");
             JSFunc.alertBack("상품 결제 실패", response);

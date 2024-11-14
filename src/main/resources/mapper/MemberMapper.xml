@@ -16,7 +16,7 @@
         )
     </insert>
 
-    <select id="getLoginMember" resultType="net.fullstack7.edusecond.edusecond.dto.member.MemberLoginDTO">
+    <select id="getLoginMember" resultType="net.fullstack7.edusecond.edusecond.domain.member.MemberVO">
         SELECT userId, userName
         FROM tbl_member
         WHERE userId = #{userId}

@@ -108,4 +108,8 @@
     SET viewCount = viewCount + 1 
     WHERE productId = #{productId}
   </update>
+
+    <update id="reductionAfterPayment">
+        CALL reductAfterPayment(#{productId}, #{orderQuantity})
+    </update>
 </mapper>
