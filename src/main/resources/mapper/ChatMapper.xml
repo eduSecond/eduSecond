@@ -6,43 +6,54 @@
     <!-- 채팅방 목록 조회 -->
     <select id="selectChatRoomList" resultType="net.fullstack7.edusecond.edusecond.dto.message.ChatRoomDTO">
         SELECT 
-            c.*, p.productName,
+            c.roomId, c.productId,
+            p.productName,
+            pi.imagePath as productImage,
             m.userName as otherUserName,
-            (SELECT COUNT(*) FROM tbl_chat_message 
-             WHERE roomId = c.roomId AND isRead = 'N' 
+            lcm.message as lastMessage,
+            lcm.regDate as lastMessageDate,
+            (SELECT COUNT(*) 
+             FROM tbl_chat_message 
+             WHERE roomId = c.roomId 
+             AND isRead = 'N' 
              AND senderId != #{userId}) as unreadCount
         FROM tbl_chatroom c
         JOIN tbl_product p ON c.productId = p.productId
-        JOIN tbl_member m ON CASE 
-            WHEN c.sellerId = #{userId} THEN m.userId = c.buyerId
-            ELSE m.userId = c.sellerId
-        END
-        WHERE (
-            (c.sellerId = #{userId} AND c.sellerActive = 'Y') OR 
-            (c.buyerId = #{userId} AND c.buyerActive = 'Y')
-        )
-        ORDER BY c.regDate DESC
+        JOIN tbl_product_image pi ON p.productId = pi.productId AND pi.isMain = 'Y'
+        JOIN tbl_member m ON 
+            CASE 
+                WHEN c.sellerId = #{userId} THEN m.userId = c.buyerId
+                ELSE m.userId = c.sellerId
+            END
+        LEFT JOIN (
+            SELECT roomId, message, regDate
+            FROM tbl_chat_message
+            WHERE (roomId, regDate) IN (
+                SELECT roomId, MAX(regDate)
+                FROM tbl_chat_message
+                GROUP BY roomId
+            )
+        ) lcm ON c.roomId = lcm.roomId
+        WHERE (c.sellerId = #{userId} AND c.sellerActive = 'Y') 
+           OR (c.buyerId = #{userId} AND c.buyerActive = 'Y')
+        ORDER BY 
+            CASE 
+                WHEN lcm.regDate IS NULL THEN 1 
+                ELSE 0 
+            END,
+            lcm.regDate DESC
     </select>
 
     <!-- 채팅방 단일 조회 -->
     <select id="selectChatRoom" resultType="net.fullstack7.edusecond.edusecond.dto.message.ChatRoomDTO">
         SELECT 
-            cr.*,
+            cr.roomId, cr.productId, cr.sellerId, cr.buyerId,
             p.productName,
-            p.productImage,
-            m.userName as otherUserName,
-            (SELECT message FROM tbl_chat_message 
-             WHERE roomId = cr.roomId 
-             ORDER BY regDate DESC LIMIT 1) as lastMessage,
-            (SELECT regDate FROM tbl_chat_message 
-             WHERE roomId = cr.roomId 
-             ORDER BY regDate DESC LIMIT 1) as lastMessageDate,
-            (SELECT COUNT(*) FROM tbl_chat_message 
-             WHERE roomId = cr.roomId 
-             AND isRead = 'N' 
-             AND senderId != #{userId}) as unreadCount
+            pi.imagePath as productImage,
+            m.userName as otherUserName
         FROM tbl_chatroom cr
         JOIN tbl_product p ON cr.productId = p.productId
+        JOIN tbl_product_image pi ON p.productId = pi.productId AND pi.isMain = 'Y'
         JOIN tbl_member m ON 
             CASE 
                 WHEN cr.sellerId = #{userId} THEN m.userId = cr.buyerId
@@ -63,15 +74,15 @@
             m.*,
             mb.userName as senderName
         FROM tbl_chat_message m
-        JOIN tbl_member mb ON m.senderId = mb.userId
+        LEFT JOIN tbl_member mb ON m.senderId = mb.userId
         WHERE m.roomId = #{roomId}
         ORDER BY m.regDate ASC
     </select>
 
     <!-- 메시지 저장 -->
     <insert id="insertMessage" parameterType="net.fullstack7.edusecond.edusecond.dto.message.ChatMessageDTO">
-        INSERT INTO tbl_chat_message (roomId, senderId, senderName, message, isRead)
-        VALUES (#{roomId}, #{senderId}, #{senderName}, #{message}, 'N')
+        INSERT INTO tbl_chat_message (roomId, senderId, message, isRead)
+        VALUES (#{roomId}, #{senderId}, #{message}, 'N')
     </insert>
 
     <!-- 메시지 읽음 처리 -->
@@ -104,12 +115,13 @@
 
     <!-- 채팅방 존재 여부 확인 -->
     <select id="findExistingChatRoom" resultType="net.fullstack7.edusecond.edusecond.dto.message.ChatRoomDTO">
-        SELECT *
+        SELECT roomId, productId, sellerId, buyerId
         FROM tbl_chatroom
         WHERE productId = #{productId}
-        AND ((sellerId = #{sellerId} AND buyerId = #{buyerId})
-        OR (sellerId = #{buyerId} AND buyerId = #{sellerId}))
-        AND (sellerActive = 'Y' OR buyerActive = 'Y')
+        AND sellerId = #{sellerId}
+        AND buyerId = #{buyerId}
+        AND sellerActive = 'Y'
+        AND buyerActive = 'Y'
         LIMIT 1
     </select>
 </mapper>

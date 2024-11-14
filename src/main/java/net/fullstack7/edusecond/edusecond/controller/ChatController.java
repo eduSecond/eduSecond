@@ -2,12 +2,15 @@ package net.fullstack7.edusecond.edusecond.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import net.fullstack7.edusecond.edusecond.dto.message.ChatMessageDTO;
 import net.fullstack7.edusecond.edusecond.dto.message.ChatRoomDTO;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberDTO;
+import net.fullstack7.edusecond.edusecond.dto.member.MemberLoginDTO;
 import net.fullstack7.edusecond.edusecond.service.message.ChatServiceIf;
 import javax.servlet.http.HttpSession;
 import java.util.Collections;
@@ -24,9 +27,9 @@ public class ChatController {
 
     @GetMapping("/list")
     public String chatList(Model model, HttpSession session) {
-        MemberDTO member = (MemberDTO) session.getAttribute("memberInfo");
+        MemberLoginDTO member = (MemberLoginDTO) session.getAttribute("memberInfo");
         if (member == null) {
-            return "redirect:/member/login";
+            return "redirect:/login/login";
         }
         
         List<ChatRoomDTO> chatRooms = chatService.getChatRoomList(member.getUserId());
@@ -35,17 +38,20 @@ public class ChatController {
     }
 
     @GetMapping("/chatting")
-    public String chatRoom(@RequestParam int roomId, Model model, HttpSession session) {
-        MemberDTO member = (MemberDTO) session.getAttribute("memberInfo");
-        if (member == null) {
-            return "redirect:/member/login";
+    public String chatting(@RequestParam int roomId, Model model, HttpSession session) {
+        MemberLoginDTO memberInfo = (MemberLoginDTO) session.getAttribute("memberInfo");
+        
+        if (memberInfo == null) {
+            return "redirect:/login/login";
         }
 
-        ChatRoomDTO room = chatService.getChatRoom(roomId);
+        ChatRoomDTO room = chatService.getChatRoom(roomId, memberInfo.getUserId());
+        
+        // 이전 메시지들 모두 가져오기
         List<ChatMessageDTO> messages = chatService.getPreviousMessages(roomId);
         
         // 읽지 않은 메시지 읽음 처리
-        chatService.updateMessageRead(roomId, member.getUserId());
+        chatService.updateMessageRead(roomId, memberInfo.getUserId());
         
         model.addAttribute("room", room);
         model.addAttribute("messages", messages);
@@ -70,5 +76,22 @@ public class ChatController {
         }
         
         return Collections.singletonMap("roomId", roomId);
+    }
+
+    @PostMapping("/send")
+    @ResponseBody
+    public ResponseEntity<ChatMessageDTO> sendMessage(@RequestBody ChatMessageDTO message, HttpSession session) {
+        MemberLoginDTO memberInfo = (MemberLoginDTO) session.getAttribute("memberInfo");
+        if (memberInfo == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
+        try {
+            chatService.saveMessage(message);
+            return ResponseEntity.ok(message);
+        } catch (Exception e) {
+            log.error("메시지 전송 실패", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

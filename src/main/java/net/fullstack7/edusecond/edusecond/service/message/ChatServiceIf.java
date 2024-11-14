@@ -8,7 +8,7 @@ import java.util.List;
 public interface ChatServiceIf {
     // 채팅방 관련
     List<ChatRoomDTO> getChatRoomList(String userId);
-    ChatRoomDTO getChatRoom(int roomId);
+    public ChatRoomDTO getChatRoom(int roomId, String userId);
     int createChatRoom(ChatRoomDTO chatRoomDTO);
     void updateUserChatRoomStatus(int roomId, String userId, String status);
 

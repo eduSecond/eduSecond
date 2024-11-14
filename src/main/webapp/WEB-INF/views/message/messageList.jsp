@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
   <title>툴</title>
@@ -76,7 +77,62 @@
       border-top: 1px solid #ddd;
       width: 100%;
     }
-  </style>
+  .chat-list {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .chat-item {
+      cursor: pointer;
+      transition: background-color 0.2s;
+      padding: 15px 20px;
+      border-bottom: 1px solid #eee;
+  }
+
+  .chat-item:last-child {
+      border-bottom: none;
+  }
+
+  .chat-item:hover {
+      background-color: #f8f9fa;
+  }
+
+  .product-image img {
+      border: 1px solid #eee;
+  }
+
+  .chat-info h6 {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 2px;
+  }
+
+  .chat-info small {
+      font-size: 0.75rem;
+      color: #888;
+  }
+
+  .message-preview {
+      font-size: 0.9rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: calc(100% - 40px);
+      color: #666;
+      margin-top: 4px;
+  }
+
+  .badge {
+      font-size: 0.75rem;
+      min-width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 6px;
+  }
+</style>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </head>
@@ -101,13 +157,22 @@
         <c:forEach items="${chatRooms}" var="room">
             <div class="chat-item d-flex align-items-center p-3 border-bottom position-relative" 
                  onclick="location.href='/message/chatting?roomId=${room.roomId}'">
+                <div class="product-image me-3">
+                    <img src="${room.productImage}" alt="상품 이미지" 
+                         class="rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                </div>
+                
                 <div class="chat-info flex-grow-1">
                     <div class="d-flex justify-content-between align-items-center mb-1">
-                        <h6 class="mb-0">${room.otherUserName}</h6>
+                        <div>
+                            <h6 class="mb-0">${room.otherUserName}</h6>
+                            <small class="text-muted">${room.productName}</small>
+                        </div>
                         <small class="text-muted">
-                            <fmt:formatDate value="${room.lastMessageDate}" pattern="yyyy.MM.dd"/>
+                            <fmt:formatDate value="${room.lastMessageDate}" pattern="MM.dd HH:mm"/>
                         </small>
                     </div>
+                    
                     <div class="d-flex justify-content-between align-items-end">
                         <p class="mb-0 text-muted message-preview">
                             ${room.lastMessage}
@@ -120,53 +185,6 @@
             </div>
         </c:forEach>
     </div>
-
-    <style>
-        .chat-list {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .chat-item {
-            cursor: pointer;
-            transition: background-color 0.2s;
-            padding: 15px 20px;
-        }
-
-        .chat-item:hover {
-            background-color: #f8f9fa;
-        }
-
-        .chat-info h6 {
-            font-weight: 600;
-            font-size: 1rem;
-            line-height: 1.2;
-        }
-
-        .chat-info small {
-            font-size: 0.75rem;
-            color: #888;
-        }
-
-        .badge {
-            font-size: 0.75rem;
-            min-width: 18px;
-            height: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .message-preview {
-            font-size: 0.9rem;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            max-width: calc(100% - 40px); /* 뱃지 공간 확보 */
-            color: #666;
-        }
-    </style>
 
     <script>
         // 채팅방 클릭 이벤트

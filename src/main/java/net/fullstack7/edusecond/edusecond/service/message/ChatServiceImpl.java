@@ -32,9 +32,9 @@ public class ChatServiceImpl implements ChatServiceIf {
     }
 
     @Override
-    public ChatRoomDTO getChatRoom(int roomId) {
-        log.info("채팅방 조회 시도. roomId: {}", roomId);
-        ChatRoomDTO roomDTO = chatMapper.selectChatRoom(roomId);
+    public ChatRoomDTO getChatRoom(int roomId, String userId) {
+        log.info("채팅방 조회 시도. roomId: {}, userId: {}", roomId, userId);
+        ChatRoomDTO roomDTO = chatMapper.selectChatRoom(roomId, userId);
         log.info("채팅방 조회 완료: {}", roomDTO);
         return roomDTO;
     }
@@ -72,7 +72,7 @@ public class ChatServiceImpl implements ChatServiceIf {
 
     // 사용자가 판매자인지 구매자인지 확인
     private String getUserType(int roomId, String userId) {
-        ChatRoomDTO chatRoom = getChatRoom(roomId);
+        ChatRoomDTO chatRoom = getChatRoom(roomId, userId);
         return userId.equals(chatRoom.getSellerId()) ? "SELLER" : "BUYER";
     }
 }
