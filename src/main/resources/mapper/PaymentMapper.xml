@@ -5,11 +5,11 @@
     <insert id="insert">
         INSERT INTO tbl_order(
             productId, unitPrice, totalPrice, buyerId, orderQuantity, recipientName, recipientPhone, recipientEmail, shippingAddress, shippingPostcode,
-            paymentMethod, paymentCompany, paymentNumber, deliveryStatus
+            paymentMethod, paymentCompany, paymentNumber
         )
         VALUES (
            #{productId}, #{unitPrice}, #{totalPrice}, #{buyerId}, #{orderQuantity}, #{recipientName}, #{recipientPhone}, #{recipientEmail}, #{shippingAddress}, #{shippingPostcode},
-           #{paymentMethod}, #{paymentCompany}, #{paymentNumber}, #{deliveryStatus}
+           #{paymentMethod}, #{paymentCompany}, #{paymentNumber}
            );
 
     </insert>

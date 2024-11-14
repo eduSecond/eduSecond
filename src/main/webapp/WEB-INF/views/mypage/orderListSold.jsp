@@ -81,7 +81,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </head>
 <body>
-<%@ include file="/main/header.jsp"%>
+<%@ include file="../main/header.jsp"%>
 
 <div class="mainpage">
   <div class="sidebar col-2">
@@ -109,7 +109,7 @@
           <th scope="col">상품 사진</th>
           <th scope="col">상품명</th>
           <th scope="col">구매자 아이디</th>
-          <th scope="col">단위가격</th>
+          <th scope="col">단위가격/개수</th>
           <th scope="col">총 가격</th>
           <th scope="col">배송 상태</th>
           <th scope="col">받는분/배송주소</th>
@@ -131,9 +131,14 @@
               </td>
               <td><a href="/product/view?productId=${dto.productId}">${dto.productName}</a></td>
               <td>${dto.buyerId}</td>
-              <td>${dto.unitPrice}원</td>
+              <td>${dto.unitPrice}원/${dto.orderQuantity}개</td>
               <td>${dto.totalPrice}원</td>
-              <td>${dto.deliveryStatus}</td>
+              <td>
+                  ${dto.deliveryStatus}
+                  <c:if test="${dto.deliveryStatus eq '배송전'}">
+                    <button onclick="location.href='/es/payment/startDelivery?productId=${dto.productId}&pageNo=${param.pageNo}'">배송시작</button>
+                  </c:if>
+              </td>
               <td>${dto.recipientName}/${dto.shippingAddress}</td>
               <td>${dto.paymentNumber}</td>
               <td>${dto.paymentMethod}/${dto.paymentCompany}</td>
@@ -152,6 +157,6 @@
   </div>
 </div>
 
-<%@include file="/main/footer.jsp"%>
+<%@include file="../main/footer.jsp"%>
 </body>
 </html>
