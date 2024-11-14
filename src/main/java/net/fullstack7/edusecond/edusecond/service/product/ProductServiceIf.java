@@ -20,7 +20,6 @@ public interface ProductServiceIf {
     int insertProduct(ProductRegistDTO productRegistDTO);
     int getLastProductId();
     void insertProductImage(int productId, List<String> uploadFilePaths);
-    int reductionAfterPayment(int productId);
 
     List<ProductDTO> selectAllByUser(int pageNo, int pageSize, int pageNavSize, String searchType, String searchValue, String userId, String type);
 

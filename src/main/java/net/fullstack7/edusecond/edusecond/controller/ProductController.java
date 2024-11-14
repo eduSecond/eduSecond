@@ -157,8 +157,8 @@ public class ProductController {
             log.info("RegistOk에서 Validation error");
             return "redirect:/product/regist";
         }
-        String userId = session.getAttribute("userId").toString();
-        productRegistDTO.setSellerId(userId);
+        MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
+        productRegistDTO.setSellerId(memberLoginDTO.getUserId());
 
         int result = productService.insertProduct(productRegistDTO); // 상품 삽입
 

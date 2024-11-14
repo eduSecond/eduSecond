@@ -133,10 +133,6 @@ public class ProductServiceImpl implements ProductServiceIf {
         }
     }
 
-    @Override
-    public int reductionAfterPayment(int productId) {
-        return 0;
-    }
 
     @Override
     public List<ProductDTO> selectAllByUser(int pageNo,
