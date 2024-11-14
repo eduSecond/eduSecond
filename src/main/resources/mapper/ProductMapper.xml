@@ -42,6 +42,7 @@
     ORDER BY p.productId DESC
     LIMIT #{offset}, #{limit}
   </select>
+
   <select id="selectProductById" parameterType="java.lang.Integer" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductVO">
     SELECT 
         p.productId, 
