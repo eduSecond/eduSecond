@@ -1,3 +1,10 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: full5-4
+  Date: 2024-11-11
+  Time: 오후 5:12
+  To change this template use File | Settings | File Templates.
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -96,12 +103,6 @@
       }
     }
   </style>
-  <script>
-    function toggleMenu() {
-      const navUl = document.querySelector(".navbar nav ul");
-      navUl.classList.toggle("show");
-    }
-  </script>
 </head>
 <body>
 
@@ -118,7 +119,7 @@
     <nav>
       <ul>
         <li><a href="/footer/intro">회사소개</a></li>
-        <li><a href="#">상품</a></li>
+        <li><a href="/product/list">상품</a></li>
         <li><a href="#">내상품</a></li>
         <li><a href="#">셀파톡</a></li>
         <li><a href="#">공지사항</a></li>
@@ -129,14 +130,12 @@
       <c:if test="${empty sessionScope.userId}" var="logout">
         <a href="/login/login">로그인</a> | <a href="/login/agreeregist">회원가입</a>
       </c:if>
-
       <!--로그인 시-->
-      <c:if test="${not empty sessionScope.userId}" var="login">
-        <a href="#">마이페이지</a>| <a href="/main/logout">로그아웃</a>
+      <c:if test="${not empty sessionScope.userId}" var="login" >
+        <a href="/es/mypage/myInfo">마이페이지</a>| <a href="/main/logout">로그아웃</a>
       </c:if>
     </div>
   </div>
 </header>
-
 </body>
 </html>

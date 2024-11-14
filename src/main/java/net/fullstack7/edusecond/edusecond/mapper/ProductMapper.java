@@ -26,4 +26,7 @@ public interface ProductMapper {
 
     ProductImageVO selectThumbnailImage(int productId);
     int reductionAfterPayment(PaymentDTO paymentDTO);
+
+    List<ProductVO> selectAllWishByUser(Map<String, Object> map);
+
 }

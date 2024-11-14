@@ -120,5 +120,29 @@ public class ProductServiceImpl implements ProductServiceIf {
         }
     }
 
+    @Override
+    public List<ProductDTO> selectAllWishByUser(int pageNo, int pageSize, int pageNavSize, String searchType, String searchValue, String userId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("offset", (pageNo - 1) * pageSize);
+        params.put("limit", pageSize);
+        params.put("searchType", searchType);
+        params.put("searchValue", searchValue);
+        params.put("userId", userId);
+
+
+        List<ProductVO> voList = productMapper.selectAllWishByUser(params);
+        return voList.stream()
+                .map(vo -> {
+                    ProductDTO dto = modelMapper.map(vo, ProductDTO.class);
+                    // 썸네일 이미지 설정
+                    ProductImageVO thumbnailImage = productMapper.selectThumbnailImage(vo.getProductId());
+                    if (thumbnailImage != null) {
+                        dto.setThumbnail(modelMapper.map(thumbnailImage, ProductImageDTO.class));
+                    }
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
 
 }
