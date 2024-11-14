@@ -25,6 +25,7 @@ public interface ProductMapper {
     List<ProductImageVO> selectProductImages(int productId);
 
     ProductImageVO selectThumbnailImage(int productId);
+
     int reductionAfterPayment(PaymentDTO paymentDTO);
 
     List<ProductVO> selectAllWishByUser(Map<String, Object> map);
@@ -32,5 +33,6 @@ public interface ProductMapper {
 
     List<ProductVO> selectAllByProductStatus(Map<String, Object> map);
     int totalCountByProductStatus(Map<String, Object> map);
+
 
 }

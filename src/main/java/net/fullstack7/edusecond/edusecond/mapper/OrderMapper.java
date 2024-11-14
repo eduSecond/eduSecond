@@ -13,6 +13,8 @@ public interface OrderMapper {
     int totalCount(Map<String, Object> map);
     List<OrderListDTO> getOrderListSold(Map<String, Object> map);
     int totalCountSold(Map<String, Object> map);
-    int confirmPurchase(@Param("productId") int productId, @Param("status") String status);
-    int startDelivery(@Param("productId") int productId, @Param("status") String status);
+    int confirmPurchase(@Param("paymentNumber") String paymentNumber, @Param("status") String status);
+    int startDelivery(@Param("paymentNumber") String paymentNumber, @Param("status") String status);
+    int confirm(@Param("paymentNumber") String paymentNumber);
+    int reject(@Param("paymentNumber") String paymentNumber);
 }

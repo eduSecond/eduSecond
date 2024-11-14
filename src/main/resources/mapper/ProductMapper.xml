@@ -114,6 +114,7 @@
     <update id="reductionAfterPayment">
         CALL reductAfterPayment(#{productId}, #{orderQuantity})
     </update>
+
     <select id="selectAllWishByUser" parameterType="map" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductVO">
         SELECT
         p.productId,

@@ -111,6 +111,7 @@
           <th scope="col">구매자 아이디</th>
           <th scope="col">단위가격/개수</th>
           <th scope="col">총 가격</th>
+          <th scope="col">주문 상태</th>
           <th scope="col">배송 상태</th>
           <th scope="col">받는분/배송주소</th>
           <th scope="col">결제번호</th>
@@ -133,10 +134,25 @@
               <td>${dto.buyerId}</td>
               <td>${dto.unitPrice}원/${dto.orderQuantity}개</td>
               <td>${dto.totalPrice}원</td>
+              <c:choose>
+              <c:when test="${dto.orderStatus eq '구매완료'}">
+                <td style="color:green;"
+              </c:when>
+              <c:otherwise>
+              <td style="color:red;"
+              </c:otherwise>
+              </c:choose>
+              >
+                  ${dto.orderStatus}
+                  <c:if test="${dto.orderStatus eq '구매대기'}">
+                    <button onclick="location.href='/es/payment/confirm?paymentNumber=${dto.paymentNumber}&pageNo=${param.pageNo}'">수락</button>
+                    <button onclick="location.href='/es/payment/reject?paymentNumber=${dto.paymentNumber}&pageNo=${param.pageNo}'">거부</button>
+                  </c:if>
+              </td>
               <td>
                   ${dto.deliveryStatus}
-                  <c:if test="${dto.deliveryStatus eq '배송전'}">
-                    <button onclick="location.href='/es/payment/startDelivery?productId=${dto.productId}&pageNo=${param.pageNo}'">배송시작</button>
+                  <c:if test="${dto.orderStatus eq '구매완료' && dto.deliveryStatus eq '배송전'}">
+                    <button onclick="location.href='/es/payment/startDelivery?paymentNumber=${dto.paymentNumber}&pageNo=${param.pageNo}'">배송시작</button>
                   </c:if>
               </td>
               <td>${dto.recipientName}/${dto.shippingAddress}</td>
