@@ -320,7 +320,7 @@
   </style>
 </head>
 <body>
-<%@ include file="/main/header.jsp"%>
+<%@include file="../main/header.jsp"%>
 
 <%--<div class="tab-container">--%>
 <%--  <div class="tab">--%>
@@ -455,7 +455,7 @@
 <%--  <h1 class="section-title">브랜드소개</h1>--%>
 <%--  <p>브랜드 소개 내용이 여기에 표시됩니다.</p>--%>
 <%--</section>--%>
-<%@ include file="/main/footer.jsp"%>
+<%@ include file="../main/footer.jsp"%>
 
 <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=iaof4vxmpl"></script>
 <script>

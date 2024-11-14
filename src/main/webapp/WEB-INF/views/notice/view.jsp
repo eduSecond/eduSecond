@@ -25,140 +25,109 @@
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
       border-radius: 8px;
     }
-
     .container {
-      width: 80%;
-      margin: 50px auto;
-      text-align: center;
-    }
-
-    h1 {
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-
-    .announcement-table {
       width: 100%;
-      border-collapse: collapse;
+      background-color: #fff;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .title {
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .meta-info {
+      text-align: right;
+      font-size: 14px;
+      color: #666;
       margin-bottom: 20px;
     }
 
-    .announcement-table th,
-    .announcement-table td {
-      border: 1px solid #ddd;
-      padding: 12px;
-      text-align: left;
+    .description {
+      font-size: 16px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
     }
 
-    .announcement-table th {
-      background-color: #f2f2f2;
-      font-weight: bold;
+    .attachment-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
     }
 
-    .announcement-table tbody tr:nth-child(even) {
-      background-color: #fafafa;
+    .content {
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 20px;
     }
 
-    .new-icon {
-      color: red;
-      margin-right: 5px;
+    .content p {
+      margin-bottom: 10px;
     }
 
-    .pagination {
-      display: inline-block;
+    .content img {
+      width: 100%;
+      max-width: 400px;
       margin: 20px 0;
     }
 
-    .pagination a {
-      color: #333;
-      padding: 8px 16px;
-      text-decoration: none;
-      border: 1px solid #ddd;
-      margin: 0 4px;
-      border-radius: 4px;
-    }
-
-    .pagination a:hover {
-      background-color: #ddd;
-    }
-
-    .search-box {
-      margin-top: 20px;
-    }
-
-    .search-box select,
-    .search-box input,
-    .search-box button {
+    .back-button {
+      display: block;
+      width: 100%;
       padding: 10px;
-      margin-right: 5px;
-      font-size: 16px;
-    }
-
-    .search-box button {
       background-color: #333;
       color: #fff;
       border: none;
+      font-size: 16px;
       cursor: pointer;
+      text-align: center;
+      border-radius: 5px;
+      transition: background-color 0.3s;
     }
 
-    .search-box button:hover {
+    .back-button:hover {
       background-color: #555;
     }
+
 
   </style>
 </head>
 <body>
-<%@ include file="/main/header.jsp"%>
+<%@ include file="../main/header.jsp"%>
 
 <section class="privacy-policy">
   <div class="container">
-    <h1>공지사항</h1>
-    <table class="announcement-table">
-      <thead>
-      <tr>
-        <th>번호</th>
-        <th>제목</th>
-        <th>등록일</th>
-        <th>조회수</th>
-
-      </tr>
-      </thead>
-      <tbody>
-      <c:forEach items="${notices}" var="notice">
-        <tr>
-          <td>${notice.noticeId}</td>
-          <td>
-            <a href="/admin/notice/view?noticeId=${notice.noticeId}">
-                ${notice.title}
-            </a>
-          </td>
-          <td>${notice.regDate}</td>
-          <td>${notice.viewCount}</td>
-        </tr>
-        <!-- Add more rows as needed -->
-      </c:forEach>
-      </tbody>
-    </table>
-    <div class="pagination">
-      <%@ include file="../common/paging.jsp" %>
+    <h1 class="title">공지사항</h1>
+    <div class="meta-info">
+      <span style="display: block; text-align: left;">작성자 : ${notice.adminId}</span> | <span>${notice.regDate}</span> | <span>조회수 : ${notice.viewCount}</span>
     </div>
 
-    <div class="search-box">
-      <form class="search-box" method="get" action="/notice/noticelist">
-        <select name="searchType" class="form-select" style="width: 120px;">
-          <option value="title" ${searchType == 'title' ? 'selected' : ''}>제목</option>
-          <option value="content" ${searchType == 'content' ? 'selected' : ''}>내용</option>
-        </select>
-        <input type="text" name="searchValue" value="${searchValue}" class="form-control" placeholder="검색어 입력">
-        <button type="submit" class="btn btn-dark">검색</button>
-      </form>
+    <p class="description">${notice.title}</p>
+    <!--
+    <div class="attachment-section">
+      <strong>첨부파일</strong>
+      <span>첨부파일 없음</span>
     </div>
+    -->
+    <div class="content">
+        ${notice.content}
+      </p>
+    </div>
+
+    <button class="back-button" onclick="location.href='/notice/noticelist'">목록</button>
   </div>
-
 </section>
 
-
-<%@include file="/main/footer.jsp"%>
+<%@include file="../main/footer.jsp"%>
 
 
 </body>

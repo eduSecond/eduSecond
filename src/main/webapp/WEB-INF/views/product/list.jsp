@@ -74,7 +74,7 @@
 <body>
 <div class="container">
     <div class="header">
-        <%@include file="/main/header.jsp" %>
+        <%@include file="../main/header.jsp" %>
         <form class="d-flex" role="search" action="/product/list" method="GET">
             <select name="searchType" class="form-select" style="width: 120px;">
                 <option value="productName" ${searchType == 'productName' ? 'selected' : ''}>상품명</option>

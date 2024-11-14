@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -81,7 +82,12 @@
   </style>
 </head>
 <body>
-<%@include file="/main/header.jsp"%>
+<%@include file="../main/header.jsp"%>
+<c:if test="${not empty errorMessage}">
+  <script>
+    alert("${errorMessage}");
+  </script>
+</c:if>
 <div class="privacy-policy">
   <h1>로그인</h1>
   <form method="post" id="registrationForm" onsubmit="return validateForm()">
@@ -97,7 +103,7 @@
   </form>
 
 </div>
-<%@include file="/main/footer.jsp"%>
+<%@include file="../main/footer.jsp"%>
 <script>
   function validateForm() {
     let isValid = true;
@@ -115,7 +121,7 @@
     }
 
     // Validate Password
-    const passwordPattern = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[@#$%^&+=]).{8,20}$/;
+    const passwordPattern = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[@#$%^&+=!]).{8,20}$/;
     if (!passwordPattern.test(password)) {
       document.getElementById('passwordError').style.display = 'block';
       isValid = false;

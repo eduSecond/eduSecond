@@ -104,11 +104,71 @@
     .search-box button:hover {
       background-color: #555;
     }
+    /* Pagination Container */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .pagination .page-item {
+      display: inline-block; /* Ensures horizontal alignment */
+      margin: 0 5px;
+    }
+
+    .pagination .page-link {
+      color: #000000; /* Primary color for links */
+      background-color: #ffffff;
+      border: 1px solid #dee2e6;
+      padding: 8px 12px;
+      transition: all 0.3s;
+      text-decoration: none;
+      border-radius: 5px;
+      display: block;
+    }
+
+    /* Hover Effect */
+    .pagination .page-link:hover {
+      background-color: rgba(0, 0, 0, 0.66);
+      color: #ffffff;
+    }
+
+    /* Active Page Style */
+    .pagination .page-item.active .page-link {
+      background-color: rgb(0, 0, 0);
+      color: #ffffff;
+      border-color: rgb(0, 0, 0);
+    }
+
+    /* Previous and Next Arrows */
+    .pagination .page-link[aria-label="Previous"],
+    .pagination .page-link[aria-label="Next"] {
+      font-weight: bold;
+      font-size: 1.2em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 576px) {
+      .pagination .page-item {
+        margin: 0 2px;
+      }
+      .pagination .page-link {
+        padding: 6px 10px;
+        font-size: 0.9em;
+      }
+    }
+
+
 
   </style>
 </head>
 <body>
-<%@ include file="/main/header.jsp"%>
+<%@ include file="../main/header.jsp"%>
 
 <section class="privacy-policy">
   <div class="container">
@@ -128,7 +188,7 @@
         <tr>
           <td>${notice.noticeId}</td>
           <td>
-            <a href="/admin/notice/view?noticeId=${notice.noticeId}">
+            <a href="/notice/view?noticeId=${notice.noticeId}">
                 ${notice.title}
             </a>
           </td>
@@ -158,7 +218,7 @@
 </section>
 
 
-<%@include file="/main/footer.jsp"%>
+<%@include file="../main/footer.jsp"%>
 
 
 </body>

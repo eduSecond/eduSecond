@@ -132,7 +132,7 @@
 
       <!--로그인 시-->
       <c:if test="${not empty sessionScope.memberInfo}" var="login">
-        <a href="#">마이페이지</a>| <a href="/main/logout">로그아웃</a>
+        <a href="#">${sessionScope.memberInfo.userName}의 마이페이지</a>| <a href="/main/logout">로그아웃</a>
       </c:if>
     </div>
   </div>

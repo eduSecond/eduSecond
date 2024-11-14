@@ -389,6 +389,11 @@
 </head>
 <body>
 <%@include file="header.jsp"%>
+<c:if test="${not empty errorMessage}">
+  <script>
+    alert("${errorMessage}");
+  </script>
+</c:if>
 <section class="hero">
   <div class="hero-content">
     <div class="main-banner" id="mainBanner">
