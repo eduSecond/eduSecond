@@ -178,13 +178,13 @@ public class ProductServiceImpl implements ProductServiceIf {
                                                      String searchType,
                                                      String searchValue,
                                                      String userId,
-                                                     String status) {
+                                                     String productStatus) {
         Map<String, Object> params = new HashMap<>();
         params.put("offset", (pageNo - 1) * pageSize);
         params.put("limit", pageSize);
         params.put("searchType", searchType);
         params.put("searchValue", searchValue);
-        params.put("status", status);
+        params.put("productStatus", productStatus);
         params.put("userId", userId);
         List<ProductVO> list = productMapper.selectAllByProductStatus(params);
         return list.stream().map(vo -> {
@@ -199,13 +199,13 @@ public class ProductServiceImpl implements ProductServiceIf {
     }
 
     @Override
-    public int totalCountByProductStatus(String searchCategory, String searchValue, String userId, String status) {
+    public int totalCountByProductStatus(String searchCategory, String searchValue, String userId, String productStatus) {
         Map<String, Object> map = new HashMap<>();
         map.put("searchCategory", searchCategory);
         map.put("searchValue", searchValue);
-        map.put("status", status);
+        map.put("status", productStatus);
         map.put("userId", userId);
-        return productMapper.totalCount(map);
+        return productMapper.totalCountByProductStatus(map);
     }
 
 

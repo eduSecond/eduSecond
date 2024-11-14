@@ -137,7 +137,6 @@ public class MypageController {
             if(!validateListParameters(pageNo, searchType, searchValue, response)){
                 return null;
             }
-            //String[] status = {"AVAILABLE", "SOLD"};
             List<ProductDTO> availableList  = productService.selectAllByProductStatus(pageNo, 10, 6, searchType, searchValue, loginDto.getUserId(), "AVAILABLE");
             List<ProductDTO> soldOutList  = productService.selectAllByProductStatus(pageNo, 10, 6, searchType, searchValue, loginDto.getUserId(), "SOLD");
 
@@ -146,7 +145,7 @@ public class MypageController {
 
             Paging availablePaging = new Paging(pageNo, 10, 5, availableTotalCount);
             Paging soldOutPaging = new Paging(pageNo, 10, 5, soldOutTotalCount);
-            model.addAttribute("pList", availableList);
+            model.addAttribute("availableList", availableList);
             model.addAttribute("paging", availablePaging);
 
             model.addAttribute("soldOutList", soldOutList);
@@ -154,7 +153,6 @@ public class MypageController {
 
             model.addAttribute("searchType", searchType);
             model.addAttribute("searchValue", searchValue);
-            //log.info("pList.size()" + pList.size());
             return "/mypage/myProduct";
         }catch(Exception e){
             log.error("내 상품 조회 중 오류 발생" + e.getMessage());

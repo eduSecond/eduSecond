@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public class CommonFileUtil {
 
-    private static final String UPLOAD_DIRECTORY = "C:\\Users\\Jerry\\Desktop\\java7\\eduSecondUploads\\"; // 저장할 디렉토리 경로
+    private static final String UPLOAD_DIRECTORY = "D:\\project\\spring\\eduSecond\\src\\main\\webapp\\resources\\images\\product\\"; // 저장할 디렉토리 경로
 
     // 다중 파일 업로드 메서드
     public static List<String> uploadFiles(List<MultipartFile> files) throws IOException {

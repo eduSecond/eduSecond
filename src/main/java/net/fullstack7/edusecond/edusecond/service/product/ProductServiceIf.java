@@ -23,6 +23,6 @@ public interface ProductServiceIf {
 
     List<ProductDTO> selectAllByUser(int pageNo, int pageSize, int pageNavSize, String searchType, String searchValue, String userId, String type);
 
-    List<ProductDTO> selectAllByProductStatus(int pageNo, int pageSize, int pageNavSize, String searchType, String searchValue, String userId, String status);
-    public int totalCountByProductStatus(String searchCategory, String searchValue, String userId, String status);
+    List<ProductDTO> selectAllByProductStatus(int pageNo, int pageSize, int pageNavSize, String searchType, String searchValue, String userId, String productStatus);
+    public int totalCountByProductStatus(String searchCategory, String searchValue, String userId, String productStatus);
 }

@@ -94,7 +94,7 @@
     </div>
     <div class="content col-10">
         <h2>판매중 상품</h2>
-        <form class="d-flex" role="search" action="/es/mypage/wishList" method="GET">
+        <form class="d-flex" role="search" action="/es/mypage/myProduct" method="GET">
             <select name="searchType" class="form-select" style="width: 120px;">
                 <option value="productName" ${searchType == 'productName' ? 'selected' : ''}>상품명</option>
                 <option value="sellerId" ${searchType == 'sellerId' ? 'selected' : ''}>판매자</option>
@@ -107,24 +107,25 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">상품명</th>
-                <th scope="col">판매자</th>
                 <th scope="col">가격</th>
-                <th scope="col">항목 삭제</th>
+                <th scope="col">상태</th>
             </tr>
             </thead>
             <tbody>
-                    <c:if test="${not empty pList}">
-                        <c:forEach var="dto" items="${pList}" >
+                    <c:if test="${not empty availableList}">
+                        <c:forEach var="dto" items="${availableList}" >
                             <tr>
-                                <c:if test="${not empty dto.thumbnail}">
-                                    <img src="${dto.thumbnail.imagePath}"
-                                         alt="상품 썸네일"
-                                         style="width: 50px; height: 50px; object-fit: cover;">
-                                </c:if>
+                                <td>
+                                    <c:if test="${not empty dto.thumbnail}">
+                                        <img src="/resources/${dto.thumbnail.imagePath}"
+                                             alt="상품 썸네일"
+                                             style="width: 50px; height: 50px; object-fit: cover;">
+                                    </c:if>
+                                </td>
                                 <td>${dto.productName}</td>
                                 <td>${dto.sellerId}</td>
                                 <td>${dto.price}원</td>
-                                <td><button type="button" onclick="javascript:location.href='/es/like/delete?productId=${dto.productId}&userId=user1&source=mypage'">삭제</button></td>
+                                <td>${dto.productStatus}</td>
                             </tr>
                         </c:forEach>
                     </c:if>
@@ -134,7 +135,7 @@
         <br>
         <br>
         <h2>판매 완료 상품</h2>
-        <form class="d-flex" role="search" action="/es/mypage/wishList" method="GET">
+        <form class="d-flex" role="search" action="/es/mypage/myProduct" method="GET">
             <select name="searchType" class="form-select" style="width: 120px;">
                 <option value="productName" ${searchType == 'productName' ? 'selected' : ''}>상품명</option>
                 <option value="sellerId" ${searchType == 'sellerId' ? 'selected' : ''}>판매자</option>
@@ -147,30 +148,58 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">상품명</th>
-                <th scope="col">판매자</th>
                 <th scope="col">가격</th>
-                <th scope="col">항목 삭제</th>
+                <th scope="col">상태</th>
             </tr>
             </thead>
             <tbody>
-            <c:if test="${not empty pList}">
-                <c:forEach var="dto" items="${pList}" >
+            <c:if test="${not empty soldOutList}">
+                <c:forEach var="dto" items="${soldOutList}" >
                     <tr>
+                        <td>
                         <c:if test="${not empty dto.thumbnail}">
-                            <img src="${dto.thumbnail.imagePath}"
+                            <img src="/resources/${dto.thumbnail.imagePath}"
                                  alt="상품 썸네일"
                                  style="width: 50px; height: 50px; object-fit: cover;">
                         </c:if>
+                        </td>
                         <td>${dto.productName}</td>
                         <td>${dto.sellerId}</td>
                         <td>${dto.price}원</td>
-                        <td><button type="button" onclick="javascript:location.href='/es/like/delete?productId=${dto.productId}&userId=user1&source=mypage'">삭제</button></td>
+                        <td>${dto.productStatus}</td>
                     </tr>
                 </c:forEach>
             </c:if>
             </tbody>
         </table>
-        <%@ include file="../common/paging.jsp"%>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <!-- 이전 페이지 블록 버튼 -->
+                <c:if test="${soldOutPaging.prevBlock}">
+                    <li class="page-item">
+                        <a class="page-link" href="?pageNo=${soldOutPaging.startBlockPage - 1}&searchCategory=${param.searchCategory}&searchValue=${param.searchValue}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                </c:if>
+
+                <!-- 현재 페이지 블록 버튼들 -->
+                <c:forEach begin="${soldOutPaging.startBlockPage}" end="${soldOutPaging.endBlockPage}" var="i">
+                    <li class="page-item ${i == param.pageNo ? 'active' : ''}">
+                        <a class="page-link" href="?pageNo=${i}&searchCategory=${param.searchCategory}&searchValue=${param.searchValue}">${i}</a>
+                    </li>
+                </c:forEach>
+
+                <!-- 다음 페이지 블록 버튼 -->
+                <c:if test="${soldOutPaging.nextBlock}">
+                    <li class="page-item">
+                        <a class="page-link" href="?pageNo=${soldOutPaging.endBlockPage + 1}&searchCategory=${param.searchCategory}&searchValue=${param.searchValue}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </c:if>
+            </ul>
+        </nav>
     </div>
 </div>
 <%@include file="/main/footer.jsp"%>

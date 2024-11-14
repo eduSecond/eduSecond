@@ -31,6 +31,6 @@ public interface ProductMapper {
     int totalCountLikedProducts(Map<String, Object> map);
 
     List<ProductVO> selectAllByProductStatus(Map<String, Object> map);
-    int totalCountByStatus(Map<String, Object> map);
+    int totalCountByProductStatus(Map<String, Object> map);
 
 }
