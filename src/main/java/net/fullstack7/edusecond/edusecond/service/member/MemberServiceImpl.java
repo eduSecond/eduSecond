@@ -47,8 +47,6 @@ public class MemberServiceImpl implements MemberServiceIf {
         return false;
     }
 
-
-    
     @Override
     public int getTotalCount(String searchType, String searchValue) {
         return memberMapper.selectTotalCount(searchType, searchValue);
@@ -67,6 +65,7 @@ public class MemberServiceImpl implements MemberServiceIf {
                 .map(vo -> modelMapper.map(vo, MemberDTO.class))
                 .collect(Collectors.toList());
     }
+
     
     @Override
     public boolean updateEnabled(String userId, boolean enabled) {

@@ -43,6 +43,37 @@
     LIMIT #{offset}, #{limit}
   </select>
 
+    <select id="selectSellerProducts" parameterType="map" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductVO">
+        SELECT
+        p.productId,
+        p.sellerId,
+        p.productName,
+        p.price,
+        p.quantity,
+        p.quality,
+        p.productStatus,
+        p.viewCount,
+        p.regDate,
+        p.modifyDate,
+        m.userName as sellerName,
+        (SELECT imagePath
+        FROM tbl_product_image
+        WHERE productId = p.productId
+        AND isMain = 'Y'
+        LIMIT 1) as thumbnailPath
+        FROM tbl_product p
+        LEFT JOIN tbl_member m ON p.sellerId = m.userId
+        WHERE sellerId = #{userId}
+        <if test="searchType != null and searchType == 'productName'">
+            AND p.productName LIKE CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchType != null and searchType == 'sellerId'">
+            AND p.sellerId LIKE CONCAT('%', #{searchValue}, '%')
+        </if>
+        ORDER BY p.productId DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
   <select id="selectProductById" parameterType="java.lang.Integer" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductVO">
     SELECT 
         p.productId, 

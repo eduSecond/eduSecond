@@ -1,7 +1,9 @@
 package net.fullstack7.edusecond.edusecond;
 
 import lombok.extern.log4j.Log4j2;
+import net.fullstack7.edusecond.edusecond.dto.notice.NoticeDTO;
 import net.fullstack7.edusecond.edusecond.service.notice.NoticeServiceIf;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -31,5 +33,6 @@ public class InserNoticeTests {
 //            log.error("Error inserting notice", e);
 //        }
 //    }
+
 
 }

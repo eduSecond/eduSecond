@@ -12,6 +12,7 @@ import java.util.Map;
 public interface ProductMapper {
     ProductVO selectProductById(Integer productId);
     List<ProductVO> selectAllProducts(Map<String, Object> map);
+    List<ProductVO> selectSellerProducts(Map<String, Object> map);
     List<ProductVO> selectProductsBySeller(Map<String, Object> map);
     int insertProduct(ProductVO productVO);
     void insertProductImageMain(ProductImageVO productVO);

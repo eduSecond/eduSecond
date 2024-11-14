@@ -312,28 +312,27 @@
         </div>
         <div class="product-grid">
             <!-- Product card template -->
-            <div class="product-card">
-                <img src="product1.jpg" alt="Product Image">
-                <h3 class="product-title">유아 긴 베개 나눔(자크로..</h3>
-                <p class="product-price">나눔</p>
-                <p class="product-details">하안동</p>
-                <p class="product-info">채팅 1 · 관심 1</p>
-            </div>
-            <!-- Repeat product-card for other products -->
-            <div class="product-card">
-                <img src="product1.jpg" alt="Product Image">
-                <h3 class="product-title">유아 긴 베개 나눔(자크로..</h3>
-                <p class="product-price">나눔</p>
-                <p class="product-details">하안동</p>
-                <p class="product-info">채팅 1 · 관심 1</p>
-            </div>
-            <div class="product-card">
-                <img src="product1.jpg" alt="Product Image">
-                <h3 class="product-title">유아 긴 베개 나눔(자크로..</h3>
-                <p class="product-price">나눔</p>
-                <p class="product-details">하안동</p>
-                <p class="product-info">채팅 1 · 관심 1</p>
-            </div>
+
+
+            <c:if test="${not empty pList}">
+                <c:forEach var="dto" items="${pList}" varStatus="loop" begin="0" end="9">
+                    <a href="/product/view?productId=${dto.productId}" style="text-decoration: none; color: inherit;">
+                        <div class="product-card">
+                        <c:if test="${not empty dto.thumbnail}">
+                            <img src="${dto.thumbnail.imagePath}"
+                                 alt="상품 썸네일"
+                                 class="card-img-top"
+                                 style="height: 150px; object-fit: cover;">
+                        </c:if>
+                        <h3 class="product-title">${dto.productName}</h3>
+                        <p class="product-price">가격: ${dto.price}원</p>
+                        <p class="product-details">조회수: ${dto.viewCount}</p>
+                        <p class="product-info">등록일: ${dto.formatRegDate}</p>
+                        </div>
+                    </a>
+                </c:forEach>
+            </c:if>
+            
 
         </div>
     </div>

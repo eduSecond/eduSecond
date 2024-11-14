@@ -18,25 +18,32 @@ public class SellerDateTests {
     @Autowired(required = false)
     private ProductServiceIf productService;
 
-//    @Test
-//    public void productInsert() {
-//
-//        try{
-//            for (int i = 1; i <= 10; i++) {
-//                ProductRegistDTO dto = ProductRegistDTO.builder()
-//                        .productId(i)
-//                        .sellerId("tester1")
-//                        .productName("가방"+ i)
-//                        .productDesc("예쁜 가방이에요" + i)
-//                        .price(12000)
-//                        .quantity(2)
-//                        .quality("상")
-//                        .build();
-//                productService.insertProduct(dto);
-//            }
-//
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+    @Test
+    public void productInsert() {
+
+        try{
+            for (int i = 1; i <= 10; i++) {
+                ProductRegistDTO dto = ProductRegistDTO.builder()
+                        .productId(i)
+                        .sellerId("tester1")
+                        .productName("가방"+ i)
+                        .productDesc("예쁜 가방이에요" + i)
+                        .price(12000)
+                        .quantity(2)
+                        .quality("상")
+                        .build();
+                productService.insertProduct(dto);
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void productSeller() {
+
+        productService.SellerList(1, 1,1,"searchType","searchValue","user50");
+
+    }
 }

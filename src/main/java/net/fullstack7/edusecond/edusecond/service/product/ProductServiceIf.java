@@ -10,7 +10,7 @@ import java.util.Map;
 public interface ProductServiceIf {
 
     List<ProductDTO> list(int pageNo, int pageSize, int blockSize, String searchCategory, String searchValue);
-
+    List<ProductDTO> SellerList(int pageNo, int pageSize, int blockSize, String searchCategory, String searchValue, String userId);
     public ProductDTO view(Integer productId);
     public int totalCount(String searchCategory, String searchValue);
 
