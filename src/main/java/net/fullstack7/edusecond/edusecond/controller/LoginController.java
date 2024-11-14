@@ -23,6 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.time.LocalDate;
+
 
 @Controller
 @RequestMapping("/login")
@@ -52,7 +54,8 @@ public class LoginController extends HttpServlet {
              @RequestParam String userId
             , @RequestParam String password
 //          , @RequestParam String saveId
-            , HttpServletRequest req, HttpServletResponse res, HttpSession session
+            , HttpServletRequest req, HttpServletResponse res, HttpSession session,
+             RedirectAttributes redirectAttributes
     ){
         log.info("============================================");
         log.info("loginOK");
@@ -74,8 +77,7 @@ public class LoginController extends HttpServlet {
                 session.setAttribute("memberInfo", mdto);
                 return "redirect:/main/main";
             } else{
-                res.setContentType("text/html;charset=UTF-8");
-                res.getWriter().println("<script>alert('존재하지 않습니다');history.back();</script>");
+                redirectAttributes.addFlashAttribute("errorMessage", "존재하지 않는 계정입니다.");
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -86,26 +88,63 @@ public class LoginController extends HttpServlet {
 
     @PostMapping("/regist")
     public String registOk(
-            @Valid MemberRegistDTO dto
-            , BindingResult bindingResult
-            , RedirectAttributes redirectAttributes
-            , @RequestParam String userId
-            , @RequestParam String password
-            , @RequestParam String confirmPassword
-            , @RequestParam String name
-            , @RequestParam String addr
-            , @RequestParam String year
-            , @RequestParam String month
-            , @RequestParam String day
-            , @RequestParam String phone
-            , @RequestParam String email
+              @RequestParam String userId
+            , @RequestParam String userPw
+            , @RequestParam String userName
+            , @RequestParam String userEmail
+            , @RequestParam String userPhone
+            , @RequestParam String userAddress
+            , @RequestParam String userPostcode
             , @RequestParam String userBirth
             , HttpServletRequest req, HttpServletResponse res
+              , RedirectAttributes redirectAttributes
     ){
-        boolean result = MemberService.registerMember(dto);
-        if(result == true){
 
+        try{
+            MemberRegistDTO dto = MemberRegistDTO.builder()
+                    .userId(userId)
+                    .userPw(userPw)
+                    .userName(userName)
+                    .userEmail(userEmail)
+                    .userPhone(userPhone)
+                    .userAddress(userAddress)
+                    .userPostcode(userPostcode)
+                    .userBirth(LocalDate.parse(userBirth))
+                    .build();
+
+            boolean result = MemberService.registerMember(dto);
+            if(result == true){
+                redirectAttributes.addFlashAttribute("errorMessage", "회원가입이 성공했습니다!");
+                return "redirect:/main/main";
+            }else{
+                redirectAttributes.addFlashAttribute("errorMessage", "회원가입이 성공하지 못했습니다");
+
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return "login/regist";
+
+        return "redirect:/login/regist";
     }
+
+    //아이디 중복 확인
+//    @GetMapping("/regist")
+//    public String idCheck(
+//            @RequestParam String userId
+//            , RedirectAttributes redirectAttributes
+//    ){
+//        try{
+//            MemberDTO result = MemberService.getMember(userId);
+//            if(result == null){
+//                redirectAttributes.addFlashAttribute("errorMessage", "사용가능한 아이디 입니다.");
+//                return "redirect:/main/regist";
+//            } else{
+//                redirectAttributes.addFlashAttribute("errorMessage", "이미 존재하는 아이디 입니다.");
+//            }
+//
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//        return "login/regist";
+//    }
 }

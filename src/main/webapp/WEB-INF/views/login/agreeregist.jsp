@@ -120,7 +120,7 @@
   </style>
 </head>
 <body>
-<%@ include file="/main/header.jsp"%>
+<%@ include file="../main/header.jsp"%>
 
 <section class="privacy-policy">
   <form>
@@ -194,7 +194,7 @@
     <button type="button" onclick="goToRegistration()">회원가입 하러 가기</button>
   </form>
 </section>
-<%@include file="/main/footer.jsp"%>
+<%@include file="../main/footer.jsp"%>
 
 <script>
   function goToRegistration() {

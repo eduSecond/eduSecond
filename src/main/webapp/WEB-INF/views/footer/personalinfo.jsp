@@ -82,7 +82,7 @@
   </style>
 </head>
 <body>
-<%@ include file="/main/header.jsp"%>
+<%@ include file="../main/header.jsp"%>
 
 <section class="privacy-policy">
   <h1>개인정보처리방침</h1>
@@ -148,7 +148,7 @@
       <strong>연락처:</strong> privacy@company.com, 02-123-4567</p>
   </div>
 </section>
-<%@include file="/main/footer.jsp"%>
+<%@include file="../main/footer.jsp"%>
 
 
 </body>

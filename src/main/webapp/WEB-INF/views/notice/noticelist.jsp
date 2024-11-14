@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-  <title>툴</title>
+  <title>공지사항</title>
   <style>
     * {
       margin: 0;
@@ -104,11 +104,71 @@
     .search-box button:hover {
       background-color: #555;
     }
+    /* Pagination Container */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .pagination .page-item {
+      display: inline-block; /* Ensures horizontal alignment */
+      margin: 0 5px;
+    }
+
+    .pagination .page-link {
+      color: #000000; /* Primary color for links */
+      background-color: #ffffff;
+      border: 1px solid #dee2e6;
+      padding: 8px 12px;
+      transition: all 0.3s;
+      text-decoration: none;
+      border-radius: 5px;
+      display: block;
+    }
+
+    /* Hover Effect */
+    .pagination .page-link:hover {
+      background-color: rgba(0, 0, 0, 0.66);
+      color: #ffffff;
+    }
+
+    /* Active Page Style */
+    .pagination .page-item.active .page-link {
+      background-color: rgb(0, 0, 0);
+      color: #ffffff;
+      border-color: rgb(0, 0, 0);
+    }
+
+    /* Previous and Next Arrows */
+    .pagination .page-link[aria-label="Previous"],
+    .pagination .page-link[aria-label="Next"] {
+      font-weight: bold;
+      font-size: 1.2em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 576px) {
+      .pagination .page-item {
+        margin: 0 2px;
+      }
+      .pagination .page-link {
+        padding: 6px 10px;
+        font-size: 0.9em;
+      }
+    }
+
+
 
   </style>
 </head>
 <body>
-<%@ include file="/main/header.jsp"%>
+<%@ include file="../main/header.jsp"%>
 
 <section class="privacy-policy">
   <div class="container">
@@ -126,16 +186,14 @@
       <tbody>
       <c:forEach items="${notices}" var="notice">
         <tr>
-          <td>1</td>
-          <td><span class="new-icon">🔴</span>9년 연속 대한민국 고객만족 브랜드 대상 수상기념 이벤트</td>
-          <td>관리자</td>
-          <td>2024-10-25</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td><span class="new-icon">🔴</span>2024년 대한민국 고객만족 브랜드 대상 9년 연속 수상</td>
-          <td>관리자</td>
-          <td>2024-10-18</td>
+          <td>${notice.noticeId}</td>
+          <td>
+            <a href="/notice/view?noticeId=${notice.noticeId}">
+                ${notice.title}
+            </a>
+          </td>
+          <td>${notice.regDate}</td>
+          <td>${notice.viewCount}</td>
         </tr>
       <!-- Add more rows as needed -->
       </c:forEach>
@@ -144,19 +202,23 @@
     <div class="pagination">
       <%@ include file="../common/paging.jsp" %>
     </div>
+
     <div class="search-box">
-      <select>
-        <option value="title">제목</option>
-      </select>
-      <input type="text" placeholder="검색어를 입력하세요">
-      <button>검색</button>
+      <form class="search-box" method="get" action="/notice/noticelist">
+        <select name="searchType" class="form-select" style="width: 120px;">
+          <option value="title" ${searchType == 'title' ? 'selected' : ''}>제목</option>
+          <option value="content" ${searchType == 'content' ? 'selected' : ''}>내용</option>
+        </select>
+        <input type="text" name="searchValue" value="${searchValue}" class="form-control" placeholder="검색어 입력">
+        <button type="submit" class="btn btn-dark">검색</button>
+      </form>
     </div>
   </div>
 
 </section>
 
 
-<%@include file="/main/footer.jsp"%>
+<%@include file="../main/footer.jsp"%>
 
 
 </body>

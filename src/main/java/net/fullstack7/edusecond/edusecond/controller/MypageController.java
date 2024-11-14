@@ -6,8 +6,11 @@ import net.fullstack7.edusecond.edusecond.dto.member.MemberDTO;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberLoginDTO;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberModifyDTO;
 import net.fullstack7.edusecond.edusecond.dto.member.MypageDTO;
+import net.fullstack7.edusecond.edusecond.dto.order.OrderListDTO;
 import net.fullstack7.edusecond.edusecond.mapper.MemberMapper;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
+import net.fullstack7.edusecond.edusecond.service.Like.LikeServiceIf;
+import net.fullstack7.edusecond.edusecond.mapper.OrderMapper;
 import net.fullstack7.edusecond.edusecond.service.member.MemberServiceIf;
 import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
 import net.fullstack7.edusecond.edusecond.util.JSFunc;
@@ -21,7 +24,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/es/mypage")
@@ -31,6 +36,7 @@ public class MypageController {
     private final MemberServiceIf memberService;
     private final MemberMapper memberMapper;
     private final ProductServiceIf productService;
+    private final OrderMapper orderMapper;
 
     @GetMapping("/myInfo")
     public String myInfo(HttpSession session, Model model) {
@@ -77,7 +83,6 @@ public class MypageController {
             log.info("탈퇴실패");
             return "redirect:/es/mypage/myInfo";
         }
-
     }
 
     private boolean validateListParameters(int pageNo, String searchType,
@@ -99,17 +104,20 @@ public class MypageController {
 
     @GetMapping("/wishList")
     public String viewWishList(Model model,
+                               HttpSession session,
                                @RequestParam(defaultValue = "1") int pageNo,
                                @RequestParam(required = false) String searchType,
                                @RequestParam(required = false) String searchValue,
                                HttpServletResponse response){
+        MemberLoginDTO loginDto = (MemberLoginDTO) session.getAttribute("memberInfo");
         try{
             if(!validateListParameters(pageNo, searchType, searchValue, response)){
                 return null;
             }
-            List<ProductDTO> pList = productService.selectAllWishByUser(pageNo, 10, 6, searchType, searchValue, "user1");
-            int totalCount = productService.totalCount(searchType, searchValue);
-            Paging paging = new Paging(pageNo, 10, 6, totalCount);
+            List<ProductDTO> pList = productService.selectAllByUser(pageNo, 10, 5, searchType, searchValue, loginDto.getUserId(), "wish");
+            int totalCount = productService.totalCountLikedProducts(searchType, searchValue, loginDto.getUserId());
+            log.info("totalCount: " + totalCount);
+            Paging paging = new Paging(pageNo, 10, 5, totalCount);
             model.addAttribute("pList", pList);
             model.addAttribute("paging", paging);
             model.addAttribute("searchType", searchType);
@@ -122,8 +130,107 @@ public class MypageController {
         }
     }
 
+    @GetMapping("/orderList")
+    public String viewOrderList(Model model, HttpSession session,
+                                @RequestParam(defaultValue = "1") int pageNo,
+                                @RequestParam(required = false) String searchValue,
+                                HttpServletResponse response){
+
+        MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
+        String userId = memberLoginDTO.getUserId();
+        Map<String,Object> map = new HashMap<>();
+
+        map.put("userId", userId);
+        map.put("offset", (pageNo - 1) * 10);
+        map.put("limit", 10);
+        map.put("searchCategory", "p.productName");
+        map.put("searchValue", searchValue);
+        log.info(searchValue);
+
+        Map<String,Object> countMap = new HashMap<>();
+        countMap.put("searchCategory", "p.productName");
+        countMap.put("searchValue", searchValue);
+
+        List<OrderListDTO> orderList = orderMapper.getOrderList(map);
+        int totalCount = orderMapper.totalCount(countMap);
+        log.info(totalCount);
+        Paging paging = new Paging(pageNo, 10, 5, totalCount);
+
+        model.addAttribute("paging", paging);
+        model.addAttribute("searchValue", searchValue);
+        model.addAttribute("orderList", orderList);
+        return "/mypage/orderList";
+    }
+
+
+    @GetMapping("/orderList_1")
+    public String viewOrderList_1(Model model, HttpSession session,
+                                  @RequestParam(defaultValue = "1") int pageNo,
+                                  @RequestParam(required = false) String searchValue,
+                                  HttpServletResponse response){
+
+        MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
+        String userId = memberLoginDTO.getUserId();
+        Map<String,Object> map = new HashMap<>();
+
+        map.put("userId", userId);
+        map.put("offset", (pageNo - 1) * 10);
+        map.put("limit", 10);
+        map.put("searchCategory", "p.productName");
+        map.put("searchValue", searchValue);
+        log.info(searchValue);
+
+        Map<String,Object> countMap = new HashMap<>();
+        countMap.put("searchCategory", "p.productName");
+        countMap.put("searchValue", searchValue);
+
+        List<OrderListDTO> orderList = orderMapper.getOrderListSold(map);
+        int totalCount = orderMapper.totalCountSold(countMap);
+        log.info(totalCount);
+        Paging paging = new Paging(pageNo, 10, 5, totalCount);
+
+        model.addAttribute("paging", paging);
+        model.addAttribute("searchValue", searchValue);
+        model.addAttribute("orderList", orderList);
+        return "/mypage/orderListSold";
+
+    }
 
 
 
 
+    @GetMapping("/myProduct")
+    public String viewMyProduct(Model model,
+                               HttpSession session,
+                               @RequestParam(defaultValue = "1") int pageNo,
+                               @RequestParam(required = false) String searchType,
+                               @RequestParam(required = false) String searchValue,
+                               HttpServletResponse response){
+        MemberLoginDTO loginDto = (MemberLoginDTO) session.getAttribute("memberInfo");
+        try{
+            if(!validateListParameters(pageNo, searchType, searchValue, response)){
+                return null;
+            }
+            List<ProductDTO> availableList  = productService.selectAllByProductStatus(pageNo, 10, 6, searchType, searchValue, loginDto.getUserId(), "AVAILABLE");
+            List<ProductDTO> soldOutList  = productService.selectAllByProductStatus(pageNo, 10, 6, searchType, searchValue, loginDto.getUserId(), "SOLD");
+
+            int availableTotalCount = productService.totalCountByProductStatus(searchType, searchValue, loginDto.getUserId(), "AVAILABLE");
+            int soldOutTotalCount = productService.totalCountByProductStatus(searchType, searchValue, loginDto.getUserId(), "SOLD");
+
+            Paging availablePaging = new Paging(pageNo, 10, 5, availableTotalCount);
+            Paging soldOutPaging = new Paging(pageNo, 10, 5, soldOutTotalCount);
+            model.addAttribute("availableList", availableList);
+            model.addAttribute("paging", availablePaging);
+
+            model.addAttribute("soldOutList", soldOutList);
+            model.addAttribute("soldOutPaging", soldOutPaging);
+
+            model.addAttribute("searchType", searchType);
+            model.addAttribute("searchValue", searchValue);
+            return "/mypage/myProduct";
+        }catch(Exception e){
+            log.error("내 상품 조회 중 오류 발생" + e.getMessage());
+            return null;
+        }
+    }
 }

@@ -33,4 +33,13 @@ public class ProductDTO {
     private Integer wishCount;        // 찜 수
     private Double avgRating;         // 판매자 평균 평점
     private Integer reviewCount;      // 판매자 리뷰 수
+
+    //날짜 변형 용도
+    private String formatRegDate;
+    public String getFormatRegDate() {
+        return formatRegDate;
+    }
+    public void setFormatRegDate(String formatRegDate) {
+        this.formatRegDate = formatRegDate;
+    }
 }
