@@ -81,7 +81,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </head>
 <body>
-<%@ include file="/main/header.jsp"%>
+<%@ include file="../main/header.jsp"%>
 
 <div class="mainpage">
   <div class="sidebar col-2">
@@ -133,7 +133,12 @@
               <td>${dto.sellerId}</td>
               <td>${dto.unitPrice}원/${dto.orderQuantity}개</td>
               <td>${dto.totalPrice}원</td>
-              <td>${dto.deliveryStatus}</td>
+              <td>
+                  ${dto.deliveryStatus}
+                  <c:if test="${dto.deliveryStatus eq '배송중'}">
+                    <button onclick="location.href='/es/payment/confirmPurchase?productId=${dto.productId}&pageNo=${param.pageNo}'">구매확정</button>
+                  </c:if>
+              </td>
               <td>${dto.recipientName}/${dto.shippingAddress}</td>
               <td>${dto.paymentNumber}</td>
               <td>${dto.paymentMethod}/${dto.paymentCompany}</td>
@@ -152,6 +157,6 @@
   </div>
 </div>
 
-<%@include file="/main/footer.jsp"%>
+<%@include file="../main/footer.jsp"%>
 </body>
 </html>

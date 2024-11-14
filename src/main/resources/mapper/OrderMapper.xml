@@ -49,4 +49,16 @@
             AND ${searchCategory} LIKE CONCAT('%', #{searchValue}, '%')
         </if>
     </select>
+
+    <update id="confirmPurchase">
+        UPDATE tbl_order
+        SET deliveryStatus = '배송완료/구매확정'
+        WHERE productId = #{productId} AND deliveryStatus = '배송중'
+    </update>
+
+    <update id="startDelivery">
+        UPDATE tbl_order
+        SET deliveryStatus = '배송중'
+        WHERE productId = #{productId} AND deliveryStatus = '배송전'
+    </update>
 </mapper>    
