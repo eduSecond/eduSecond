@@ -2,6 +2,7 @@ package net.fullstack7.edusecond.edusecond.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.fullstack7.edusecond.edusecond.dto.member.MemberLoginDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductRegistDTO;
 import net.fullstack7.edusecond.edusecond.service.Like.LikeServiceIf;
@@ -154,8 +155,8 @@ public class ProductController {
             log.info("RegistOk에서 Validation error");
             return "redirect:/product/regist";
         }
-        String userId = session.getAttribute("userId").toString();
-        productRegistDTO.setSellerId(userId);
+        MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
+        productRegistDTO.setSellerId(memberLoginDTO.getUserId());
 
         int result = productService.insertProduct(productRegistDTO); // 상품 삽입
 

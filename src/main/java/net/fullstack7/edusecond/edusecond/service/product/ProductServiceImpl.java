@@ -119,6 +119,7 @@ public class ProductServiceImpl implements ProductServiceIf {
             productMapper.insertProductImage(productImage);
         }
     }
+
     @Override
     public List<ProductDTO> selectAllWishByUser(int pageNo, int pageSize, int pageNavSize, String searchType, String searchValue, String userId) {
         Map<String, Object> params = new HashMap<>();
@@ -127,6 +128,7 @@ public class ProductServiceImpl implements ProductServiceIf {
         params.put("searchType", searchType);
         params.put("searchValue", searchValue);
         params.put("userId", userId);
+
 
         List<ProductVO> voList = productMapper.selectAllWishByUser(params);
         return voList.stream()

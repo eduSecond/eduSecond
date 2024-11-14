@@ -3,6 +3,7 @@ package net.fullstack7.edusecond.edusecond.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberDTO;
+import net.fullstack7.edusecond.edusecond.dto.member.MemberLoginDTO;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberModifyDTO;
 import net.fullstack7.edusecond.edusecond.dto.member.MypageDTO;
 import net.fullstack7.edusecond.edusecond.mapper.MemberMapper;
@@ -33,10 +34,10 @@ public class MypageController {
 
     @GetMapping("/myInfo")
     public String myInfo(HttpSession session, Model model) {
-        String userId = (String) session.getAttribute("userId");
-        MypageDTO mypageDTO = memberMapper.myProductCount(userId);
+        MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
+        MypageDTO mypageDTO = memberMapper.myProductCount(memberLoginDTO.getUserId());
         log.info(mypageDTO);
-        MemberDTO memberDTO = memberService.getMember(userId);
+        MemberDTO memberDTO = memberService.getMember(memberLoginDTO.getUserId());
         model.addAttribute("mypageDTO", mypageDTO);
         model.addAttribute("member", memberDTO);
         return "mypage/myInfo";
@@ -44,8 +45,8 @@ public class MypageController {
 
     @GetMapping("/modify")
     public String modify(HttpSession session, Model model) {
-        String userId = (String) session.getAttribute("userId");
-        model.addAttribute("member", memberService.getMember(userId)); //예시임. 바꿔줘야함
+        MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
+        model.addAttribute("member", memberService.getMember(memberLoginDTO.getUserId())); //예시임. 바꿔줘야함
         return "mypage/modify";
     }
 
@@ -55,8 +56,8 @@ public class MypageController {
                            BindingResult bindingResult,
                            RedirectAttributes redirectAttributes) {
 
-        String userId = (String) session.getAttribute("userId");
-        memberModifyDTO.setUserId(userId);  //예시임. 바꿔줘야 함
+        MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
+        memberModifyDTO.setUserId(memberLoginDTO.getUserId());  //예시임. 바꿔줘야 함
         int result = memberService.modifyMember(memberModifyDTO);
         if(result > 0){
             return "redirect:/es/mypage/myInfo";
@@ -68,8 +69,8 @@ public class MypageController {
 
     @GetMapping("/delete")
     public String delete(HttpSession session) {
-        String userId = (String) session.getAttribute("userId");
-        boolean result = memberService.deleteMember(userId);
+        MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
+        boolean result = memberService.deleteMember(memberLoginDTO.getUserId());
         if(result){
             return "redirect:/main/goMain";
         } else{
