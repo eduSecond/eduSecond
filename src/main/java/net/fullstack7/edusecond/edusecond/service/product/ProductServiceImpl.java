@@ -11,7 +11,7 @@ import net.fullstack7.edusecond.edusecond.mapper.ProductMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,18 +50,22 @@ public class ProductServiceImpl implements ProductServiceIf {
 
     @Override
     public ProductDTO view(Integer productId) {
-        ProductVO vo = productMapper.selectProductById(productId);
-        if (vo == null) {
+        ProductVO voInfo = productMapper.selectProductById(productId);
+        if (voInfo == null) {
             return null;
         }
 
-        ProductDTO dto = modelMapper.map(vo, ProductDTO.class);
+        // 상품 정보 가져오기
+        ProductDTO dto = modelMapper.map(voInfo, ProductDTO.class);
 
-        // 썸네일 이미지 설정
-        ProductImageVO thumbnailVO = productMapper.selectThumbnailImage(productId);
-        if (thumbnailVO != null) {
-            dto.setThumbnail(modelMapper.map(thumbnailVO, ProductImageDTO.class));
+        //이미지 리스트 가져오기
+        List<ProductImageVO> imageVOList = productMapper.selectImagesByProductId(productId);
+        List<ProductImageDTO> imageList = new ArrayList<>();
+        for(ProductImageVO vo : imageVOList){
+            ProductImageDTO imageDTO = modelMapper.map(vo, ProductImageDTO.class);
+            imageList.add(imageDTO);
         }
+        dto.setImages(imageList);
 
         // 조회수 증가
         productMapper.updateViewCount(productId);

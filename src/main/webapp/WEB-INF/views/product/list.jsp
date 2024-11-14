@@ -72,6 +72,7 @@
     </div>
     <!-- 메인 상품 목록 영역 -->
     <div class="main">
+        ${dto.thumbnail.imagePath}
         <c:if test="${not empty pList}">
             <c:forEach var="dto" items="${pList}" varStatus="loop" begin="0" end="9">
                 <a href="/product/view?productId=${dto.productId}" style="text-decoration: none; color: inherit;">
