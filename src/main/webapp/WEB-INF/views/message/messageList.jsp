@@ -98,49 +98,27 @@
     <h2 class="mb-4">셀파톡</h2>
     
     <div class="chat-list">
-        <!-- 채팅방 항목 -->
-        <div class="chat-item d-flex align-items-center p-3 border-bottom position-relative">
-            <div class="chat-info flex-grow-1">
-                <div class="d-flex justify-content-between align-items-center mb-1">
-                    <h6 class="mb-0">강감찬</h6>
-                    <small class="text-muted">2024.11.13</small>
-                </div>
-                <div class="d-flex justify-content-between align-items-end">
-                    <p class="mb-0 text-muted message-preview">
-                        네 알겠습니다. 내일 뵐게요!
-                    </p>
-                    <span class="badge bg-danger rounded-pill ms-2">1</span>
+        <c:forEach items="${chatRooms}" var="room">
+            <div class="chat-item d-flex align-items-center p-3 border-bottom position-relative" 
+                 onclick="location.href='/message/chatting?roomId=${room.roomId}'">
+                <div class="chat-info flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <h6 class="mb-0">${room.otherUserName}</h6>
+                        <small class="text-muted">
+                            <fmt:formatDate value="${room.lastMessageDate}" pattern="yyyy.MM.dd"/>
+                        </small>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-end">
+                        <p class="mb-0 text-muted message-preview">
+                            ${room.lastMessage}
+                        </p>
+                        <c:if test="${room.unreadCount > 0}">
+                            <span class="badge bg-danger rounded-pill ms-2">${room.unreadCount}</span>
+                        </c:if>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- 다른 채팅방 예시 -->
-        <div class="chat-item d-flex align-items-center p-3 border-bottom position-relative">
-          <div class="chat-info flex-grow-1">
-              <div class="d-flex justify-content-between align-items-center mb-1">
-                  <h6 class="mb-0">이순신</h6>
-                  <small class="text-muted">2024.11.13</small>
-              </div>
-              <div class="d-flex justify-content-between align-items-end">
-                  <p class="mb-0 text-muted message-preview">
-                      가격 조정 가능하신가요?
-                  </p>
-                  <span class="badge bg-danger rounded-pill ms-2">10</span>
-              </div>
-          </div>
-      </div>
-
-        <div class="chat-item d-flex align-items-center p-3 border-bottom">
-            <div class="chat-info flex-grow-1">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h6 class="mb-1">김유신</h6>
-                    <small class="text-muted">2024.11.13</small>
-                </div>
-                <p class="mb-0 text-muted text-truncate" style="max-width: 80%;">
-                    거래 완료되었습니다. 감사합니다!
-                </p>
-            </div>
-        </div>
+        </c:forEach>
     </div>
 
     <style>

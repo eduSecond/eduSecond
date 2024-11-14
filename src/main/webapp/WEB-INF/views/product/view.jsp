@@ -79,7 +79,7 @@
         <div class="card-body">
           <h5 class="card-title">Special title treatment</h5>
           <p class="card-text">구매하려면 버튼 눌러라</p>
-          <a href="#" class="btn btn-primary">1:1 문의하기</a>
+          <a href="#" class="btn btn-primary" onclick="createChatRoom()">1:1 문의하기</a>
           <a href="/es/payment/view?productId=${dto.productId}" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#purchaseModal">구매하기</a>
         </div>
       </div>
@@ -128,6 +128,43 @@
       window.location.href = "/es/like/insert?productId=" + productId + "&userId=" + userId;
       heartImage.src = "../../../resources/images/heart/heartRed.png";
     }
+  }
+
+  function createChatRoom() {
+    const productId = ${dto.productId};
+    const sellerId = '${dto.sellerId}';  // 판매자 ID
+    const buyerId = '${sessionScope.memberInfo.userId}';  // 현재 로그인한 사용자 ID
+    
+    if (!buyerId) {
+        alert('로그인이 필요한 서비스입니다.');
+        window.location.href = '/member/login';
+        return;
+    }
+    
+    if (sellerId === buyerId) {
+        alert('자신의 상품입니다.');
+        return;
+    }
+
+    fetch('/message/room/create', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            productId: productId,
+            sellerId: sellerId,
+            buyerId: buyerId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        window.location.href = '/message/chatting?roomId=' + data.roomId;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('채팅방 생성에 실패했습니다.');
+    });
   }
 </script>
 

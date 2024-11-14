@@ -17,34 +17,61 @@
             WHEN c.sellerId = #{userId} THEN m.userId = c.buyerId
             ELSE m.userId = c.sellerId
         END
-        WHERE (c.sellerId = #{userId} OR c.buyerId = #{userId})
-        AND c.isActive = 'Y'
+        WHERE (
+            (c.sellerId = #{userId} AND c.sellerActive = 'Y') OR 
+            (c.buyerId = #{userId} AND c.buyerActive = 'Y')
+        )
         ORDER BY c.regDate DESC
     </select>
 
     <!-- 채팅방 단일 조회 -->
-    <select id="selectChatRoom" resultType="net.fullstack7.edusecond.edusecond.domain.message.ChatRoomVO">
-        SELECT * FROM tbl_chatroom
-        WHERE roomId = #{roomId}
+    <select id="selectChatRoom" resultType="net.fullstack7.edusecond.edusecond.dto.message.ChatRoomDTO">
+        SELECT 
+            cr.*,
+            p.productName,
+            p.productImage,
+            m.userName as otherUserName,
+            (SELECT message FROM tbl_chat_message 
+             WHERE roomId = cr.roomId 
+             ORDER BY regDate DESC LIMIT 1) as lastMessage,
+            (SELECT regDate FROM tbl_chat_message 
+             WHERE roomId = cr.roomId 
+             ORDER BY regDate DESC LIMIT 1) as lastMessageDate,
+            (SELECT COUNT(*) FROM tbl_chat_message 
+             WHERE roomId = cr.roomId 
+             AND isRead = 'N' 
+             AND senderId != #{userId}) as unreadCount
+        FROM tbl_chatroom cr
+        JOIN tbl_product p ON cr.productId = p.productId
+        JOIN tbl_member m ON 
+            CASE 
+                WHEN cr.sellerId = #{userId} THEN m.userId = cr.buyerId
+                ELSE m.userId = cr.sellerId
+            END
+        WHERE cr.roomId = #{roomId}
     </select>
 
     <!-- 채팅방 생성 -->
-    <insert id="insertChatRoom" parameterType="net.fullstack7.edusecond.edusecond.domain.message.ChatRoomVO">
-        INSERT INTO tbl_chatroom (productId, sellerId, buyerId, isActive)
-        VALUES (#{productId}, #{sellerId}, #{buyerId}, 'Y')
+    <insert id="insertChatRoom" parameterType="net.fullstack7.edusecond.edusecond.dto.message.ChatRoomDTO">
+        INSERT INTO tbl_chatroom (productId, sellerId, buyerId, sellerActive, buyerActive)
+        VALUES (#{productId}, #{sellerId}, #{buyerId}, 'Y', 'Y')
     </insert>
 
     <!-- 채팅 메시지 목록 조회 -->
-    <select id="selectChatMessages" resultType="net.fullstack7.edusecond.edusecond.domain.message.ChatMessageVO">
-        SELECT * FROM tbl_chat_message
-        WHERE roomId = #{roomId}
-        ORDER BY regDate ASC
+    <select id="selectChatMessages" resultType="net.fullstack7.edusecond.edusecond.dto.message.ChatMessageDTO">
+        SELECT 
+            m.*,
+            mb.userName as senderName
+        FROM tbl_chat_message m
+        JOIN tbl_member mb ON m.senderId = mb.userId
+        WHERE m.roomId = #{roomId}
+        ORDER BY m.regDate ASC
     </select>
 
     <!-- 메시지 저장 -->
-    <insert id="insertMessage" parameterType="net.fullstack7.edusecond.edusecond.domain.message.ChatMessageVO">
-        INSERT INTO tbl_chat_message (roomId, senderId, message, isRead)
-        VALUES (#{roomId}, #{senderId}, #{message}, 'N')
+    <insert id="insertMessage" parameterType="net.fullstack7.edusecond.edusecond.dto.message.ChatMessageDTO">
+        INSERT INTO tbl_chat_message (roomId, senderId, senderName, message, isRead)
+        VALUES (#{roomId}, #{senderId}, #{senderName}, #{message}, 'N')
     </insert>
 
     <!-- 메시지 읽음 처리 -->
@@ -61,4 +88,28 @@
         SET isActive = 'N'
         WHERE roomId = #{roomId}
     </update>
+
+    <!-- 채팅방 나가기 (사용자별) -->
+    <update id="updateUserChatRoomStatus">
+        UPDATE tbl_chatroom
+        SET 
+            <if test="userType == 'SELLER'">
+                sellerActive = #{status}
+            </if>
+            <if test="userType == 'BUYER'">
+                buyerActive = #{status}
+            </if>
+        WHERE roomId = #{roomId}
+    </update>
+
+    <!-- 채팅방 존재 여부 확인 -->
+    <select id="findExistingChatRoom" resultType="net.fullstack7.edusecond.edusecond.dto.message.ChatRoomDTO">
+        SELECT *
+        FROM tbl_chatroom
+        WHERE productId = #{productId}
+        AND ((sellerId = #{sellerId} AND buyerId = #{buyerId})
+        OR (sellerId = #{buyerId} AND buyerId = #{sellerId}))
+        AND (sellerActive = 'Y' OR buyerActive = 'Y')
+        LIMIT 1
+    </select>
 </mapper>
