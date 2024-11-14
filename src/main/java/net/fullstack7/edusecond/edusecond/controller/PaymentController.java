@@ -69,12 +69,13 @@ public class PaymentController {
         if(result > 0){
             //결제 성공 시 product에서 개수만큼 차감시켜 주어야 함.
             int result1 = productMapper.reductionAfterPayment(paymentDTO);// 상품정보에서 개수 차감하는 메서드
+
             if(result1 > 0){
                 log.info("여기 탄 거 아님?");
-                return "/es/mypage/orderList";
+                return "redirect:/es/mypage/orderList";
             } else{
                 log.info("상품 결제 후 상품 차감 실패");
-                return "/es/mypage/orderList";
+                return "redirect:/es/mypage/orderList";
             }
         } else{
             log.info("상품 결제 중 오류 발생");
