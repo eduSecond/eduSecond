@@ -81,7 +81,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </head>
 <body>
-<%@ include file="/main/header.jsp"%>
+<%@ include file="../main/header.jsp"%>
 <div class="mainpage">
     <div class="sidebar col-2">
         <ul>
@@ -109,7 +109,7 @@
                 <th scope="col">상품명</th>
                 <th scope="col">판매자</th>
                 <th scope="col">가격</th>
-                <th scope="col">항목 삭제</th>
+                <th scope="col">찜 취소</th>
             </tr>
             </thead>
             <tbody>
@@ -133,6 +133,6 @@
         <%@ include file="../common/paging.jsp"%>
     </div>
 </div>
-<%@include file="/main/footer.jsp"%>
+<%@include file="../main/footer.jsp"%>
 </body>
 </html>
