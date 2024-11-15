@@ -150,7 +150,7 @@
                     <button onclick="location.href='/es/payment/confirmPurchase?paymentNumber=${dto.paymentNumber}&pageNo=${param.pageNo}'">구매확정</button>
                   </c:if>
                   ${dto.deliveryStatus} <br>
-                <c:if test="${dto.deliveryStatus eq '배송완료/구매확정' &&  dto.reviewId eq 0}">
+                <c:if test="${dto.reviewId eq 0 && (dto.deliveryStatus eq '배송완료/구매확정' || dto.deliveryStatus eq '직거래 완료')}">
                   <button onclick="location.href='/es/review/review?orderId=${dto.orderId}'">리뷰 작성</button>
                 </c:if>
               </td>
