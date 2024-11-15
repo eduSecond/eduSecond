@@ -2,11 +2,16 @@ package net.fullstack7.edusecond.edusecond.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.fullstack7.edusecond.edusecond.dto.member.MemberDTO;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberLoginDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductRegistDTO;
 import net.fullstack7.edusecond.edusecond.dto.review.ReviewDTO;
+import net.fullstack7.edusecond.edusecond.dto.seller.SellerDTO;
+import net.fullstack7.edusecond.edusecond.dto.seller.StarAvgDTO;
+import net.fullstack7.edusecond.edusecond.mapper.SellerMapper;
 import net.fullstack7.edusecond.edusecond.service.Like.LikeServiceIf;
+import net.fullstack7.edusecond.edusecond.service.member.MemberServiceIf;
 import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
 import net.fullstack7.edusecond.edusecond.service.review.ReviewServiceIf;
 import net.fullstack7.edusecond.edusecond.util.CommonDateUtil;
@@ -39,6 +44,8 @@ public class ProductController {
     private final ProductServiceIf productService;
     private final LikeServiceIf likeService;
     private final ReviewServiceIf reviewService;
+    private final SellerMapper sellerMapper;
+    private final MemberServiceIf MemberService;
     @GetMapping("/list")
     public String list(Model model,
                   @RequestParam(defaultValue = "1") int pageNo,
@@ -215,7 +222,29 @@ public class ProductController {
         }
     }
 
+    @GetMapping("seller/sellerpage")
+    public String intro(
+            @RequestParam String userId
+            , RedirectAttributes redirectAttributes
+            , Model model
+    ){
+        try{
+            MemberDTO result = MemberService.getMember(userId);
+            model.addAttribute("member", result);
+            List<SellerDTO> list = sellerMapper.selectProductInfo(userId);
+            model.addAttribute("list", list);
+            List<SellerDTO> ReviewList = sellerMapper.selectReviewInfo(userId);
+            model.addAttribute("ReviewList", ReviewList);
+            StarAvgDTO StarAvg = sellerMapper.selectReviewStar(userId);
+            model.addAttribute("StarAvg", StarAvg);
 
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return "product/seller/sellerpage";
+    }
 
 
 }

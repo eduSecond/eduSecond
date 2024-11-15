@@ -34,7 +34,7 @@
                                 LEFT JOIN
                         tbl_review r ON r.orderId = o.orderId
                 WHERE
-                        m.userId = #{sellerId}
+                        m.userId = #{sellerId} AND p.productStatus = 'AVAILABLE'
                 ORDER BY
                         p.productId, r.regDate DESC;
         </select>
@@ -45,6 +45,7 @@
                              INNER JOIN tbl_order AS o ON r.orderId = o.orderId
                              INNER JOIN tbl_product AS p ON p.productId = o.productId
                 WHERE p.sellerId = #{sellerId}
+                ORDER BY regDate DESC;
         </select>
 
         <select id="selectReviewStar" resultType="net.fullstack7.edusecond.edusecond.dto.seller.StarAvgDTO">

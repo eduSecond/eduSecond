@@ -51,7 +51,7 @@
 
     .content{
       /*border: solid 1px green;*/
-      margin-top: 15%;
+      margin-top: -25px;
     }
 
     .card {
@@ -73,6 +73,79 @@
       font-size: 18px;
       color: #888;
     }
+    .profile-container {
+      display: flex;
+      max-width: 1200px;
+      margin: 50px auto;
+      height: 200px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+
+    .banner img {
+      width: 100%;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .profile-card {
+      width: 35%;
+      background-color: #f2f2f2;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .profile-image {
+      background-color: #ddd;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 10px;
+    }
+
+    .profile-image img {
+      width: 100%;
+      border-radius: 50%;
+    }
+
+    .profile-name {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+
+    .profile-info {
+      width: 70%;
+      padding: 0 20px;
+    }
+
+    .profile-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .info-details {
+      display: flex;
+      gap: 15px;
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+    }
+
   </style>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -113,15 +186,35 @@
   </div>
   <div class="right-side">
     <div class="content">
-      <c:choose>
-        <c:when test="${isLiked}">
-          <img src="../../../resources/images/heart/heartRed.png" id="heartImageRed" height="30px" width="30px" onclick="Heart()">
-        </c:when>
-        <c:otherwise>
-          <img src="../../../resources/images/heart/heart.png" id="heartImage" height="30px" width="30px" onclick="Heart()">
-        </c:otherwise>
-      </c:choose>
+      <!-- 프로필 부분 -->
+      <div class="profile-container">
+
+        <div class="profile-card">
+          <div class="profile-image">
+            <img src="/resources/images/seller/woman.png" alt="User Profile">
+          </div>
+          <h3 class="profile-name">${dto.sellerId}</h3>
+        </div>
+
+        <div class="profile-info">
+          <h2 class="profile-title">${member.userName}</h2>
+          <div class="info-details">
+            <span class="info-item"><a style="font-size: 18px;" href="seller/sellerpage?userId=${dto.sellerId}">➡️ 판매자 페이지 보러가기</a></span>
+          </div>
+        </div>
+      </div>
+      <!-- /프로필 부분 -->
+
+
       <ul>
+        <c:choose>
+          <c:when test="${isLiked}">
+            <img style="margin-bottom: 30px;" src="../../../resources/images/heart/heartRed.png" id="heartImageRed" height="30px" width="30px" onclick="Heart()">
+          </c:when>
+          <c:otherwise>
+            <img style="margin-bottom: 30px;" src="../../../resources/images/heart/heart.png" id="heartImage" height="30px" width="30px" onclick="Heart()">
+          </c:otherwise>
+        </c:choose>
         <li>상품명: ${dto.productName}</li>
         <li>상세 내용: ${dto.productDesc}</li>
         <li>가격: ${dto.price}원</li>

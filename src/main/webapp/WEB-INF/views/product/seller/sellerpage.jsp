@@ -282,20 +282,23 @@
     </style>
 </head>
 <body>
-<%@ include file="../main/header.jsp"%>
+<%@ include file="../../main/header.jsp"%>
 
 <section class="privacy-policy">
-
-
     <div class="profile-container">
-
         <div class="profile-card">
             <div class="profile-image">
                 <img src="/resources/images/seller/woman.png" alt="User Profile">
             </div>
             <h3 class="profile-name">${member.userName}</h3>
+            <c:if test="${not empty StarAvg}">
             <div class="rating" data-rating="${StarAvg.starAvg}"></div>
             <div>(${StarAvg.starAvg})</div>
+            </c:if>
+            <c:if test="${empty StarAvg}">
+                <div>(아직 등록된 리뷰가 없습니다)</div>
+            </c:if>
+
         </div>
 
         <div class="profile-info">
@@ -312,7 +315,10 @@
             <hr style="max-width: 1200px">
         </div>
         <div class="product-grid">
-            <!-- Product card template -->
+            <!-- Product card template
+            <c:if test="${not empty list}">
+                <p>!상품이 없습니다</p>
+            </c:if> -->
             <c:if test="${not empty list}">
                 <c:forEach var="dto" items="${list}" varStatus="loop" begin="0" end="9">
                     <a href="/product/view?productId=${dto.productId}" style="text-decoration: none; color: inherit;">
@@ -360,7 +366,7 @@
     </div>
 </section>
 
-<%@include file="../main/footer.jsp"%>
+<%@include file="../../main/footer.jsp"%>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
