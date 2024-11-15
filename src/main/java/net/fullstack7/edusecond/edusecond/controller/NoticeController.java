@@ -32,17 +32,17 @@ public class NoticeController {
     public String noticelist(
             @RequestParam(defaultValue = "1") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize,
-            @RequestParam(required = false) String searchType,
+            @RequestParam(required = false) String searchCategory,
             @RequestParam(required = false) String searchValue,
             Model model) {
         try {
-            List<NoticeDTO> notices = noticeService.getList(pageNo, pageSize, searchType, searchValue);
-            int totalCount = noticeService.getTotalCount(searchType, searchValue);
+            List<NoticeDTO> notices = noticeService.getList(pageNo, pageSize, searchCategory, searchValue);
+            int totalCount = noticeService.getTotalCount(searchCategory, searchValue);
             Paging paging = new Paging(pageNo, pageSize, 5, totalCount);
 
             model.addAttribute("notices", notices);
             model.addAttribute("paging", paging);
-            model.addAttribute("searchType", searchType);
+            model.addAttribute("searchCategory", searchCategory);
             model.addAttribute("searchValue", searchValue);
 
             return "notice/noticelist";

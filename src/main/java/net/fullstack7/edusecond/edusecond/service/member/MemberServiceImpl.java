@@ -56,16 +56,16 @@ public class MemberServiceImpl implements MemberServiceIf {
 
     
     @Override
-    public int getTotalCount(String searchType, String searchValue) {
-        return memberMapper.selectTotalCount(searchType, searchValue);
+    public int getTotalCount(String searchCategory, String searchValue) {
+        return memberMapper.selectTotalCount(searchCategory, searchValue);
     }
     
     @Override
-    public List<MemberDTO> getList(int pageNo, int pageSize, String searchType, String searchValue) {
+    public List<MemberDTO> getList(int pageNo, int pageSize, String searchCategory, String searchValue) {
         Map<String, Object> params = new HashMap<>();
         params.put("offset", (pageNo - 1) * pageSize);
         params.put("limit", pageSize);
-        params.put("searchType", searchType);
+        params.put("searchCategory", searchCategory);
         params.put("searchValue", searchValue);
         
         List<MemberVO> voList = memberMapper.selectList(params);
@@ -130,11 +130,11 @@ public class MemberServiceImpl implements MemberServiceIf {
     }
 
     @Override
-    public List<MemberDTO> getWithdrawalList(int pageNo, int pageSize, String searchType, String searchValue) {
+    public List<MemberDTO> getWithdrawalList(int pageNo, int pageSize, String searchCategory, String searchValue) {
         Map<String, Object> params = new HashMap<>();
         params.put("offset", (pageNo - 1) * pageSize);
         params.put("limit", pageSize);
-        params.put("searchType", searchType);
+        params.put("searchCategory", searchCategory);
         params.put("searchValue", searchValue);
         params.put("enabled", "Q");  // 탈퇴 신청 상태
         
@@ -145,7 +145,7 @@ public class MemberServiceImpl implements MemberServiceIf {
     }
 
     @Override
-    public int getWithdrawalTotalCount(String searchType, String searchValue) {
-        return memberMapper.selectWithdrawalTotalCount(searchType, searchValue);
+    public int getWithdrawalTotalCount(String searchCategory, String searchValue) {
+        return memberMapper.selectWithdrawalTotalCount(searchCategory, searchValue);
     }
 }

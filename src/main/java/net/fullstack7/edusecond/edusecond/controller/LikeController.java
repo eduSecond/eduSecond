@@ -63,17 +63,17 @@ public class LikeController {
         //return "redirect:/product/view?productId=" + productId;
     }
 
-    private boolean validateListParameters(int pageNo, String searchType,
+    private boolean validateListParameters(int pageNo, String searchCategory,
                                            String searchValue, HttpServletResponse response) {
         if (pageNo < 1) {
             JSFunc.alertBack("페이지 번호는 1 이상이어야 합니다.", response);
             return false;
         }
 
-        if (searchType != null && !searchType.trim().isEmpty()
+        if (searchCategory != null && !searchCategory.trim().isEmpty()
                 && searchValue != null && !searchValue.trim().isEmpty()) {
-            if (!("productName".equals(searchType) || "sellerId".equals(searchType))) {
-                JSFunc.alertBack("유효하지 않은 검색 카테고리입니다: " + searchType, response);
+            if (!("productName".equals(searchCategory) || "sellerId".equals(searchCategory))) {
+                JSFunc.alertBack("유효하지 않은 검색 카테고리입니다: " + searchCategory, response);
                 return false;
             }
         }

@@ -15,9 +15,9 @@
             
             <div class="d-flex gap-2">
                 <form class="d-flex gap-2" method="get" action="/admin/notice/list">
-                    <select name="searchType" class="form-select" style="width: 120px;">
-                        <option value="title" ${searchType == 'title' ? 'selected' : ''}>제목</option>
-                        <option value="content" ${searchType == 'content' ? 'selected' : ''}>내용</option>
+                    <select name="searchCategory" class="form-select" style="width: 120px;">
+                        <option value="title" ${searchCategory == 'title' ? 'selected' : ''}>제목</option>
+                        <option value="content" ${searchCategory == 'content' ? 'selected' : ''}>내용</option>
                     </select>
                     <input type="text" name="searchValue" value="${searchValue}" class="form-control" placeholder="검색어 입력">
                     <button type="submit" class="btn btn-dark">검색</button>

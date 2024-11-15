@@ -15,9 +15,9 @@
             
             <!-- 검색 폼 -->
             <form class="d-flex gap-2" method="get" action="/admin/product/list">
-                <select name="searchType" class="form-select" style="width: 120px;">
-                    <option value="productName" ${searchType == 'productName' ? 'selected' : ''}>상품명</option>
-                    <option value="sellerId" ${searchType == 'sellerId' ? 'selected' : ''}>판매자</option>
+                <select name="searchCategory" class="form-select" style="width: 120px;">
+                    <option value="productName" ${searchCategory == 'productName' ? 'selected' : ''}>상품명</option>
+                    <option value="sellerId" ${searchCategory == 'sellerId' ? 'selected' : ''}>판매자</option>
                 </select>
                 <input type="text" name="searchValue" value="${searchValue}" class="form-control" placeholder="검색어 입력">
                 <button type="submit" class="btn btn-dark">검색</button>

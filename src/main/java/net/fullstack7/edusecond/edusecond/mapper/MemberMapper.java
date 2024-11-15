@@ -15,7 +15,7 @@ public interface MemberMapper {
     int insertMember(MemberVO memberVO);
     int updateMember(MemberVO memberVO);
     int deleteMember(String userId);
-    int selectTotalCount(@Param("searchType") String searchType, 
+    int selectTotalCount(@Param("searchCategory") String searchCategory,
                         @Param("searchValue") String searchValue);
     List<MemberVO> selectList(Map<String, Object> params);
     int updateEnabled(@Param("userId") String userId,
@@ -24,6 +24,6 @@ public interface MemberMapper {
     int updateMemberWithdrawal(@Param("userId") String userId);
     int updateProductStatusByUserId(@Param("userId") String userId);
     List<MemberVO> selectWithdrawalList(Map<String, Object> params);
-    int selectWithdrawalTotalCount(@Param("searchType") String searchType, 
+    int selectWithdrawalTotalCount(@Param("searchCategory") String searchCategory,
                                  @Param("searchValue") String searchValue);
 } 

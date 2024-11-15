@@ -21,11 +21,11 @@ public class NoticeServiceImpl implements NoticeServiceIf {
     private final ModelMapper modelMapper;
 
     @Override
-    public List<NoticeDTO> getList(int pageNo, int pageSize, String searchType, String searchValue) {
+    public List<NoticeDTO> getList(int pageNo, int pageSize, String searchCategory, String searchValue) {
         Map<String, Object> params = new HashMap<>();
         params.put("offset", (pageNo - 1) * pageSize);
         params.put("pageSize", pageSize);
-        params.put("searchType", searchType);
+        params.put("searchCategory", searchCategory);
         params.put("searchValue", searchValue);
 
         return noticeMapper.selectAllNotices(params)
@@ -35,9 +35,9 @@ public class NoticeServiceImpl implements NoticeServiceIf {
     }
 
     @Override
-    public int getTotalCount(String searchType, String searchValue) {
+    public int getTotalCount(String searchCategory, String searchValue) {
         Map<String, Object> params = new HashMap<>();
-        params.put("searchType", searchType);
+        params.put("searchCategory", searchCategory);
         params.put("searchValue", searchValue);
         return noticeMapper.totalCount(params);
     }
