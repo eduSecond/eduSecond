@@ -26,5 +26,6 @@ public class PaymentDTO {
     private String paymentNumber;
     private String deliveryStatus;
     private LocalDateTime regDate;
+    private String orderStatus;
 
 }

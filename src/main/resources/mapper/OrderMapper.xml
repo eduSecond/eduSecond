@@ -80,4 +80,10 @@
         FROM tbl_order
         WHERE orderId = #{orderId}
     </select>
+
+    <update id="direct">
+        UPDATE tbl_order
+        SET orderStatus = '직거래 완료', deliveryStatus = '직거래 완료'
+        WHERE paymentNumber = #{paymentNumber} AND orderStatus = '직거래'
+    </update>
 </mapper>    

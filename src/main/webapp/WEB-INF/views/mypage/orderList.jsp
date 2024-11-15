@@ -135,7 +135,7 @@
               <td>${dto.unitPrice}원/${dto.orderQuantity}개</td>
               <td>${dto.totalPrice}원</td>
               <c:choose>
-                <c:when test="${dto.orderStatus eq '구매완료'}">
+                <c:when test="${dto.orderStatus eq '구매완료' || dto.orderStatus eq '직거래 완료'}">
                   <td style="color:green;"
                 </c:when>
                 <c:otherwise>

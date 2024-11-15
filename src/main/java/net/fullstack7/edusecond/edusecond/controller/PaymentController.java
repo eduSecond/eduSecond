@@ -85,6 +85,56 @@ public class PaymentController {
         }
     }
 
+    @GetMapping("view_1")
+    public String view_1(Model model, int productId, HttpServletResponse response){
+        try{
+            if(productId <= 0){
+                JSFunc.alertBack("유효하지 않은 상품입니다", response);
+                return null;
+            }
+            ProductDTO dto =  productService.view(productId);
+            if(dto == null){
+                JSFunc.alertBack("존재하지 않는 상품입니다", response);
+            }
+            model.addAttribute("dto", dto);
+            return "payment/pay_1";
+        }catch (Exception e){
+            log.error("상품 상세 조회 중 오류 발생: ", e);
+            JSFunc.alertBack("상품 정보를 불러오는 중 오류가 발생했습니다.", response);
+            return null;
+        }
+    }
+
+    @PostMapping("/pay_1")
+    public String pay_1(HttpSession session, PaymentDTO paymentDTO, @RequestParam int totalQuantity, HttpServletResponse response){
+
+        if(paymentDTO.getOrderQuantity() > totalQuantity){
+            JSFunc.alertBack("최대 수량을 넘길 수 없습니다.", response);
+            return null;
+        }
+
+        MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
+        paymentDTO.setBuyerId(memberLoginDTO.getUserId());
+
+        String paymentNumber = UUID.randomUUID().toString();
+        paymentDTO.setPaymentNumber(paymentNumber);
+
+        int totalPrice = paymentDTO.getUnitPrice() * paymentDTO.getOrderQuantity();
+        paymentDTO.setTotalPrice(totalPrice);
+
+        int result = paymentService.insert_1(paymentDTO);
+        if(result > 0){
+            return "redirect:/es/mypage/orderList";
+        } else{
+            log.info("상품 결제  중 오류 발생");
+            JSFunc.alertBack("상품 결제 요청 실패", response);
+            return null;
+        }
+    }
+
+
+
+
     @GetMapping("/confirmPurchase")
     public String confirmPurchase(@RequestParam("paymentNumber") String paymentNumber,
                                   @RequestParam(defaultValue = "1") int pageNo, HttpServletResponse response) {
@@ -145,6 +195,28 @@ public class PaymentController {
         }
         return null;
     }
+
+    @GetMapping("/direct")
+    public String direct(@RequestParam("paymentNumber") String paymentNumber,
+                          @RequestParam(defaultValue = "1") int pageNo, HttpServletResponse response) {
+        response.setCharacterEncoding("UTF-8");
+        int result = orderMapper.direct(paymentNumber);
+
+        if (result > 0) {
+            PaymentDTO paymentDTO = paymentMapper.getPaymentInfo(paymentNumber);
+            int result1 = productMapper.reductionAfterPayment(paymentDTO); // 상품정보에서 개수 차감하는 메서드
+
+            if(result1 >0){
+                JSFunc.alertLocation("구매 수락/상품 개수 차감.","/es/mypage/orderList_1?pageNo="+pageNo, response);
+            } else{
+                JSFunc.alertLocation("구매 수락/상품 개수 차감 오류. 수정 필요","/es/mypage/orderList_1?pageNo="+pageNo, response);
+            }
+        } else {
+            JSFunc.alertBack("구매 수락 실패", response);
+        }
+        return null;
+    }
+
 
 
 }

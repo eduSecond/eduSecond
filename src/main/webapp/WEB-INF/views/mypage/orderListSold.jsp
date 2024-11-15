@@ -135,7 +135,7 @@
               <td>${dto.unitPrice}원/${dto.orderQuantity}개</td>
               <td>${dto.totalPrice}원</td>
               <c:choose>
-              <c:when test="${dto.orderStatus eq '구매완료'}">
+              <c:when test="${dto.orderStatus eq '구매완료' || dto.orderStatus eq '직거래 완료'}">
                 <td style="color:green;"
               </c:when>
               <c:otherwise>
@@ -151,6 +151,9 @@
               </td>
               <td>
                   ${dto.deliveryStatus}
+                  <c:if test="${dto.orderStatus eq '직거래'}">
+                    <button onclick="location.href='/es/payment/direct?paymentNumber=${dto.paymentNumber}&pageNo=${param.pageNo}'">직거래완료</button>
+                  </c:if>
                   <c:if test="${dto.orderStatus eq '구매완료' && dto.deliveryStatus eq '배송전'}">
                     <button onclick="location.href='/es/payment/startDelivery?paymentNumber=${dto.paymentNumber}&pageNo=${param.pageNo}'">배송시작</button>
                   </c:if>

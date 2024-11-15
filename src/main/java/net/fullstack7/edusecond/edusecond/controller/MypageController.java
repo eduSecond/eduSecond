@@ -159,8 +159,6 @@ public class MypageController {
         List<OrderListDTO> orderList = orderMapper.getOrderList(map);
         int totalCount = orderMapper.totalCount(countMap);
         log.info("totalcount : "+totalCount);
-        log.info("orderList의 첫 번째 레코드의 리뷰 아이디 : " + orderList.get(0).getReviewId());
-        log.info("orderList의 첫 번째 레코드의 리뷰 아이디 : " + orderList.get(1).getReviewId());
         Paging paging = new Paging(pageNo, 10, 5, totalCount);
 
         model.addAttribute("paging", paging);

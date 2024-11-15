@@ -147,7 +147,7 @@
         </div>
         <div class="modal-body justify-content center">
           <button type="button" class="btn btn-primary" onclick="javascript:location.href='/es/payment/view?productId=${dto.productId}'">바로구매</button>
-          <button type="button" class="btn btn-primary">직거래</button>
+          <button type="button" class="btn btn-primary" onclick="location.href='/es/payment/view_1?productId=${dto.productId}'">직거래</button>
         </div>
       </div>
     </div>
