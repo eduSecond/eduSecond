@@ -7,9 +7,12 @@
     SELECT COUNT(productId) AS total_count
     FROM tbl_product
     <where>
-      <if test="searchCategory != null and !searchCategory.trim().isEmpty() and searchValue != null and !searchValue.trim().isEmpty()">
-        ${searchCategory} LIKE CONCAT('%', #{searchValue}, '%')
-      </if>
+        <if test="productStatus != null and !productStatus.isEmpty()">
+            AND productStatus = #{productStatus}
+        </if>
+        <if test="searchCategory != null and !searchCategory.trim().isEmpty() and searchValue != null and !searchValue.trim().isEmpty()">
+          ${searchCategory} LIKE CONCAT('%', #{searchValue}, '%')
+        </if>
     </where>
   </select>
   <select id="selectAllProducts" parameterType="map" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductVO">
@@ -33,6 +36,9 @@
     FROM tbl_product p
     LEFT JOIN tbl_member m ON p.sellerId = m.userId
     WHERE 1=1
+      <if test="productStatus != null and !productStatus.isEmpty()">
+          AND p.productStatus = #{productStatus}
+      </if>
     <if test="searchType != null and searchType == 'productName'">
         AND p.productName LIKE CONCAT('%', #{searchValue}, '%')
     </if>
@@ -43,26 +49,37 @@
     LIMIT #{offset}, #{limit}
   </select>
 
-  <select id="selectProductById" parameterType="java.lang.Integer" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductVO">
-    SELECT 
-        p.productId, 
-        p.sellerId, 
-        p.productName, 
-        p.productDesc, 
-        p.price, 
-        p.quantity, 
-        p.quality, 
-        p.productStatus, 
-        p.viewCount, 
-        p.regDate, 
-        p.modifyDate,
-        m.userName as sellerName
-    FROM tbl_product p
-    LEFT JOIN tbl_member m ON p.sellerId = m.userId
-    WHERE p.productId = #{productId}
-  </select>
+    <select id="selectProductById" parameterType="java.lang.Integer" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductVO">
+        SELECT
+            p.productId,
+            p.sellerId,
+            p.productName,
+            p.productDesc,
+            p.price,
+            p.quantity,
+            p.quality,
+            p.productStatus,
+            p.viewCount,
+            p.regDate,
+            p.modifyDate,
+            m.userName as sellerName
+        FROM tbl_product p
+                 LEFT JOIN tbl_member m ON p.sellerId = m.userId
+        WHERE p.productId = #{productId}
+    </select>
 
-  <insert id="insertProduct" >
+    <!-- 상품 이미지 조회 쿼리 -->
+    <select id="selectImagesByProductId" parameterType="java.lang.Integer" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductImageVO">
+        SELECT
+            pi.imageId,
+            pi.productId,
+            pi.imagePath,
+            pi.isMain
+        FROM tbl_product_image pi
+        WHERE pi.productId = #{productId}
+    </select>
+
+    <insert id="insertProduct" >
     INSERT INTO tbl_product (sellerId, productName, productDesc, price, quantity, quality)
     VALUES (#{sellerId}, #{productName}, #{productDesc}, #{price}, #{quantity}, #{quality});
   </insert>
@@ -114,6 +131,7 @@
     <update id="reductionAfterPayment">
         CALL reductAfterPayment(#{productId}, #{orderQuantity})
     </update>
+
     <select id="selectAllWishByUser" parameterType="map" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductVO">
         SELECT
         p.productId,

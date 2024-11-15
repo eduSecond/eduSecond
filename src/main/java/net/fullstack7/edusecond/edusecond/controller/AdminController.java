@@ -58,7 +58,7 @@ public class AdminController {
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
-        model.addAttribute("productCount", productService.totalCount(null, null));
+        model.addAttribute("productCount", productService.totalCount(null, null, ""));
         model.addAttribute("memberCount", memberService.getTotalCount(null, null));
         return "admin/dashboard";
     }
@@ -114,8 +114,8 @@ public class AdminController {
             @RequestParam(required = false) String searchValue,
             Model model) {
         try {
-            List<ProductDTO> products = productService.list(pageNo, pageSize, 5, searchType, searchValue);
-            int totalCount = productService.totalCount(searchType, searchValue);
+            List<ProductDTO> products = productService.list(pageNo, pageSize, 5, searchType, searchValue, "");
+            int totalCount = productService.totalCount(searchType, searchValue, "");
             Paging paging = new Paging(pageNo, pageSize, 5, totalCount);
 
             model.addAttribute("products", products);

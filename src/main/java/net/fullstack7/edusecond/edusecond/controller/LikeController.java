@@ -45,7 +45,7 @@ public class LikeController {
     public String deleteLike(Model model,
                              HttpSession session,
                              @RequestParam Integer productId,
-                             @RequestParam String source){
+                             @RequestParam(required = false) String source){
 //        log.info("productId: " + productId);
 //        log.info("userId: " + userId);
         MemberLoginDTO loginDto = (MemberLoginDTO) session.getAttribute("memberInfo");

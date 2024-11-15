@@ -111,6 +111,7 @@
           <th scope="col">판매자 아이디</th>
           <th scope="col">단위가격/개수</th>
           <th scope="col">총 가격</th>
+          <th scope="col">주문상태</th>
           <th scope="col">배송 상태</th>
           <th scope="col">받는분/배송주소</th>
           <th scope="col">결제번호</th>
@@ -133,10 +134,21 @@
               <td>${dto.sellerId}</td>
               <td>${dto.unitPrice}원/${dto.orderQuantity}개</td>
               <td>${dto.totalPrice}원</td>
+              <c:choose>
+                <c:when test="${dto.orderStatus eq '구매완료'}">
+                  <td style="color:green;"
+                </c:when>
+                <c:otherwise>
+                  <td style="color:red;"
+                </c:otherwise>
+              </c:choose>
+              >
+                ${dto.orderStatus}
+              </td>
               <td>
                   ${dto.deliveryStatus}
                   <c:if test="${dto.deliveryStatus eq '배송중'}">
-                    <button onclick="location.href='/es/payment/confirmPurchase?productId=${dto.productId}&pageNo=${param.pageNo}'">구매확정</button>
+                    <button onclick="location.href='/es/payment/confirmPurchase?paymentNumber=${dto.paymentNumber}&pageNo=${param.pageNo}'">구매확정</button>
                   </c:if>
               </td>
               <td>${dto.recipientName}/${dto.shippingAddress}</td>

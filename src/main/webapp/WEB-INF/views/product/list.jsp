@@ -72,6 +72,7 @@
     </div>
     <!-- 메인 상품 목록 영역 -->
     <div class="main">
+        ${dto.thumbnail.imagePath}
         <c:if test="${not empty pList}">
             <c:forEach var="dto" items="${pList}" varStatus="loop" begin="0" end="9">
                 <a href="/product/view?productId=${dto.productId}" style="text-decoration: none; color: inherit;">
@@ -85,6 +86,7 @@
                         <div class="card-body">
                             <p class="card-title">${dto.productName}</p>
                             <p class="card-text">가격: ${dto.price}원</p>
+                            <p class="card-text">판매상태: ${dto.productStatus}</p>
                             <p class="card-text">조회수: ${dto.viewCount}</p>
                             <p class="card-text">등록일: ${dto.formatRegDate}</p>
                         </div>

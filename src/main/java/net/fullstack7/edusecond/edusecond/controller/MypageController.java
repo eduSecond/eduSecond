@@ -213,8 +213,8 @@ public class MypageController {
             if(!validateListParameters(pageNo, searchType, searchValue, response)){
                 return null;
             }
-            List<ProductDTO> availableList  = productService.selectAllByProductStatus(pageNo, 10, 6, searchType, searchValue, loginDto.getUserId(), "AVAILABLE");
-            List<ProductDTO> soldOutList  = productService.selectAllByProductStatus(pageNo, 10, 6, searchType, searchValue, loginDto.getUserId(), "SOLD");
+            List<ProductDTO> availableList  = productService.selectAllByProductStatus(pageNo, 10, 5, searchType, searchValue, loginDto.getUserId(), "AVAILABLE");
+            List<ProductDTO> soldOutList  = productService.selectAllByProductStatus(pageNo, 10, 5, searchType, searchValue, loginDto.getUserId(), "SOLD");
 
             int availableTotalCount = productService.totalCountByProductStatus(searchType, searchValue, loginDto.getUserId(), "AVAILABLE");
             int soldOutTotalCount = productService.totalCountByProductStatus(searchType, searchValue, loginDto.getUserId(), "SOLD");
@@ -235,4 +235,6 @@ public class MypageController {
             return null;
         }
     }
+
+
 }

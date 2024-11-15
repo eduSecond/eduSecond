@@ -16,6 +16,7 @@ public class OrderListDTO {
     private int unitPrice;
     private int orderQuantity;
     private int totalPrice;
+    private String orderStatus;
     private String buyerId;
     private String recipientName;
     private String recipientPhone;

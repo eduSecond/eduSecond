@@ -53,12 +53,24 @@
     <update id="confirmPurchase">
         UPDATE tbl_order
         SET deliveryStatus = '배송완료/구매확정'
-        WHERE productId = #{productId} AND deliveryStatus = '배송중'
+        WHERE paymentNumber = #{paymentNumber} AND deliveryStatus = '배송중'
     </update>
 
     <update id="startDelivery">
         UPDATE tbl_order
         SET deliveryStatus = '배송중'
-        WHERE productId = #{productId} AND deliveryStatus = '배송전'
+        WHERE paymentNumber = #{paymentNumber} AND deliveryStatus = '배송전'
+    </update>
+
+    <update id="confirm">
+        UPDATE tbl_order
+        SET orderStatus = '구매완료'
+        WHERE paymentNumber = #{paymentNumber} AND orderStatus = '구매대기'
+    </update>
+
+    <update id="reject">
+        UPDATE tbl_order
+        SET orderStatus = '구매거부'
+        WHERE paymentNumber = #{paymentNumber} AND orderStatus = '구매대기'
     </update>
 </mapper>    
