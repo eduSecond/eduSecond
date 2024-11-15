@@ -67,6 +67,12 @@
     ul li {
       margin-bottom: 10px;
     }
+    .no-image {
+      text-align: center;
+      margin: 10%;
+      font-size: 18px;
+      color: #888;
+    }
   </style>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -74,35 +80,36 @@
 <%@ include file="../main/header.jsp"%>
 <section class="privacy-policy">
   <div class="left-side">
-    <div id="carouselExampleIndicators" class="carousel slide">
-      <div class="carousel-indicators">
-        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    <c:if test="${not empty dto.images}">
+      <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+          <c:forEach var="image" items="${dto.images}" varStatus="status">
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="${status.index}"
+                    class="${status.first ? 'active' : ''}" aria-current="${status.first ? 'true' : ''}" aria-label="Slide ${status.index + 1}"></button>
+          </c:forEach>
+        </div>
+        <div class="carousel-inner">
+          <c:forEach var="image" items="${dto.images}" varStatus="status">
+            <div class="carousel-item ${status.first ? 'active' : ''}">
+              <img src="${image.imagePath}" class="d-block w-100" alt="Product Image ${status.index + 1}">
+            </div>
+          </c:forEach>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
       </div>
-      <div class="carousel-inner">
-        <div class="carousel-item active">
-          <img src="/resources/images/product/Ko1.jpg" class="d-block w-100" alt="..." >
-        </div>
-        <div class="carousel-item">
-          <img src="/resources/images/product/Ko2.jpg" class="d-block w-100" alt="..." >
-        </div>
-        <div class="carousel-item">
-          <img src="/resources/images/product/Ko3.jpg" class="d-block w-100" alt="..." >
-        </div>
-        <div class="carousel-item">
-          <img src="/resources/images/product/Ko4.jpg" class="d-block w-100" alt="..." >
-        </div>
+    </c:if>
+    <c:if test="${empty dto.images}">
+      <div class="no-image">
+        준비된 이미지가 없습니다.
       </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
-    </div>
+    </c:if>
   </div>
   <div class="right-side">
     <div class="content">
@@ -123,8 +130,7 @@
       </ul>
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title">Special title treatment</h5>
-          <p class="card-text">구매하려면 버튼 눌러라</p>
+          <p class="card-text">아래 버튼을 클릭하여 문의하거나 제품을 구매할 수 있습니다.</p>
           <a href="#" class="btn btn-primary" onclick="createChatRoom()">1:1 문의하기</a>
           <a href="/es/payment/view?productId=${dto.productId}" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#purchaseModal">구매하기</a>
         </div>

@@ -48,12 +48,12 @@ public class ProductController {
                 return null;
             }
 
-            List<ProductDTO> pList = productService.list(pageNo, 10, 5, searchType, searchValue);
+            List<ProductDTO> pList = productService.list(pageNo, 10, 5, searchType, searchValue, "AVAILABLE");
             for (ProductDTO dto : pList) {
                 String formatDate = CommonDateUtil.localDateTimeToString(dto.getRegDate(), "yyyy-MM-dd");
                 dto.setFormatRegDate(formatDate);
             }
-            int totalCount = productService.totalCount(searchType, searchValue);
+            int totalCount = productService.totalCount(searchType, searchValue, "AVAILABLE");
             Paging paging = new Paging(pageNo, 10, 5, totalCount);
             
             model.addAttribute("pList", pList);

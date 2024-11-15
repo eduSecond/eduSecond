@@ -63,19 +63,35 @@
             padding: 20px;
             flex-grow: 1;
         }
-
-        .action-buttons {
-            margin-top: 20px;
-            text-align: right;
-        }
-
-        .footer {
-            background-color: #f8f8f8;
-            padding: 10px;
+        .no-image, .image-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 100px;
             text-align: center;
-            border-top: 1px solid #ddd;
-            width: 100%;
         }
+
+        .no-image {
+            font-weight: bold;
+        }
+
+        .search-bar {
+            margin: 0 auto;
+            width: 100%;
+            max-width: 1200px;
+            margin-bottom: 4%;
+            display: flex;
+            justify-content: flex-end;
+        }
+        td, th, tr {
+            vertical-align: middle;
+            text-align: center;
+        }
+        a{
+            text-decoration-line: none;
+        }
+
     </style>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -94,14 +110,16 @@
     </div>
     <div class="content col-10">
         <h2>판매중 상품</h2>
-        <form class="d-flex" role="search" action="/es/mypage/myProduct" method="GET">
-            <select name="searchType" class="form-select" style="width: 120px;">
-                <option value="productName" ${searchType == 'productName' ? 'selected' : ''}>상품명</option>
-                <option value="sellerId" ${searchType == 'sellerId' ? 'selected' : ''}>판매자</option>
-            </select>
-            <input class="form-control me-2" type="search" name="searchValue" value="${searchValue}" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
+        <div class="search-bar">
+            <form class="d-flex" role="search" action="/es/mypage/myProduct" method="GET">
+                <select name="searchType" class="form-select" style="width: 120px;">
+                    <option value="productName" ${searchType == 'productName' ? 'selected' : ''}>상품명</option>
+                    <option value="sellerId" ${searchType == 'sellerId' ? 'selected' : ''}>판매자</option>
+                </select>
+                <input class="form-control me-2" type="search" name="searchValue" value="${searchValue}" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
         <table class="table">
             <thead>
             <tr>
@@ -112,64 +130,80 @@
             </tr>
             </thead>
             <tbody>
-                    <c:if test="${not empty availableList}">
-                        <c:forEach var="dto" items="${availableList}" >
-                            <tr>
-                                <td>
-                                    <c:if test="${not empty dto.thumbnail}">
-                                        <img src="/resources/${dto.thumbnail.imagePath}"
+            <c:if test="${not empty availableList}">
+                <c:forEach var="dto" items="${availableList}" >
+                    <tr>
+                        <td>
+                            <a href="/product/view?productId=${dto.productId}">
+                            <c:choose>
+                                <c:when test="${not empty dto.thumbnail}">
+                                    <div class="image-container">
+                                        <img src="../${dto.thumbnail.imagePath}"
                                              alt="상품 썸네일"
-                                             style="width: 50px; height: 50px; object-fit: cover;">
-                                    </c:if>
-                                </td>
-                                <td>${dto.productName}</td>
-                                <td>${dto.sellerId}</td>
-                                <td>${dto.price}원</td>
-                                <td>${dto.productStatus}</td>
-                            </tr>
-                        </c:forEach>
-                    </c:if>
+                                             style="max-width: 100%; max-height: 100%; object-fit: cover;">
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="no-image">준비된 이미지가 없습니다.</div>
+                                </c:otherwise>
+                            </c:choose>
+                            </a>
+                        </td>
+                        <td>${dto.productName}</td>
+                        <td>${dto.price}원</td>
+                        <td>${dto.productStatus}</td>
+                    </tr>
+                </c:forEach>
+            </c:if>
             </tbody>
         </table>
         <%@ include file="../common/paging.jsp"%>
         <br>
         <br>
         <h2>판매 완료 상품</h2>
-        <form class="d-flex" role="search" action="/es/mypage/myProduct" method="GET">
-            <select name="searchType" class="form-select" style="width: 120px;">
-                <option value="productName" ${searchType == 'productName' ? 'selected' : ''}>상품명</option>
-                <option value="sellerId" ${searchType == 'sellerId' ? 'selected' : ''}>판매자</option>
-            </select>
-            <input class="form-control me-2" type="search" name="searchValue" value="${searchValue}" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
+        <div class="search-bar">
+            <form class="d-flex" role="search" action="/es/mypage/myProduct" method="GET">
+                <select name="searchType" class="form-select" style="width: 120px;">
+                    <option value="productName" ${searchType == 'productName' ? 'selected' : ''}>상품명</option>
+                    <option value="sellerId" ${searchType == 'sellerId' ? 'selected' : ''}>판매자</option>
+                </select>
+                <input class="form-control me-2" type="search" name="searchValue" value="${searchValue}" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
         <table class="table">
             <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">상품명</th>
-                <th scope="col">가격</th>
-                <th scope="col">상태</th>
-            </tr>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">상품명</th>
+                    <th scope="col">가격</th>
+                    <th scope="col">상태</th>
+                </tr>
             </thead>
             <tbody>
-            <c:if test="${not empty soldOutList}">
-                <c:forEach var="dto" items="${soldOutList}" >
-                    <tr>
-                        <td>
-                        <c:if test="${not empty dto.thumbnail}">
-                            <img src="/resources/${dto.thumbnail.imagePath}"
-                                 alt="상품 썸네일"
-                                 style="width: 50px; height: 50px; object-fit: cover;">
-                        </c:if>
-                        </td>
-                        <td>${dto.productName}</td>
-                        <td>${dto.sellerId}</td>
-                        <td>${dto.price}원</td>
-                        <td>${dto.productStatus}</td>
-                    </tr>
-                </c:forEach>
-            </c:if>
+                <c:if test="${not empty soldOutList}">
+                    <c:forEach var="dto" items="${soldOutList}" >
+                        <tr>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${not empty dto.thumbnail}">
+                                        <div class="image-container">
+                                            <img src="../${dto.thumbnail.imagePath}"
+                                                 alt="상품 썸네일"
+                                                 style="max-width: 100%; max-height: 100%; object-fit: cover;">
+                                        </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="no-image">준비된 이미지가 없습니다.</div>
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+                            <td>${dto.productName}</td>
+                            <td>${dto.price}원</td>
+                            <td>${dto.productStatus}</td>
+                        </tr>
+                    </c:forEach>
+                </c:if>
             </tbody>
         </table>
         <nav aria-label="Page navigation example">

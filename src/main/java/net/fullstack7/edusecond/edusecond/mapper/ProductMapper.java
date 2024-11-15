@@ -11,6 +11,7 @@ import java.util.Map;
 @Mapper
 public interface ProductMapper {
     ProductVO selectProductById(Integer productId);
+    List<ProductImageVO> selectImagesByProductId(Integer productId);
     List<ProductVO> selectAllProducts(Map<String, Object> map);
     List<ProductVO> selectProductsBySeller(Map<String, Object> map);
     int insertProduct(ProductVO productVO);
