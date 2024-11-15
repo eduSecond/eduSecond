@@ -8,8 +8,12 @@ import net.fullstack7.edusecond.edusecond.dto.member.MemberLoginDTO;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberModifyDTO;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberRegistDTO;
 import net.fullstack7.edusecond.edusecond.mapper.MemberMapper;
+import net.fullstack7.edusecond.edusecond.mapper.ChatMapper;
+import net.fullstack7.edusecond.edusecond.mapper.LikeMapper;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,6 +24,8 @@ import java.util.HashMap;
 public class MemberServiceImpl implements MemberServiceIf {
     private final MemberMapper memberMapper;
     private final ModelMapper modelMapper;
+    private final ChatMapper chatMapper;
+    private final LikeMapper likeMapper;
     
     @Override
     public MemberDTO getMember(String userId) {
@@ -69,8 +75,8 @@ public class MemberServiceImpl implements MemberServiceIf {
     }
     
     @Override
-    public boolean updateEnabled(String userId, boolean enabled) {
-        return memberMapper.updateEnabled(userId, enabled ? "Y" : "N") > 0;
+    public boolean updateEnabled(String userId, String enabled) {
+        return memberMapper.updateEnabled(userId, enabled) > 0;
     }
     
     @Override
@@ -88,5 +94,58 @@ public class MemberServiceImpl implements MemberServiceIf {
     public MemberLoginDTO getLoginMember(String userId){
         MemberVO vo = memberMapper.getLoginMember(userId);
         return modelMapper.map(vo, MemberLoginDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public boolean processWithdrawal(String userId) {
+        try {
+            // 1. 회원 상태를 'N'으로 변경하고 이름을 "(탈퇴한 회원)"으로 변경
+            memberMapper.updateMemberWithdrawal(userId);
+            
+            // 2. 회원의 모든 상품 상태를 UNAVAILABLE로 변경
+            memberMapper.updateProductStatusByUserId(userId);
+            
+            // 3. 관련된 모든 채팅방 상태를 'N'으로 변경
+            chatMapper.updateChatRoomsByUserId(userId);
+            
+            // 4. 회원의 위시리스트 삭제
+            likeMapper.deleteByUserId(userId);
+            
+            return true;
+        } catch (Exception e) {
+            log.error("회원 탈퇴 처리 중 오류 발생: ", e);
+            throw new RuntimeException("회원 탈퇴 처리 실패", e);
+        }
+    }
+
+    @Override
+    public boolean requestWithdrawal(String userId) {
+        try {
+            return memberMapper.updateEnabled(userId, "Q") > 0;
+        } catch (Exception e) {
+            log.error("회원 탈퇴 신청 처리 중 오류 발생: ", e);
+            return false;
+        }
+    }
+
+    @Override
+    public List<MemberDTO> getWithdrawalList(int pageNo, int pageSize, String searchType, String searchValue) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("offset", (pageNo - 1) * pageSize);
+        params.put("limit", pageSize);
+        params.put("searchType", searchType);
+        params.put("searchValue", searchValue);
+        params.put("enabled", "Q");  // 탈퇴 신청 상태
+        
+        List<MemberVO> voList = memberMapper.selectWithdrawalList(params);
+        return voList.stream()
+                .map(vo -> modelMapper.map(vo, MemberDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public int getWithdrawalTotalCount(String searchType, String searchValue) {
+        return memberMapper.selectWithdrawalTotalCount(searchType, searchValue);
     }
 }

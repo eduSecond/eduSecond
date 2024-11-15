@@ -32,7 +32,7 @@ public class MemberDTO {
     private LocalDateTime regDate;
     private LocalDateTime modifyDate;
     
-    public boolean isEnabled() {
-        return "Y".equalsIgnoreCase(enabled);
-    }
+    // public boolean isEnabled() {
+    //     return "Y".equalsIgnoreCase(enabled);
+    // }
 }

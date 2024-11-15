@@ -21,4 +21,8 @@ public interface ChatMapper {
   ChatRoomDTO findExistingChatRoom(@Param("productId") int productId,
                                   @Param("sellerId") String sellerId,
                                   @Param("buyerId") String buyerId);
+  int updateChatRoomsByUserId(@Param("userId") String userId);
+  int updateUserChatRoomStatus(@Param("roomId") Long roomId, 
+                              @Param("userType") String userType, 
+                              @Param("status") String status);
 }

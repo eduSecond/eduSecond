@@ -128,7 +128,7 @@
         </table>
         <div class="btn-container text-end">
           <button class="btn btn-primary me-2" onclick="location.href='/es/mypage/modify'">수정</button>
-          <button class="btn btn-danger" onclick="location.href='/es/mypage/delete'">탈퇴</button>
+          <button class="btn btn-danger" onclick="confirmWithdrawal()">탈퇴</button>
         </div>
       </div>
     </div>
@@ -136,5 +136,13 @@
 </div>
 
 <%@ include file="../main/footer.jsp" %>
+
+<script>
+function confirmWithdrawal() {
+    if (confirm('정말 탈퇴하시겠습니까?\n탈퇴 신청 후 관리자 승인 시 계정이 비활성화됩니다.')) {
+        location.href = '/es/mypage/delete';
+    }
+}
+</script>
 </body>
 </html>
