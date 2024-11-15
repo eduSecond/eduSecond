@@ -8,6 +8,9 @@ import net.fullstack7.edusecond.edusecond.mapper.ReviewMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Log4j2
@@ -20,5 +23,14 @@ public class ReviewServiceImpl implements ReviewServiceIf {
         ReviewVO reviewVO = modelMapper.map(reviewDTO, ReviewVO.class);
         return reviewMapper.insertReview(reviewVO);
 
+    }
+
+    @Override
+    public List<ReviewDTO> viewReview(int productId) {
+        List<ReviewVO> voList = reviewMapper.viewReview(productId);
+
+        //vo ->List
+        List<ReviewDTO> dtoList = voList.stream().map(vo -> modelMapper.map(vo, ReviewDTO.class)).collect(Collectors.toList());
+        return dtoList;
     }
 }

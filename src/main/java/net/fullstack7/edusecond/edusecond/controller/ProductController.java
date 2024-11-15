@@ -5,8 +5,10 @@ import lombok.extern.log4j.Log4j2;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberLoginDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductRegistDTO;
+import net.fullstack7.edusecond.edusecond.dto.review.ReviewDTO;
 import net.fullstack7.edusecond.edusecond.service.Like.LikeServiceIf;
 import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
+import net.fullstack7.edusecond.edusecond.service.review.ReviewServiceIf;
 import net.fullstack7.edusecond.edusecond.util.CommonDateUtil;
 import net.fullstack7.edusecond.edusecond.util.CommonFileUtil;
 import net.fullstack7.edusecond.edusecond.util.Paging;
@@ -36,7 +38,7 @@ import java.util.List;
 public class ProductController {
     private final ProductServiceIf productService;
     private final LikeServiceIf likeService;
-
+    private final ReviewServiceIf reviewService;
     @GetMapping("/list")
     public String list(Model model,
                   @RequestParam(defaultValue = "1") int pageNo,
@@ -92,6 +94,7 @@ public class ProductController {
                       @RequestParam int productId,
                       HttpServletResponse response) {
         MemberLoginDTO userDto = (MemberLoginDTO) session.getAttribute("memberInfo");
+        response.setCharacterEncoding("utf-8");
         try {
             if (productId <= 0) {
                 JSFunc.alertBack("유효하지 않은 상품 ID입니다.", response);
@@ -102,18 +105,43 @@ public class ProductController {
             if (dto == null) {
                 JSFunc.alertBack("존재하지 않는 상품입니다.", response);
                 return null;
-            }
-
-            if( userDto != null && userDto.getUserId() != null) {
-                boolean isLiked = likeService.checkExists(userDto.getUserId(), productId);
-                //log.info("isLike: " + isLiked);
-                model.addAttribute("isLiked", isLiked);
             }else{
-                log.info("로그인한 회원이 아님");
+                List<ReviewDTO> reviewList = reviewService.viewReview(productId);
+                if(reviewList != null){
+//                    for(ReviewDTO i : reviewList){
+//                        System.out.println(i.getOrderId());
+//                        System.out.println(i.getReviewId());
+//                    }
+                    model.addAttribute("reviewList", reviewList);
+                }
+
+                if( userDto != null && userDto.getUserId() != null) {
+                    boolean isLiked = likeService.checkExists(userDto.getUserId(), productId);
+                    //log.info("isLike: " + isLiked);
+                    model.addAttribute("isLiked", isLiked);
+                }else{
+                    log.info("로그인한 회원이 아님");
+                }
+
+                model.addAttribute("dto", dto);
+                return "product/view";
             }
 
-            model.addAttribute("dto", dto);
-            return "product/view";
+//            List<ReviewDTO> reviewDTO = reviewService.viewReview(productId);
+//            if(reviewDTO != null){
+//                model.addAttribute("reviewDTO", reviewDTO);
+//            }
+//
+//            if( userDto != null && userDto.getUserId() != null) {
+//                boolean isLiked = likeService.checkExists(userDto.getUserId(), productId);
+//                //log.info("isLike: " + isLiked);
+//                model.addAttribute("isLiked", isLiked);
+//            }else{
+//                log.info("로그인한 회원이 아님");
+//            }
+//
+//            model.addAttribute("dto", dto);
+//            return "product/view";
             
         } catch (Exception e) {
             log.error("상품 상세 조회 중 오류 발생: ", e);
