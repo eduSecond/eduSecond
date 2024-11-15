@@ -4,7 +4,7 @@
 <mapper namespace="net.fullstack7.edusecond.edusecond.mapper.ChatMapper">
     
     <!-- 채팅방 목록 조회 -->
-    <select id="selectChatRoomList" resultType="net.fullstack7.edusecond.edusecond.dto.message.ChatRoomDTO">
+    <!-- <select id="selectChatRoomList" resultType="net.fullstack7.edusecond.edusecond.dto.message.ChatRoomDTO">
         SELECT 
             c.roomId, c.productId,
             p.productName,
@@ -42,6 +42,46 @@
                 ELSE 0 
             END,
             lcm.regDate DESC
+    </select> -->
+
+    <select id="selectChatRoomList" resultType="net.fullstack7.edusecond.edusecond.dto.message.ChatRoomDTO">
+        SELECT 
+            c.roomId, c.productId, c.sellerId, c.buyerId,
+            p.productName,
+            pi.imagePath as productImage,
+            m.userName as otherUserName,
+            lcm.message as lastMessage,
+            lcm.regDate as lastMessageDate,
+            COALESCE((SELECT COUNT(*) 
+             FROM tbl_chat_message 
+             WHERE roomId = c.roomId 
+             AND isRead = 'N' 
+             AND senderId != #{userId}), 0) as unreadCount
+        FROM tbl_chatroom c
+        LEFT JOIN tbl_product p ON c.productId = p.productId
+        LEFT JOIN tbl_product_image pi ON p.productId = pi.productId AND pi.isMain = 'Y'
+        LEFT JOIN tbl_member m ON 
+            CASE 
+                WHEN c.sellerId = #{userId} THEN m.userId = c.buyerId
+                ELSE m.userId = c.sellerId
+            END
+        LEFT JOIN (
+            SELECT roomId, message, regDate
+            FROM tbl_chat_message
+            WHERE (roomId, regDate) IN (
+                SELECT roomId, MAX(regDate)
+                FROM tbl_chat_message
+                GROUP BY roomId
+            )
+        ) lcm ON c.roomId = lcm.roomId
+        WHERE (c.sellerId = #{userId} AND c.sellerActive = 'Y') 
+           OR (c.buyerId = #{userId} AND c.buyerActive = 'Y')
+        ORDER BY 
+            CASE 
+                WHEN lcm.regDate IS NULL THEN 1 
+                ELSE 0 
+            END,
+            lcm.regDate DESC
     </select>
 
     <!-- 채팅방 단일 조회 -->
@@ -52,18 +92,23 @@
             pi.imagePath as productImage,
             m.userName as otherUserName
         FROM tbl_chatroom cr
-        JOIN tbl_product p ON cr.productId = p.productId
-        JOIN tbl_product_image pi ON p.productId = pi.productId AND pi.isMain = 'Y'
-        JOIN tbl_member m ON 
+        LEFT JOIN tbl_product p ON cr.productId = p.productId
+        LEFT JOIN tbl_product_image pi ON p.productId = pi.productId AND pi.isMain = 'Y'
+        LEFT JOIN tbl_member m ON 
             CASE 
                 WHEN cr.sellerId = #{userId} THEN m.userId = cr.buyerId
                 ELSE m.userId = cr.sellerId
             END
         WHERE cr.roomId = #{roomId}
+        AND (
+            (cr.sellerId = #{userId} AND cr.sellerActive = 'Y')
+            OR 
+            (cr.buyerId = #{userId} AND cr.buyerActive = 'Y')
+        )
     </select>
 
     <!-- 채팅방 생성 -->
-    <insert id="insertChatRoom" parameterType="net.fullstack7.edusecond.edusecond.dto.message.ChatRoomDTO">
+    <insert id="insertChatRoom" parameterType="net.fullstack7.edusecond.edusecond.dto.message.ChatRoomDTO" useGeneratedKeys="true" keyProperty="roomId">
         INSERT INTO tbl_chatroom (productId, sellerId, buyerId, sellerActive, buyerActive)
         VALUES (#{productId}, #{sellerId}, #{buyerId}, 'Y', 'Y')
     </insert>
