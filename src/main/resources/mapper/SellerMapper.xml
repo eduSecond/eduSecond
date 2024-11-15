@@ -46,4 +46,12 @@
                              INNER JOIN tbl_product AS p ON p.productId = o.productId
                 WHERE p.sellerId = #{sellerId}
         </select>
+
+        <select id="selectReviewStar" resultType="net.fullstack7.edusecond.edusecond.dto.seller.StarAvgDTO">
+                SELECT  SUM(r.rating)/COUNT(r.rating) AS starAvg
+                FROM tbl_review AS r
+                             INNER JOIN tbl_order AS o ON r.orderId = o.orderId
+                             INNER JOIN tbl_product AS p ON p.productId = o.productId
+                WHERE p.sellerId = #{sellerId}
+        </select>
 </mapper>

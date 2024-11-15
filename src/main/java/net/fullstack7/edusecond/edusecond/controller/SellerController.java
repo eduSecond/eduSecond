@@ -6,6 +6,7 @@ import net.fullstack7.edusecond.edusecond.domain.member.MemberVO;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberDTO;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberLoginDTO;
 import net.fullstack7.edusecond.edusecond.dto.seller.SellerDTO;
+import net.fullstack7.edusecond.edusecond.dto.seller.StarAvgDTO;
 import net.fullstack7.edusecond.edusecond.mapper.SellerMapper;
 import net.fullstack7.edusecond.edusecond.service.member.MemberServiceIf;
 import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
@@ -40,6 +41,8 @@ public class SellerController {
             model.addAttribute("list", list);
             List<SellerDTO> ReviewList = sellerMapper.selectReviewInfo(userId);
             model.addAttribute("ReviewList", ReviewList);
+            StarAvgDTO StarAvg = sellerMapper.selectReviewStar(userId);
+            model.addAttribute("StarAvg", StarAvg);
 
 
         } catch (Exception e) {

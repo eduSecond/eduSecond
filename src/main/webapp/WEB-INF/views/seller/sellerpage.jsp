@@ -294,6 +294,8 @@
                 <img src="/resources/images/seller/woman.png" alt="User Profile">
             </div>
             <h3 class="profile-name">${member.userName}</h3>
+            <div class="rating" data-rating="${StarAvg.starAvg}"></div>
+            <div>(${StarAvg.starAvg})</div>
         </div>
 
         <div class="profile-info">
@@ -334,32 +336,54 @@
             <p style="margin-left: 25px">리뷰</p>
             <hr style="max-width: 1200px">
         </div>
-            <c:if test="${not empty ReviewList}">
-                <c:forEach var="dto" items="${ReviewList}" varStatus="loop" begin="0" end="9">
-                    <!--<a href="/product/view?productId=" style="text-decoration: none; color: inherit;">-->
-                    <div class="review-card">
-                        <div class="review-header">
-                            <img src="/resources/images/seller/man.png" alt="User Profile" class="profile-image">
-                            <div class="user-info">
-                                <p class="username">${dto.writerId}</p>
-                                <div class="rating">${dto.rating}</div>
-                            </div>
-                            <span class="review-time">${dto.regDate}</span>
+        <c:if test="${not empty ReviewList}">
+            <c:forEach var="dto" items="${ReviewList}" varStatus="loop" begin="0" end="9">
+                <div class="review-card">
+                    <div class="review-header">
+                        <img src="/resources/images/seller/man.png" alt="User Profile" class="profile-image">
+                        <div class="user-info">
+                            <p class="username">${dto.writerId}</p>
+                            <!-- Rating container with data-rating -->
+                            <div class="rating" data-rating="${dto.rating}"></div>
                         </div>
-                        <p class="review-content">🎁 상품 : ${dto.productId} ${dto.productName}</p>
-                        <p class="review-content">${dto.content}</p>
+                        <span class="review-time">${dto.regDate}</span>
                     </div>
-        <!--</a>-->
-                </c:forEach>
-            </c:if>
-
+                    <p class="review-content">🎁 상품 : ${dto.productId} ${dto.productName}</p>
+                    <p class="review-content">${dto.content}</p>
+                </div>
+            </c:forEach>
+        </c:if>
     </div>
+
     <div class="banner">
         <img src="/resources/images/introbanner/banneri.gif">
     </div>
 </section>
 
 <%@include file="../main/footer.jsp"%>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Select all rating elements
+        const ratings = document.querySelectorAll(".rating");
+
+        // Iterate through each rating element
+        ratings.forEach((ratingElement) => {
+            // Get the rating value from the data attribute
+            const rating = parseInt(ratingElement.getAttribute("data-rating"), 10);
+
+            // Clear current content (if any)
+            ratingElement.textContent = "";
+
+            // Add ⭐ based on the rating value
+            for (let i = 0; i < rating; i++) {
+                ratingElement.textContent += "⭐";
+            }
+        });
+    });
+
+
+</script>
 
 
 </body>
