@@ -23,10 +23,6 @@ public class ChatMessageDTO {
     private String message;
     private String isRead;
     private Date regDate;
-    private MessageType type;
-    
-    public enum MessageType {
-        CHAT,    // 일반 채팅
-        LEAVE    // 채팅방 나가기
-    }
+    private String type;
+    private String targetId;
 }

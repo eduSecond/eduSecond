@@ -182,4 +182,12 @@
             END
         WHERE sellerId = #{userId} OR buyerId = #{userId}
     </update>
+    <!-- 활성화된 채팅방 확인 -->
+    <select id="isActiveRoom" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM tbl_chatroom
+        WHERE roomId = #{roomId} 
+        AND sellerActive = 'Y' 
+        AND buyerActive = 'Y'
+    </select>
 </mapper>

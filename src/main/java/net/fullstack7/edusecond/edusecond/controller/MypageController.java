@@ -80,7 +80,7 @@ public class MypageController {
         if (memberService.requestWithdrawal(memberLoginDTO.getUserId())) {
             session.invalidate(); // 세션 무효화
             rttr.addFlashAttribute("message", "탈퇴 신청이 완료되었습니다. 관리자 승인 후 처리됩니다.");
-            return "redirect:/main/goMain";
+            return "redirect:/main/main";
         } else {
             rttr.addFlashAttribute("error", "탈퇴 신청 처리 중 오류가 발생했습니다.");
             return "redirect:/es/mypage/myInfo";
