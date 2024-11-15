@@ -9,10 +9,11 @@ import java.util.Map;
 
 public interface ProductServiceIf {
 
-    List<ProductDTO> list(int pageNo, int pageSize, int blockSize, String searchCategory, String searchValue);
+    List<ProductDTO> list(int pageNo, int pageSize, int blockSize, String searchCategory, String searchValue, String productStatus);
+
+     ProductDTO view(Integer productId);
+    public int totalCount(String searchCategory, String searchValue, String productStatus);
     List<ProductDTO> SellerList(int pageNo, int pageSize, int blockSize, String searchCategory, String searchValue, String userId);
-    public ProductDTO view(Integer productId);
-    public int totalCount(String searchCategory, String searchValue);
 
     public int totalCountLikedProducts(String searchCategory, String searchValue, String userId);
     List<ProductImageDTO> getProductImages(int productId);

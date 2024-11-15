@@ -1,6 +1,8 @@
 package net.fullstack7.edusecond.edusecond.domain.product;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,4 +27,5 @@ public class ProductVO {
     private LocalDateTime modifyDate;
     private String sellerName;
     private String thumbnailPath;
+    private List<ProductImageVO> imageList;
 } 
