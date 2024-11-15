@@ -140,7 +140,6 @@
             </c:if>
         </form>
     </div>
-
 </div>
 <%@include file="../main/footer.jsp"%>
 </body>
