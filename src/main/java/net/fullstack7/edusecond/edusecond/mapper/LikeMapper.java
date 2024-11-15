@@ -12,4 +12,5 @@ public interface LikeMapper {
     boolean checkExists(@Param("userId") String userId, @Param("productId") Integer productId);
     //특정 조회
     LikeVO getLike(Integer productId, String userId);
+    int deleteByUserId(@Param("userId") String userId);
 }

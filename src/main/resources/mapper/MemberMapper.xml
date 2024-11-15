@@ -3,7 +3,10 @@
 <mapper namespace="net.fullstack7.edusecond.edusecond.mapper.MemberMapper">
     
     <select id="selectMemberById" resultType="net.fullstack7.edusecond.edusecond.domain.member.MemberVO">
-        SELECT * FROM tbl_member WHERE userId = #{userId}
+        SELECT * 
+        FROM tbl_member 
+        WHERE userId = #{userId}
+        AND enabled != 'N'
     </select>
     
     <insert id="insertMember">
@@ -76,7 +79,8 @@
 
     <update id="updateEnabled">
         UPDATE tbl_member 
-        SET enabled = #{enabled}, modifyDate = NOW()
+        SET enabled = #{enabled},
+            modifyDate = CURRENT_TIMESTAMP
         WHERE userId = #{userId}
     </update>
 
@@ -101,5 +105,54 @@
                 LEFT OUTER join tbl_review AS r ON o.orderId = r.orderId
              WHERE p.sellerId = #{userId}) AS reviewCount,
             (SELECT COUNT(*) FROM tbl_wishlist WHERE userId = #{userId}) AS wishListCount
+    </select>
+
+    <update id="updateMemberWithdrawal">
+        UPDATE tbl_member
+        SET enabled = 'N',
+            userName = '(탈퇴한 회원)',
+            modifyDate = CURRENT_TIMESTAMP
+        WHERE userId = #{userId}
+    </update>
+
+    <update id="updateProductStatusByUserId">
+        UPDATE tbl_product
+        SET productStatus = 'UNAVAILABLE',
+            modifyDate = CURRENT_TIMESTAMP
+        WHERE sellerId = #{userId}
+    </update>
+
+    <select id="selectWithdrawalList" resultType="net.fullstack7.edusecond.edusecond.domain.member.MemberVO">
+        SELECT *
+        FROM tbl_member
+        WHERE enabled = 'Q'
+        <if test="searchType != null and searchValue != null">
+            <choose>
+                <when test="searchType == 'userId'">
+                    AND userId LIKE CONCAT('%', #{searchValue}, '%')
+                </when>
+                <when test="searchType == 'userName'">
+                    AND userName LIKE CONCAT('%', #{searchValue}, '%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY modifyDate DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="selectWithdrawalTotalCount" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_member
+        WHERE enabled = 'Q'
+        <if test="searchType != null and searchValue != null">
+            <choose>
+                <when test="searchType == 'userId'">
+                    AND userId LIKE CONCAT('%', #{searchValue}, '%')
+                </when>
+                <when test="searchType == 'userName'">
+                    AND userName LIKE CONCAT('%', #{searchValue}, '%')
+                </when>
+            </choose>
+        </if>
     </select>
 </mapper>
