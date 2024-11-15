@@ -88,8 +88,15 @@
             vertical-align: middle;
             text-align: center;
         }
-        a{
+        span > a{
             text-decoration-line: none;
+            color: black;
+            font-weight: bolder;
+        }
+        td > a{
+            text-decoration-line: none;
+            color: black;
+
         }
 
     </style>
@@ -100,18 +107,18 @@
 <%@ include file="../main/header.jsp"%>
 <div class="mainpage">
     <div class="sidebar col-2">
-        <ul>
+        <ul class="list-unstyled">
             <li><a href="/es/mypage/myInfo">내 정보</a></li>
             <li><a href="/es/mypage/wishList">찜 목록</a></li>
             <li><a href="/es/mypage/orderList">거래 내역</a></li>
-            <li><a href="/es/product/productList">내 상품</a></li>
-            <li><a href="/es/mypage/messageList">셀파톡</a></li>
+            <li><a href="/es/mypage/productList">내 상품</a></li>
+            <li><a href="/message/list">셀파톡</a></li>
         </ul>
     </div>
     <div class="content col-10">
-        <h2>판매중 상품</h2>
+        <span><a href="/es/mypage/productList">판매중 상품</a></span> &nbsp; &nbsp; <span><a href="/es/mypage/productList_1">판매 완료 상품</a></span>
         <div class="search-bar">
-            <form class="d-flex" role="search" action="/es/mypage/myProduct" method="GET">
+            <form class="d-flex" role="search" action="/es/mypage/productList" method="GET">
                 <select name="searchType" class="form-select" style="width: 120px;">
                     <option value="productName" ${searchType == 'productName' ? 'selected' : ''}>상품명</option>
                     <option value="sellerId" ${searchType == 'sellerId' ? 'selected' : ''}>판매자</option>
@@ -155,85 +162,14 @@
                     </tr>
                 </c:forEach>
             </c:if>
+            <c:if test="${empty availableList}">
+                <p>존재하는 상품이 없습니다.</p>
+            </c:if>
             </tbody>
         </table>
         <%@ include file="../common/paging.jsp"%>
         <br>
         <br>
-        <h2>판매 완료 상품</h2>
-        <div class="search-bar">
-            <form class="d-flex" role="search" action="/es/mypage/myProduct" method="GET">
-                <select name="searchType" class="form-select" style="width: 120px;">
-                    <option value="productName" ${searchType == 'productName' ? 'selected' : ''}>상품명</option>
-                    <option value="sellerId" ${searchType == 'sellerId' ? 'selected' : ''}>판매자</option>
-                </select>
-                <input class="form-control me-2" type="search" name="searchValue" value="${searchValue}" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
-        </div>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">상품명</th>
-                    <th scope="col">가격</th>
-                    <th scope="col">상태</th>
-                </tr>
-            </thead>
-            <tbody>
-                <c:if test="${not empty soldOutList}">
-                    <c:forEach var="dto" items="${soldOutList}" >
-                        <tr>
-                            <td>
-                                <c:choose>
-                                    <c:when test="${not empty dto.thumbnail}">
-                                        <div class="image-container">
-                                            <img src="../${dto.thumbnail.imagePath}"
-                                                 alt="상품 썸네일"
-                                                 style="max-width: 100%; max-height: 100%; object-fit: cover;">
-                                        </div>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <div class="no-image">준비된 이미지가 없습니다.</div>
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>
-                            <td>${dto.productName}</td>
-                            <td>${dto.price}원</td>
-                            <td>${dto.productStatus}</td>
-                        </tr>
-                    </c:forEach>
-                </c:if>
-            </tbody>
-        </table>
-        <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center">
-                <!-- 이전 페이지 블록 버튼 -->
-                <c:if test="${soldOutPaging.prevBlock}">
-                    <li class="page-item">
-                        <a class="page-link" href="?pageNo=${soldOutPaging.startBlockPage - 1}&searchCategory=${param.searchCategory}&searchValue=${param.searchValue}" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                </c:if>
-
-                <!-- 현재 페이지 블록 버튼들 -->
-                <c:forEach begin="${soldOutPaging.startBlockPage}" end="${soldOutPaging.endBlockPage}" var="i">
-                    <li class="page-item ${i == param.pageNo ? 'active' : ''}">
-                        <a class="page-link" href="?pageNo=${i}&searchCategory=${param.searchCategory}&searchValue=${param.searchValue}">${i}</a>
-                    </li>
-                </c:forEach>
-
-                <!-- 다음 페이지 블록 버튼 -->
-                <c:if test="${soldOutPaging.nextBlock}">
-                    <li class="page-item">
-                        <a class="page-link" href="?pageNo=${soldOutPaging.endBlockPage + 1}&searchCategory=${param.searchCategory}&searchValue=${param.searchValue}" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </c:if>
-            </ul>
-        </nav>
     </div>
 </div>
 <%@include file="../main/footer.jsp"%>

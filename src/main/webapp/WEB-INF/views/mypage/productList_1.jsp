@@ -63,24 +63,19 @@
             padding: 20px;
             flex-grow: 1;
         }
-
         .no-image, .image-container {
             display: flex;
             align-items: center;
             justify-content: center;
             width: 100px;
             height: 100px;
+            text-align: center;
         }
 
         .no-image {
-            text-align: center;
-            vertical-align: middle;
             font-weight: bold;
         }
 
-        td {
-            vertical-align: middle;
-        }
         .search-bar {
             margin: 0 auto;
             width: 100%;
@@ -89,6 +84,21 @@
             display: flex;
             justify-content: flex-end;
         }
+        td, th, tr {
+            vertical-align: middle;
+            text-align: center;
+        }
+        span > a{
+            text-decoration-line: none;
+            color: black;
+            font-weight: bolder;
+        }
+        td > a{
+            text-decoration-line: none;
+            color: black;
+        }
+
+
     </style>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -106,52 +116,53 @@
         </ul>
     </div>
     <div class="content col-10">
-        <h2>관심 상품</h2>
+        <span><a href="/es/mypage/productList">판매중 상품</a></span> &nbsp; &nbsp; <span><a href="/es/mypage/productList_1">판매 완료 상품</a></span>
         <div class="search-bar">
-            <form class="d-flex" role="search" action="/es/mypage/wishList" method="GET">
+            <form class="d-flex" role="search" action="/es/mypage/productList_1" method="GET">
                 <select name="searchType" class="form-select" style="width: 120px;">
                     <option value="productName" ${searchType == 'productName' ? 'selected' : ''}>상품명</option>
                     <option value="sellerId" ${searchType == 'sellerId' ? 'selected' : ''}>판매자</option>
                 </select>
                 <input class="form-control me-2" type="search" name="searchValue" value="${searchValue}" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-primary" type="submit">Search</button>
+                <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
         </div>
         <table class="table">
             <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">상품명</th>
-                <th scope="col">판매자</th>
-                <th scope="col">가격</th>
-                <th scope="col">찜 취소</th>
-            </tr>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">상품명</th>
+                    <th scope="col">가격</th>
+                    <th scope="col">상태</th>
+                </tr>
             </thead>
             <tbody>
-            <c:if test="${not empty pList}">
-                <c:forEach var="dto" items="${pList}">
-                    <tr>
-                        <td>
-                            <c:choose>
-                                <c:when test="${not empty dto.thumbnail}">
-                                    <div class="image-container">
-                                        <img src="../${dto.thumbnail.imagePath}"
-                                             alt="상품 썸네일"
-                                             style="max-width: 100%; max-height: 100%; object-fit: cover;">
-                                    </div>
-                                </c:when>
-                                <c:otherwise>
-                                    <div class="no-image">준비된 이미지가 없습니다.</div>
-                                </c:otherwise>
-                            </c:choose>
-                        </td>
-                        <td>${dto.productName}</td>
-                        <td>${dto.sellerId}</td>
-                        <td>${dto.price}원</td>
-                        <td><img src="../../../resources/images/heart/heartRed.png" height="30px" width="30px" onclick="javascript:location.href='/es/like/delete?productId=${dto.productId}&userId=user1&source=mypage'"></td>
-                    </tr>
-                </c:forEach>
-            </c:if>
+                <c:if test="${not empty soldOutList}">
+                    <c:forEach var="dto" items="${soldOutList}" >
+                        <tr>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${not empty dto.thumbnail}">
+                                        <div class="image-container">
+                                            <img src="../${dto.thumbnail.imagePath}"
+                                                 alt="상품 썸네일"
+                                                 style="max-width: 100%; max-height: 100%; object-fit: cover;">
+                                        </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="no-image">준비된 이미지가 없습니다.</div>
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+                            <td>${dto.productName}</td>
+                            <td>${dto.price}원</td>
+                            <td>${dto.productStatus}</td>
+                        </tr>
+                    </c:forEach>
+                </c:if>
+                <c:if test="${empty soldOutList}">
+                    <p>존재하는 상품이 없습니다.</p>
+                </c:if>
             </tbody>
         </table>
         <%@ include file="../common/paging.jsp"%>

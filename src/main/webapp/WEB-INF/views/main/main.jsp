@@ -403,7 +403,7 @@
       <div class="banner-dots" id="bannerDots"></div>
     </div>
 
-    <p class="highlight">실시간 중고시세를 확인해 보세요.</p>
+    <p class="highlight" style="text-decoration-line: none;">실시간 중고시세를 확인해 보세요.</p>
     <div class="tags">
       <span># 초등 교과서</span>
       <span># 중등 교과서</span>

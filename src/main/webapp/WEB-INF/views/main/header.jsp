@@ -119,7 +119,7 @@
       <ul>
         <li><a href="/footer/intro">회사소개</a></li>
         <li><a href="/product/list">상품</a></li>
-        <li><a href="/es/mypage/wishList">내상품</a></li>
+        <li><a href="/es/mypage/myProduct">내상품</a></li>
         <li><a href="/message/list">셀파톡</a></li>
         <li><a href="/notice/noticelist">공지사항</a></li>
       </ul>
@@ -132,7 +132,7 @@
 
       <!--로그인 시-->
       <c:if test="${not empty sessionScope.memberInfo}" var="login">
-        <a href="#">${sessionScope.memberInfo.userName}의 마이페이지</a>| <a href="/main/logout">로그아웃</a>
+        <a href="/es/mypage/myInfo">${sessionScope.memberInfo.userName}의 마이페이지</a>| <a href="/main/logout">로그아웃</a>
       </c:if>
     </div>
   </div>
