@@ -21,5 +21,7 @@ public class ReviewDTO {
     private int rating;
     private Timestamp regDate;
     private Timestamp modifyDate;
+    private int productId;
+    private String productName;
 }
 

@@ -299,9 +299,8 @@
         <div class="profile-info">
             <h2 class="profile-title">${member.userName}</h2>
             <div class="info-details">
-                <span class="info-item">📦 상품 14</span>
+                <span class="info-item">📪이메일 :${member.userEmail}</span>
             </div>
-            <div class="verification-status">✅ 본인인증 완료</div>
         </div>
     </div>
 
@@ -312,29 +311,20 @@
         </div>
         <div class="product-grid">
             <!-- Product card template -->
-            <div class="product-card">
-                <img src="product1.jpg" alt="Product Image">
-                <h3 class="product-title">유아 긴 베개 나눔(자크로..</h3>
-                <p class="product-price">나눔</p>
-                <p class="product-details">하안동</p>
-                <p class="product-info">채팅 1 · 관심 1</p>
-            </div>
-            <!-- Repeat product-card for other products -->
-            <div class="product-card">
-                <img src="product1.jpg" alt="Product Image">
-                <h3 class="product-title">유아 긴 베개 나눔(자크로..</h3>
-                <p class="product-price">나눔</p>
-                <p class="product-details">하안동</p>
-                <p class="product-info">채팅 1 · 관심 1</p>
-            </div>
-            <div class="product-card">
-                <img src="product1.jpg" alt="Product Image">
-                <h3 class="product-title">유아 긴 베개 나눔(자크로..</h3>
-                <p class="product-price">나눔</p>
-                <p class="product-details">하안동</p>
-                <p class="product-info">채팅 1 · 관심 1</p>
-            </div>
-
+            <c:if test="${not empty list}">
+                <c:forEach var="dto" items="${list}" varStatus="loop" begin="0" end="9">
+                    <a href="/product/view?productId=${dto.productId}" style="text-decoration: none; color: inherit;">
+                        <div class="product-card">
+                            <!--<img src="product1.jpg" alt="Product Image">-->
+                            <h3 class="product-title">${dto.productName}</h3>
+                            <p class="product-price">가격 : ${dto.price}</p>
+                            <!--<p class="product-details"></p>-->
+                            <p class="product-info">조회수 : ${dto.viewCount}</p>
+                        </div>
+                        <!-- Repeat product-card for other products -->
+                    </a>
+                </c:forEach>
+            </c:if>
         </div>
     </div>
 
@@ -344,18 +334,24 @@
             <p style="margin-left: 25px">리뷰</p>
             <hr style="max-width: 1200px">
         </div>
-        <div class="review-card">
-            <div class="review-header">
-                <img src="user1.jpg" alt="User Profile" class="profile-image">
-                <div class="user-info">
-                    <p class="username">js1111</p>
-                    <div class="rating">★★★★★</div>
-                    <button class="tag">교환구매 리뷰</button>
-                </div>
-                <span class="review-time">6년 전</span>
-            </div>
-            <p class="review-content">물건잘받았아요 좋은가격에잘샀습니다♡♡.♡</p>
-        </div>
+            <c:if test="${not empty ReviewList}">
+                <c:forEach var="dto" items="${ReviewList}" varStatus="loop" begin="0" end="9">
+                    <!--<a href="/product/view?productId=" style="text-decoration: none; color: inherit;">-->
+                    <div class="review-card">
+                        <div class="review-header">
+                            <img src="/resources/images/seller/man.png" alt="User Profile" class="profile-image">
+                            <div class="user-info">
+                                <p class="username">${dto.writerId}</p>
+                                <div class="rating">${dto.rating}</div>
+                            </div>
+                            <span class="review-time">${dto.regDate}</span>
+                        </div>
+                        <p class="review-content">🎁 상품 : ${dto.productId} ${dto.productName}</p>
+                        <p class="review-content">${dto.content}</p>
+                    </div>
+        <!--</a>-->
+                </c:forEach>
+            </c:if>
 
     </div>
     <div class="banner">

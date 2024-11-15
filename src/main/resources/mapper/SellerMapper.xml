@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.fullstack7.edusecond.edusecond.mapper.SellerMapper">
 
-        <select id="selectSellerInfo" parameterType="map" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductVO">
+        <select id="selectProductInfo" resultType="net.fullstack7.edusecond.edusecond.dto.seller.SellerDTO">
                 SELECT
                         m.userId AS sellerId,
                         m.userName AS sellerName,
@@ -34,8 +34,16 @@
                                 LEFT JOIN
                         tbl_review r ON r.orderId = o.orderId
                 WHERE
-                        m.userId = #{userId}
+                        m.userId = #{sellerId}
                 ORDER BY
                         p.productId, r.regDate DESC;
+        </select>
+
+        <select id="selectReviewInfo" resultType="net.fullstack7.edusecond.edusecond.dto.seller.ReviewDTO">
+                SELECT r.*, p.productId, p.productName
+                FROM tbl_review AS r
+                             INNER JOIN tbl_order AS o ON r.orderId = o.orderId
+                             INNER JOIN tbl_product AS p ON p.productId = o.productId
+                WHERE p.sellerId = #{sellerId}
         </select>
 </mapper>

@@ -27,6 +27,7 @@
     }
     .container {
       width: 100%;
+      height: 500px;
       background-color: #fff;
       padding: 20px;
       border: 1px solid #ddd;
@@ -97,7 +98,18 @@
     .back-button:hover {
       background-color: #555;
     }
+    .banner {
+      position: relative;
+      margin: 20px auto;
+      width: 80%;
+      max-width: 1200px;
+    }
 
+    .banner img {
+      width: 100%;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
 
   </style>
 </head>
@@ -124,6 +136,9 @@
     </div>
 
     <button class="back-button" onclick="location.href='/notice/noticelist'">목록</button>
+  </div>
+  <div class="banner">
+    <img src="/resources/images/introbanner/banneri.gif">
   </div>
 </section>
 
