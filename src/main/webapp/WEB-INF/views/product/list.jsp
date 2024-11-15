@@ -94,6 +94,8 @@
                 </a>
             </c:forEach>
         </c:if>
+            <button type="button" class="btn btn-primary" onclick="javascript:location.href='/product/regist'">작성하기</button>
+
     </div>
     <!-- 페이징 영역 -->
     <div class="pagination-container">

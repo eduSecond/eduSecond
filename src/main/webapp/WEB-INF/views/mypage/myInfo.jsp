@@ -43,6 +43,11 @@
     .btn-container {
       margin-top: 20px;
     }
+    a{
+      text-decoration-line: none;
+      color: black;
+    }
+
   </style>
 </head>
 <body>
@@ -54,8 +59,8 @@
       <li><a href="/es/mypage/myInfo">내 정보</a></li>
       <li><a href="/es/mypage/wishList">찜 목록</a></li>
       <li><a href="/es/mypage/orderList">거래 내역</a></li>
-      <li><a href="/es/product/productList">내 상품</a></li>
-      <li><a href="/es/mypage/messageList">셀파톡</a></li>
+      <li><a href="/es/mypage/productList">내 상품</a></li>
+      <li><a href="/message/list">셀파톡</a></li>
     </ul>
   </div>
 

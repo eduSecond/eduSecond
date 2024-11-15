@@ -207,7 +207,7 @@ public class MypageController {
 
 
 
-    @GetMapping("/myProduct")
+    @GetMapping("/productList")
     public String viewMyProduct(Model model,
                                HttpSession session,
                                @RequestParam(defaultValue = "1") int pageNo,
@@ -220,22 +220,46 @@ public class MypageController {
                 return null;
             }
             List<ProductDTO> availableList  = productService.selectAllByProductStatus(pageNo, 10, 5, searchType, searchValue, loginDto.getUserId(), "AVAILABLE");
-            List<ProductDTO> soldOutList  = productService.selectAllByProductStatus(pageNo, 10, 5, searchType, searchValue, loginDto.getUserId(), "SOLD");
 
             int availableTotalCount = productService.totalCountByProductStatus(searchType, searchValue, loginDto.getUserId(), "AVAILABLE");
-            int soldOutTotalCount = productService.totalCountByProductStatus(searchType, searchValue, loginDto.getUserId(), "SOLD");
 
             Paging availablePaging = new Paging(pageNo, 10, 5, availableTotalCount);
-            Paging soldOutPaging = new Paging(pageNo, 10, 5, soldOutTotalCount);
+
             model.addAttribute("availableList", availableList);
             model.addAttribute("paging", availablePaging);
 
-            model.addAttribute("soldOutList", soldOutList);
-            model.addAttribute("soldOutPaging", soldOutPaging);
 
             model.addAttribute("searchType", searchType);
             model.addAttribute("searchValue", searchValue);
-            return "/mypage/myProduct";
+            return "/mypage/productList";
+        }catch(Exception e){
+            log.error("내 상품 조회 중 오류 발생" + e.getMessage());
+            return null;
+        }
+    }
+
+    @GetMapping("/productList_1")
+    public String viewMyProduct1(Model model,
+                                HttpSession session,
+                                @RequestParam(defaultValue = "1") int pageNo,
+                                @RequestParam(required = false) String searchType,
+                                @RequestParam(required = false) String searchValue,
+                                HttpServletResponse response){
+        MemberLoginDTO loginDto = (MemberLoginDTO) session.getAttribute("memberInfo");
+        try{
+            if(!validateListParameters(pageNo, searchType, searchValue, response)){
+                return null;
+            }
+            List<ProductDTO> soldOutList  = productService.selectAllByProductStatus(pageNo, 10, 5, searchType, searchValue, loginDto.getUserId(), "SOLDOUT");
+            int soldOutTotalCount = productService.totalCountByProductStatus(searchType, searchValue, loginDto.getUserId(), "SOLDOUT");
+            Paging soldOutPaging = new Paging(pageNo, 10, 5, soldOutTotalCount);
+
+            model.addAttribute("soldOutList", soldOutList);
+            model.addAttribute("paging", soldOutPaging);
+
+            model.addAttribute("searchType", searchType);
+            model.addAttribute("searchValue", searchValue);
+            return "/mypage/productList_1";
         }catch(Exception e){
             log.error("내 상품 조회 중 오류 발생" + e.getMessage());
             return null;
