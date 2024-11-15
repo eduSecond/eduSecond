@@ -45,7 +45,7 @@
     <if test="searchType != null and searchType == 'sellerId'">
         AND p.sellerId LIKE CONCAT('%', #{searchValue}, '%')
     </if>
-    ORDER BY p.productId DESC
+    ORDER BY p.productId ASC
     LIMIT #{offset}, #{limit}
   </select>
 
