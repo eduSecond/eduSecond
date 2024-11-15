@@ -119,9 +119,9 @@
         <span><a href="/es/mypage/productList">판매중 상품</a></span> &nbsp; &nbsp; <span><a href="/es/mypage/productList_1">판매 완료 상품</a></span>
         <div class="search-bar">
             <form class="d-flex" role="search" action="/es/mypage/productList_1" method="GET">
-                <select name="searchType" class="form-select" style="width: 120px;">
-                    <option value="productName" ${searchType == 'productName' ? 'selected' : ''}>상품명</option>
-                    <option value="sellerId" ${searchType == 'sellerId' ? 'selected' : ''}>판매자</option>
+                <select name="searchCategory" class="form-select" style="width: 120px;">
+                    <option value="productName" ${searchCategory == 'productName' ? 'selected' : ''}>상품명</option>
+                    <option value="sellerId" ${searchCategory == 'sellerId' ? 'selected' : ''}>판매자</option>
                 </select>
                 <input class="form-control me-2" type="search" name="searchValue" value="${searchValue}" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Search</button>

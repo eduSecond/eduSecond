@@ -235,7 +235,9 @@
         <div class="card-body">
           <p class="card-text">아래 버튼을 클릭하여 문의하거나 제품을 구매할 수 있습니다.</p>
           <a href="#" class="btn btn-primary" onclick="createChatRoom()">1:1 문의하기</a>
-          <a href="/es/payment/view?productId=${dto.productId}" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#purchaseModal">구매하기</a>
+          <c:if test="${memberInfo.userId ne dto.sellerId}">
+            <a href="/es/payment/view?productId=${dto.productId}" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#purchaseModal">구매하기</a>
+          </c:if>
         </div>
       </div>
 
@@ -259,26 +261,26 @@
 </section>
 <h2 style="margin-left: 3%">후기</h2>
 <section class="privacy-policy">
-  <c:if test="${not empty reviewList}">
-    <c:forEach var="dto" items="${reviewList}" varStatus="status">
       <table class="table table-bordered">
-        <thead class="table-light">
-        <tr>
-          <th>작성자</th>
-          <th>내용</th>
-          <th>별점</th>
-          <th>등록일</th>
-        </tr>
-        </thead>
-        <tbody>
-        <td>${dto.writerId}</td>
-        <td>${dto.content}</td>
-        <td>${dto.rating}</td>
-        <td>${dto.regDate}</td>
-        </tbody>
+          <thead class="table-light">
+              <tr>
+                  <th>작성자</th>
+                  <th>내용</th>
+                  <th>별점</th>
+                  <th>등록일</th>
+              </tr>
+              </thead>
+              <c:if test="${not empty reviewList}">
+                  <c:forEach var="dto" items="${reviewList}" varStatus="status">
+                      <tbody>
+                            <td>${dto.writerId}</td>
+                            <td>${dto.content}</td>
+                            <td>${dto.rating}</td>
+                            <td>${dto.regDate}</td>
+                      </tbody>
+                  </c:forEach>
+              </c:if>
       </table>
-    </c:forEach>
-  </c:if>
 </section>
 <%@include file="../main/footer.jsp"%>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

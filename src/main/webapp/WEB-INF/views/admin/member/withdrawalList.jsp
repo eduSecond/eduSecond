@@ -16,9 +16,9 @@
             
             <!-- 검색 폼 -->
             <form class="d-flex gap-2" method="get" action="/admin/member/withdrawal/list">
-                <select name="searchType" class="form-select" style="width: 120px;">
-                    <option value="userId" ${searchType == 'userId' ? 'selected' : ''}>아이디</option>
-                    <option value="userName" ${searchType == 'userName' ? 'selected' : ''}>이름</option>
+                <select name="searchCategory" class="form-select" style="width: 120px;">
+                    <option value="userId" ${searchCategory == 'userId' ? 'selected' : ''}>아이디</option>
+                    <option value="userName" ${searchCategory == 'userName' ? 'selected' : ''}>이름</option>
                 </select>
                 <input type="text" name="searchValue" value="${searchValue}" class="form-control" placeholder="검색어 입력">
                 <button type="submit" class="btn btn-dark">검색</button>
@@ -77,7 +77,7 @@
                 <!-- 이전 페이지 블록 버튼 -->
                 <c:if test="${paging.prevBlock}">
                     <li class="page-item">
-                        <a class="page-link" href="?pageNo=${paging.startBlockPage - 1}&searchType=${param.searchType}&searchValue=${param.searchValue}" aria-label="Previous">
+                        <a class="page-link" href="?pageNo=${paging.startBlockPage - 1}&searchCategory=${param.searchCategory}&searchValue=${param.searchValue}" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
@@ -86,14 +86,14 @@
                 <!-- 현재 페이지 블록 버튼들 -->
                 <c:forEach begin="${paging.startBlockPage}" end="${paging.endBlockPage}" var="i">
                     <li class="page-item ${i == param.pageNo ? 'active' : ''}">
-                        <a class="page-link" href="?pageNo=${i}&searchType=${param.searchType}&searchValue=${param.searchValue}">${i}</a>
+                        <a class="page-link" href="?pageNo=${i}&searchCategory=${param.searchCategory}&searchValue=${param.searchValue}">${i}</a>
                     </li>
                 </c:forEach>
 
                 <!-- 다음 페이지 블록 버튼 -->
                 <c:if test="${paging.nextBlock}">
                     <li class="page-item">
-                        <a class="page-link" href="?pageNo=${paging.endBlockPage + 1}&searchType=${param.searchType}&searchValue=${param.searchValue}" aria-label="Next">
+                        <a class="page-link" href="?pageNo=${paging.endBlockPage + 1}&searchCategory=${param.searchCategory}&searchValue=${param.searchValue}" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>

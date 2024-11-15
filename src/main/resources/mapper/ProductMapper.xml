@@ -11,7 +11,7 @@
             AND productStatus = #{productStatus}
         </if>
         <if test="searchCategory != null and !searchCategory.trim().isEmpty() and searchValue != null and !searchValue.trim().isEmpty()">
-          ${searchCategory} LIKE CONCAT('%', #{searchValue}, '%')
+          AND ${searchCategory} LIKE CONCAT('%', #{searchValue}, '%')
         </if>
     </where>
   </select>
@@ -39,13 +39,13 @@
       <if test="productStatus != null and !productStatus.isEmpty()">
           AND p.productStatus = #{productStatus}
       </if>
-    <if test="searchType != null and searchType == 'productName'">
+    <if test="searchCategory != null and searchCategory == 'productName'">
         AND p.productName LIKE CONCAT('%', #{searchValue}, '%')
     </if>
-    <if test="searchType != null and searchType == 'sellerId'">
+    <if test="searchCategory != null and searchCategory == 'sellerId'">
         AND p.sellerId LIKE CONCAT('%', #{searchValue}, '%')
     </if>
-    ORDER BY p.productId ASC
+    ORDER BY p.productId DESC
     LIMIT #{offset}, #{limit}
   </select>
 
@@ -154,10 +154,10 @@
         LEFT JOIN tbl_wishList w ON p.productId = w.productId
         LEFT JOIN tbl_member m ON p.sellerId = m.userId
         WHERE w.userId = #{userId}
-        <if test="searchType != null and searchType == 'productName'">
+        <if test="searchCategory != null and searchCategory == 'productName'">
             AND p.productName LIKE CONCAT('%', #{searchValue}, '%')
         </if>
-        <if test="searchType != null and searchType == 'sellerId'">
+        <if test="searchCategory != null and searchCategory == 'sellerId'">
             AND p.sellerId LIKE CONCAT('%', #{searchValue}, '%')
         </if>
         ORDER BY p.productId DESC
@@ -187,7 +187,7 @@
         FROM tbl_product p
         LEFT JOIN tbl_member m ON p.sellerId = m.userId
         WHERE m.userId = #{userId}
-        <if test="searchType != null and searchType == 'productName'">
+        <if test="searchCategory != null and searchCategory == 'productName'">
             AND p.productName LIKE CONCAT('%', #{searchValue}, '%')
         </if>
         ORDER BY p.productId DESC
@@ -210,7 +210,7 @@
             <if test="productStatus != null and productStatus != ''">
                 AND p.productStatus = #{productStatus}
             </if>
-            <if test="searchType != null and searchType == 'productName'">
+            <if test="searchCategory != null and searchCategory == 'productName'">
                 AND p.productName LIKE CONCAT('%', #{searchValue}, '%')
             </if>
         </where>
@@ -230,7 +230,7 @@
         <if test="productStatus != null and !productStatus.isEmpty()">
             AND p.productStatus = #{productStatus}
         </if>
-        <if test="searchType != null and searchType == 'productName'">
+        <if test="searchCategory != null and searchCategory == 'productName'">
             AND p.productName LIKE CONCAT('%', #{searchValue}, '%')
         </if>
         </where>

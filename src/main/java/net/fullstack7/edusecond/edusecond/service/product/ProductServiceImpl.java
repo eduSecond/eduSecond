@@ -26,11 +26,11 @@ public class ProductServiceImpl implements ProductServiceIf {
     private final ModelMapper modelMapper;
 
     @Override
-    public List<ProductDTO> list(int pageNo, int pageSize, int pageNavSize, String searchType, String searchValue, String productStatus) {
+    public List<ProductDTO> list(int pageNo, int pageSize, int pageNavSize, String searchCategory, String searchValue, String productStatus) {
         Map<String, Object> params = new HashMap<>();
         params.put("offset", (pageNo - 1) * pageSize);
         params.put("limit", pageSize);
-        params.put("searchType", searchType);
+        params.put("searchCategory", searchCategory);
         params.put("searchValue", searchValue);
         params.put("productStatus", productStatus);
 
@@ -144,14 +144,14 @@ public class ProductServiceImpl implements ProductServiceIf {
     public List<ProductDTO> selectAllByUser(int pageNo,
                                             int pageSize,
                                             int pageNavSize,
-                                            String searchType,
+                                            String searchCategory,
                                             String searchValue,
                                             String userId,
                                             String type) {
         Map<String, Object> params = new HashMap<>();
         params.put("offset", (pageNo - 1) * pageSize);
         params.put("limit", pageSize);
-        params.put("searchType", searchType);
+        params.put("searchCategory", searchCategory);
         params.put("searchValue", searchValue);
         params.put("userId", userId);
 
@@ -181,14 +181,14 @@ public class ProductServiceImpl implements ProductServiceIf {
     public List<ProductDTO> selectAllByProductStatus(int pageNo,
                                                      int pageSize,
                                                      int pageNavSize,
-                                                     String searchType,
+                                                     String searchCategory,
                                                      String searchValue,
                                                      String userId,
                                                      String productStatus) {
         Map<String, Object> params = new HashMap<>();
         params.put("offset", (pageNo - 1) * pageSize);
         params.put("limit", pageSize);
-        params.put("searchType", searchType);
+        params.put("searchCategory", searchCategory);
         params.put("searchValue", searchValue);
         params.put("productStatus", productStatus);
         params.put("userId", userId);

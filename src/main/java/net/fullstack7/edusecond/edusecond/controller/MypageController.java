@@ -46,7 +46,6 @@ public class MypageController {
     public String myInfo(HttpSession session, Model model) {
         MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
         MypageDTO mypageDTO = memberMapper.myProductCount(memberLoginDTO.getUserId());
-        log.info(mypageDTO);
         MemberDTO memberDTO = memberService.getMember(memberLoginDTO.getUserId());
         model.addAttribute("mypageDTO", mypageDTO);
         model.addAttribute("member", memberDTO);
@@ -90,17 +89,17 @@ public class MypageController {
         }
     }
 
-    private boolean validateListParameters(int pageNo, String searchType,
+    private boolean validateListParameters(int pageNo, String searchCategory,
                                            String searchValue, HttpServletResponse response) {
         if (pageNo < 1) {
             JSFunc.alertBack("페이지 번호는 1 이상이어야 합니다.", response);
             return false;
         }
 
-        if (searchType != null && !searchType.trim().isEmpty()
+        if (searchCategory != null && !searchCategory.trim().isEmpty()
                 && searchValue != null && !searchValue.trim().isEmpty()) {
-            if (!("productName".equals(searchType) || "sellerId".equals(searchType))) {
-                JSFunc.alertBack("유효하지 않은 검색 카테고리입니다: " + searchType, response);
+            if (!("productName".equals(searchCategory) || "sellerId".equals(searchCategory))) {
+                JSFunc.alertBack("유효하지 않은 검색 카테고리입니다: " + searchCategory, response);
                 return false;
             }
         }
@@ -111,21 +110,21 @@ public class MypageController {
     public String viewWishList(Model model,
                                HttpSession session,
                                @RequestParam(defaultValue = "1") int pageNo,
-                               @RequestParam(required = false) String searchType,
+                               @RequestParam(required = false) String searchCategory,
                                @RequestParam(required = false) String searchValue,
                                HttpServletResponse response){
         MemberLoginDTO loginDto = (MemberLoginDTO) session.getAttribute("memberInfo");
         try{
-            if(!validateListParameters(pageNo, searchType, searchValue, response)){
+            if(!validateListParameters(pageNo, searchCategory, searchValue, response)){
                 return null;
             }
-            List<ProductDTO> pList = productService.selectAllByUser(pageNo, 10, 5, searchType, searchValue, loginDto.getUserId(), "wish");
-            int totalCount = productService.totalCountLikedProducts(searchType, searchValue, loginDto.getUserId());
+            List<ProductDTO> pList = productService.selectAllByUser(pageNo, 10, 5, searchCategory, searchValue, loginDto.getUserId(), "wish");
+            int totalCount = productService.totalCountLikedProducts(searchCategory, searchValue, loginDto.getUserId());
             log.info("totalCount: " + totalCount);
             Paging paging = new Paging(pageNo, 10, 5, totalCount);
             model.addAttribute("pList", pList);
             model.addAttribute("paging", paging);
-            model.addAttribute("searchType", searchType);
+            model.addAttribute("searchCategory", searchCategory);
             model.addAttribute("searchValue", searchValue);
             log.info("pList.size()" + pList.size());
             return "/mypage/wishList";
@@ -209,17 +208,17 @@ public class MypageController {
     public String viewMyProduct(Model model,
                                HttpSession session,
                                @RequestParam(defaultValue = "1") int pageNo,
-                               @RequestParam(required = false) String searchType,
+                               @RequestParam(required = false) String searchCategory,
                                @RequestParam(required = false) String searchValue,
                                HttpServletResponse response){
         MemberLoginDTO loginDto = (MemberLoginDTO) session.getAttribute("memberInfo");
         try{
-            if(!validateListParameters(pageNo, searchType, searchValue, response)){
+            if(!validateListParameters(pageNo, searchCategory, searchValue, response)){
                 return null;
             }
-            List<ProductDTO> availableList  = productService.selectAllByProductStatus(pageNo, 10, 5, searchType, searchValue, loginDto.getUserId(), "AVAILABLE");
+            List<ProductDTO> availableList  = productService.selectAllByProductStatus(pageNo, 10, 5, searchCategory, searchValue, loginDto.getUserId(), "AVAILABLE");
 
-            int availableTotalCount = productService.totalCountByProductStatus(searchType, searchValue, loginDto.getUserId(), "AVAILABLE");
+            int availableTotalCount = productService.totalCountByProductStatus(searchCategory, searchValue, loginDto.getUserId(), "AVAILABLE");
 
             Paging availablePaging = new Paging(pageNo, 10, 5, availableTotalCount);
 
@@ -227,7 +226,7 @@ public class MypageController {
             model.addAttribute("paging", availablePaging);
 
 
-            model.addAttribute("searchType", searchType);
+            model.addAttribute("searchCategory", searchCategory);
             model.addAttribute("searchValue", searchValue);
             return "/mypage/productList";
         }catch(Exception e){
@@ -240,22 +239,22 @@ public class MypageController {
     public String viewMyProduct1(Model model,
                                 HttpSession session,
                                 @RequestParam(defaultValue = "1") int pageNo,
-                                @RequestParam(required = false) String searchType,
+                                @RequestParam(required = false) String searchCategory,
                                 @RequestParam(required = false) String searchValue,
                                 HttpServletResponse response){
         MemberLoginDTO loginDto = (MemberLoginDTO) session.getAttribute("memberInfo");
         try{
-            if(!validateListParameters(pageNo, searchType, searchValue, response)){
+            if(!validateListParameters(pageNo, searchCategory, searchValue, response)){
                 return null;
             }
-            List<ProductDTO> soldOutList  = productService.selectAllByProductStatus(pageNo, 10, 5, searchType, searchValue, loginDto.getUserId(), "SOLDOUT");
-            int soldOutTotalCount = productService.totalCountByProductStatus(searchType, searchValue, loginDto.getUserId(), "SOLDOUT");
+            List<ProductDTO> soldOutList  = productService.selectAllByProductStatus(pageNo, 10, 5, searchCategory, searchValue, loginDto.getUserId(), "SOLDOUT");
+            int soldOutTotalCount = productService.totalCountByProductStatus(searchCategory, searchValue, loginDto.getUserId(), "SOLDOUT");
             Paging soldOutPaging = new Paging(pageNo, 10, 5, soldOutTotalCount);
 
             model.addAttribute("soldOutList", soldOutList);
             model.addAttribute("paging", soldOutPaging);
 
-            model.addAttribute("searchType", searchType);
+            model.addAttribute("searchCategory", searchCategory);
             model.addAttribute("searchValue", searchValue);
             return "/mypage/productList_1";
         }catch(Exception e){
