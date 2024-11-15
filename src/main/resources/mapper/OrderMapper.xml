@@ -21,7 +21,7 @@
         FROM tbl_order AS o
         INNER JOIN tbl_product AS p ON o.productId = p.productId
         LEFT OUTER join tbl_product_image AS i ON p.productId = i.productId
-        WHERE o.buyerId = 'user1' AND (i.isMain = 'Y' OR i.isMain IS NULL)
+        WHERE o.buyerId = #{userId} AND (i.isMain = 'Y' OR i.isMain IS NULL)
             <if test="searchValue != null and !searchValue.trim().isEmpty()">
                 AND ${searchCategory} LIKE CONCAT('%', #{searchValue}, '%')
             </if>
@@ -45,7 +45,7 @@
         FROM tbl_order AS o
         INNER JOIN tbl_product AS p ON o.productId = p.productId
         LEFT OUTER join tbl_product_image AS i ON p.productId = i.productId
-        WHERE p.sellerId = 'user1' AND (i.isMain = 'Y' OR i.isMain IS NULL)
+        WHERE p.sellerId = #{userId} AND (i.isMain = 'Y' OR i.isMain IS NULL)
         <if test="searchValue != null and !searchValue.trim().isEmpty()">
             AND ${searchCategory} LIKE CONCAT('%', #{searchValue}, '%')
         </if>

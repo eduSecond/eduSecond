@@ -46,7 +46,6 @@ public class MypageController {
     public String myInfo(HttpSession session, Model model) {
         MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
         MypageDTO mypageDTO = memberMapper.myProductCount(memberLoginDTO.getUserId());
-        log.info(mypageDTO);
         MemberDTO memberDTO = memberService.getMember(memberLoginDTO.getUserId());
         model.addAttribute("mypageDTO", mypageDTO);
         model.addAttribute("member", memberDTO);

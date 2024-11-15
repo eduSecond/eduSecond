@@ -71,9 +71,8 @@
         <div class="card h-100">
           <div class="card-body text-center">
             <h5 class="card-title">내가 등록한 상품</h5>
-            <p>판매중: <strong>${mypageDTO.productAvailableCount}</strong></p>
-            <p>예약중: <strong>${mypageDTO.productReservedCount}</strong></p>
-            <p>판매완료: <strong>${mypageDTO.productSoldCount}</strong></p>
+            <p><a href="/es/mypage/productList">판매중: <strong>${mypageDTO.productAvailableCount}</strong></a></p>
+            <p><a href="/es/mypage/productList_1">판매완료: <strong>${mypageDTO.productSoldCount}</strong></a></p>
           </div>
         </div>
       </div>
@@ -81,14 +80,14 @@
         <div class="card h-100">
           <div class="card-body text-center">
             <h5 class="card-title">내가 찜한 상품</h5>
-            <p><strong>${mypageDTO.wishListCount}</strong> 개</p>
+            <p><a href="/es/mypage/wishList"><strong>${mypageDTO.wishListCount}</strong>개</a></p>
           </div>
         </div>
       </div>
       <div class="col-md-4">
         <div class="card h-100">
           <div class="card-body text-center">
-            <h5 class="card-title">내가 받은 리뷰</h5>
+            <h5 class="card-title"><a href="/seller/sellerpage?userId=${memberInfo.userId}">내 프로필</a></h5>
             <p><strong>${mypageDTO.reviewCount}</strong> 개</p>
           </div>
         </div>
