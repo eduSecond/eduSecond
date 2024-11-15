@@ -142,7 +142,7 @@
         <input type="hidden" value="${dto.price}" name="unitPrice">
         <input type="hidden" value="${dto.productId}" name="productId">
             <input type="hidden" value="${dto.quantity}" name="totalQuantity">
-            <button>결제하기</button>
+            <button type="submit" class="btn btn-primary">결제하기</button>
         </form>
     </div>
 
