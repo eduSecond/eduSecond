@@ -46,7 +46,7 @@
   </style>
 </head>
 <body>
-<%@ include file="/main/header.jsp" %>
+<%@ include file="../main/header.jsp" %>
 
 <div class="mainpage">
   <div class="sidebar col-md-2">
@@ -135,6 +135,6 @@
   </div>
 </div>
 
-<%@ include file="/main/footer.jsp" %>
+<%@ include file="../main/footer.jsp" %>
 </body>
 </html>

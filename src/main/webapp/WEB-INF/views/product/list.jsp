@@ -7,111 +7,102 @@
         body {
             margin: 0;
             padding: 0;
+            font-family: Arial, sans-serif;
         }
         .container {
-            display: grid;
-            grid-template-areas:
-                "header header"
-                "side main"
-                "footer footer";
-            grid-template-columns: 1fr 3fr;
-            grid-template-rows: minmax(172px, 1fr) 8fr minmax(172px, 1fr);
-            height: 100vh;
-            gap: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 1200px;
+            margin: auto;
         }
-        .header {
-            grid-area: header;
-            margin-bottom: 20px;
-        }
-        .side {
-            grid-area: side;
-            margin-bottom: 20px;
-            padding: 25px;
-        }
-        .side ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        .side ul li {
-            border-bottom: 1px solid #dee2e6;
-        }
-        .side ul li:last-child {
-            border-bottom: none;
-        }
-        .side ul li a {
-            display: block;
-            padding: 15px;
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-        .side ul li a:hover {
-            background-color: #f8f9fa;
-            color: #007bff;
-        }
-        .side ul li a.active {
-            background-color: #007bff;
-            color: #fff;
+        .search-bar {
+            margin: 0 auto;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 4%;
+            display: flex;
+            justify-content: flex-end;
         }
         .main {
-            grid-area: main;
-            margin-top : 25px;
-            padding: 15px;
-            display: flex; /* 카드를 가로로 정렬 */
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* 한 줄에 5개의 칸을 만듦 */
             gap: 20px; /* 카드 간 간격 설정 */
-            flex-wrap: wrap; /* 공간이 부족할 때 줄바꿈 */
+            padding: 20px;
         }
-        .footer {
-            grid-area: footer;
+        .card {
+            width: 100%;
+            height: 350px; /* 카드의 높이를 일정하게 설정 */
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #fff;
+        }
+        .card-body {
+            padding: 15px;
+        }
+        .card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        .pagination-container {
+            text-align: center;
+            padding: 20px;
+        }
+        p{
+            line-height: 0.8;
         }
     </style>
 </head>
 <body>
+<%@include file="../main/header.jsp" %>
 <div class="container">
-    <div class="header">
-        <%@include file="/main/header.jsp" %>
+    <!-- 검색 영역 -->
+    <div class="search-bar">
         <form class="d-flex" role="search" action="/product/list" method="GET">
             <select name="searchType" class="form-select" style="width: 120px;">
                 <option value="productName" ${searchType == 'productName' ? 'selected' : ''}>상품명</option>
                 <option value="sellerId" ${searchType == 'sellerId' ? 'selected' : ''}>판매자</option>
             </select>
             <input class="form-control me-2" type="search" name="searchValue" value="${searchValue}" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
+            <button class="btn btn-outline-primary" type="submit">Search</button>
         </form>
-  </div>
-  <div class="main">
-    <div class="card-body">
+    </div>
+    <!-- 메인 상품 목록 영역 -->
+    <div class="main">
+        ${dto.thumbnail.imagePath}
         <c:if test="${not empty pList}">
-            <c:forEach var="dto" items="${pList}" varStatus="loop">
-            <a href="/product/view?productId=${dto.productId}">
-                <div class="card" style="width: 18rem; margin-bottom: 20px;">
-                    <c:if test="${not empty dto.thumbnail}">
-                        <img src="${dto.thumbnail.imagePath}"
-                             alt="상품 썸네일"
-                             style="width: 50px; height: 50px; object-fit: cover;">
-                    </c:if>
-                    <div class="card-body">
-                        <p class="card-title">${dto.productName}</p>
-                        <p class="card-text">가격: ${dto.price}원</p>
-                        <p class="card-text">조회수: ${dto.viewCount}</p>
-                        <p class="card-text">등록일: ${dto.regDate}</p>
+            <c:forEach var="dto" items="${pList}" varStatus="loop" begin="0" end="9">
+                <a href="/product/view?productId=${dto.productId}" style="text-decoration: none; color: inherit;">
+                    <div class="card">
+                        <c:if test="${not empty dto.thumbnail}">
+                            <img src="${dto.thumbnail.imagePath}"
+                                 alt="상품 썸네일"
+                                 class="card-img-top"
+                                 style="height: 150px; object-fit: cover;">
+                        </c:if>
+                        <div class="card-body">
+                            <p class="card-title">${dto.productName}</p>
+                            <p class="card-text">가격: ${dto.price}원</p>
+                            <p class="card-text">판매상태: ${dto.productStatus}</p>
+                            <p class="card-text">조회수: ${dto.viewCount}</p>
+                            <p class="card-text">등록일: ${dto.formatRegDate}</p>
+                        </div>
                     </div>
-                </div>
-            </a>
+                </a>
             </c:forEach>
         </c:if>
-        <!-- 페이징 영역 -->
+    </div>
+    <!-- 페이징 영역 -->
+    <div class="pagination-container">
         <%@ include file="../common/paging.jsp"%>
-        <!-- //페이징 영역 -->
-        </div>
-  </div>
+    </div>
 </div>
+<%@include file="../main/footer.jsp" %>
 </body>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </html>
+

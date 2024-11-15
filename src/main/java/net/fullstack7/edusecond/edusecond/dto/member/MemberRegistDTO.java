@@ -19,6 +19,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class MemberRegistDTO {
     @NotBlank(message = "아이디는 필수입니다")
+    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{6,20}$",
+            message = "아이디는 6자 이상, 영문, 숫자를 포함해야 합니다")
     private String userId;
     
     @NotBlank(message = "비밀번호는 필수입니다")

@@ -15,7 +15,13 @@
             #{userPhone}, #{userAddress}, #{userPostcode}, #{userBirth}
         )
     </insert>
-    
+
+    <select id="getLoginMember" resultType="net.fullstack7.edusecond.edusecond.domain.member.MemberVO">
+        SELECT userId, userName
+        FROM tbl_member
+        WHERE userId = #{userId}
+    </select>
+
     <!-- 관리자 기능용 쿼리들 -->
     <select id="selectTotalCount" resultType="int">
         SELECT COUNT(*) FROM tbl_member

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/footer")
 @RequiredArgsConstructor
 @Log4j2
-public class footerController {
+public class FooterController {
 
     @GetMapping("/intro")
     public String intro(){

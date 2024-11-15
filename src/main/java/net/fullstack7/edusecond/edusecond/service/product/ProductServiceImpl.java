@@ -10,6 +10,8 @@ import net.fullstack7.edusecond.edusecond.dto.product.ProductRegistDTO;
 import net.fullstack7.edusecond.edusecond.mapper.ProductMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,12 +26,13 @@ public class ProductServiceImpl implements ProductServiceIf {
     private final ModelMapper modelMapper;
 
     @Override
-    public List<ProductDTO> list(int pageNo, int pageSize, int pageNavSize, String searchType, String searchValue) {
+    public List<ProductDTO> list(int pageNo, int pageSize, int pageNavSize, String searchType, String searchValue, String productStatus) {
         Map<String, Object> params = new HashMap<>();
         params.put("offset", (pageNo - 1) * pageSize);
         params.put("limit", pageSize);
         params.put("searchType", searchType);
         params.put("searchValue", searchValue);
+        params.put("productStatus", productStatus);
 
         List<ProductVO> voList = productMapper.selectAllProducts(params);
         return voList.stream()
@@ -47,18 +50,22 @@ public class ProductServiceImpl implements ProductServiceIf {
 
     @Override
     public ProductDTO view(Integer productId) {
-        ProductVO vo = productMapper.selectProductById(productId);
-        if (vo == null) {
+        ProductVO voInfo = productMapper.selectProductById(productId);
+        if (voInfo == null) {
             return null;
         }
 
-        ProductDTO dto = modelMapper.map(vo, ProductDTO.class);
+        // 상품 정보 가져오기
+        ProductDTO dto = modelMapper.map(voInfo, ProductDTO.class);
 
-        // 썸네일 이미지 설정
-        ProductImageVO thumbnailVO = productMapper.selectThumbnailImage(productId);
-        if (thumbnailVO != null) {
-            dto.setThumbnail(modelMapper.map(thumbnailVO, ProductImageDTO.class));
+        //이미지 리스트 가져오기
+        List<ProductImageVO> imageVOList = productMapper.selectImagesByProductId(productId);
+        List<ProductImageDTO> imageList = new ArrayList<>();
+        for(ProductImageVO vo : imageVOList){
+            ProductImageDTO imageDTO = modelMapper.map(vo, ProductImageDTO.class);
+            imageList.add(imageDTO);
         }
+        dto.setImages(imageList);
 
         // 조회수 증가
         productMapper.updateViewCount(productId);
@@ -67,12 +74,24 @@ public class ProductServiceImpl implements ProductServiceIf {
     }
 
     @Override
-    public int totalCount(String searchCategory, String searchValue) {
+    public int totalCount(String searchCategory, String searchValue, String productStatus) {
         Map<String, Object> map = new HashMap<>();
         map.put("searchCategory", searchCategory);
         map.put("searchValue", searchValue);
+        map.put("productStatus", productStatus);
         return productMapper.totalCount(map);
     }
+
+    @Override
+    public int totalCountLikedProducts(String searchCategory, String searchValue, String userId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("searchCategory", searchCategory);
+        map.put("searchValue", searchValue);
+        map.put("userId", userId);
+        return productMapper.totalCountLikedProducts(map);
+    }
+
+
 
     @Override
     public List<ProductImageDTO> getProductImages(int productId) {
@@ -121,6 +140,79 @@ public class ProductServiceImpl implements ProductServiceIf {
     }
 
 
+    @Override
+    public List<ProductDTO> selectAllByUser(int pageNo,
+                                            int pageSize,
+                                            int pageNavSize,
+                                            String searchType,
+                                            String searchValue,
+                                            String userId,
+                                            String type) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("offset", (pageNo - 1) * pageSize);
+        params.put("limit", pageSize);
+        params.put("searchType", searchType);
+        params.put("searchValue", searchValue);
+        params.put("userId", userId);
+
+        List<ProductVO> wishList = productMapper.selectAllWishByUser(params);
+        List<ProductVO> sellList = productMapper.selectProductsBySeller(params);
+        List<ProductVO> list;
+        if("wish".equals(type)){
+            list = wishList;
+        }else{
+            list = sellList;
+        }
+
+        return list.stream()
+                .map(vo -> {
+                    ProductDTO dto = modelMapper.map(vo, ProductDTO.class);
+                    // 썸네일 이미지 설정
+                    ProductImageVO thumbnailImage = productMapper.selectThumbnailImage(vo.getProductId());
+                    if (thumbnailImage != null) {
+                        dto.setThumbnail(modelMapper.map(thumbnailImage, ProductImageDTO.class));
+                    }
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDTO> selectAllByProductStatus(int pageNo,
+                                                     int pageSize,
+                                                     int pageNavSize,
+                                                     String searchType,
+                                                     String searchValue,
+                                                     String userId,
+                                                     String productStatus) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("offset", (pageNo - 1) * pageSize);
+        params.put("limit", pageSize);
+        params.put("searchType", searchType);
+        params.put("searchValue", searchValue);
+        params.put("productStatus", productStatus);
+        params.put("userId", userId);
+        List<ProductVO> list = productMapper.selectAllByProductStatus(params);
+        return list.stream().map(vo -> {
+            ProductDTO dto = modelMapper.map(vo, ProductDTO.class);
+            // 썸네일 이미지 설정
+            ProductImageVO thumbnailImage = productMapper.selectThumbnailImage(vo.getProductId());
+            if (thumbnailImage != null) {
+                dto.setThumbnail(modelMapper.map(thumbnailImage, ProductImageDTO.class));
+            }
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public int totalCountByProductStatus(String searchCategory, String searchValue, String userId, String productStatus) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("searchCategory", searchCategory);
+        map.put("searchValue", searchValue);
+        map.put("status", productStatus);
+        map.put("userId", userId);
+        return productMapper.totalCountByProductStatus(map);
+    }
 
 
 }

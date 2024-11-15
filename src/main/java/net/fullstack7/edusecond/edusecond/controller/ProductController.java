@@ -2,10 +2,12 @@ package net.fullstack7.edusecond.edusecond.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.fullstack7.edusecond.edusecond.dto.member.MemberLoginDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductRegistDTO;
 import net.fullstack7.edusecond.edusecond.service.Like.LikeServiceIf;
 import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
+import net.fullstack7.edusecond.edusecond.util.CommonDateUtil;
 import net.fullstack7.edusecond.edusecond.util.CommonFileUtil;
 import net.fullstack7.edusecond.edusecond.util.Paging;
 import org.springframework.stereotype.Controller;
@@ -20,6 +22,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import net.fullstack7.edusecond.edusecond.util.JSFunc;
+import org.springframework.web.context.request.SessionScope;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -45,9 +48,13 @@ public class ProductController {
                 return null;
             }
 
-            List<ProductDTO> pList = productService.list(pageNo, 10, 6, searchType, searchValue);
-            int totalCount = productService.totalCount(searchType, searchValue);
-            Paging paging = new Paging(pageNo, 10, 6, totalCount);
+            List<ProductDTO> pList = productService.list(pageNo, 10, 5, searchType, searchValue, "AVAILABLE");
+            for (ProductDTO dto : pList) {
+                String formatDate = CommonDateUtil.localDateTimeToString(dto.getRegDate(), "yyyy-MM-dd");
+                dto.setFormatRegDate(formatDate);
+            }
+            int totalCount = productService.totalCount(searchType, searchValue, "AVAILABLE");
+            Paging paging = new Paging(pageNo, 10, 5, totalCount);
             
             model.addAttribute("pList", pList);
             model.addAttribute("paging", paging);
@@ -81,9 +88,10 @@ public class ProductController {
 
     @GetMapping("/view")
     public String view(Model model,
-                      //@RequestParam String userId,
+                      HttpSession session,
                       @RequestParam int productId,
                       HttpServletResponse response) {
+        MemberLoginDTO userDto = (MemberLoginDTO) session.getAttribute("memberInfo");
         try {
             if (productId <= 0) {
                 JSFunc.alertBack("유효하지 않은 상품 ID입니다.", response);
@@ -96,9 +104,13 @@ public class ProductController {
                 return null;
             }
 
-            boolean isLiked = likeService.checkExists("user1", productId);
-            log.info("isLike: " + isLiked);
-            model.addAttribute("isLiked", isLiked);
+            if( userDto != null && userDto.getUserId() != null) {
+                boolean isLiked = likeService.checkExists(userDto.getUserId(), productId);
+                //log.info("isLike: " + isLiked);
+                model.addAttribute("isLiked", isLiked);
+            }else{
+                log.info("로그인한 회원이 아님");
+            }
 
             model.addAttribute("dto", dto);
             return "product/view";
@@ -154,8 +166,8 @@ public class ProductController {
             log.info("RegistOk에서 Validation error");
             return "redirect:/product/regist";
         }
-        String userId = session.getAttribute("userId").toString();
-        productRegistDTO.setSellerId(userId);
+        MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
+        productRegistDTO.setSellerId(memberLoginDTO.getUserId());
 
         int result = productService.insertProduct(productRegistDTO); // 상품 삽입
 

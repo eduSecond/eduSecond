@@ -16,6 +16,7 @@ public class ChatRoomVO {
     private int productId;
     private String sellerId;
     private String buyerId;
-    private String isActive;
+    private String sellerActive;
+    private String buyerActive;
     private Date regDate;
 } 

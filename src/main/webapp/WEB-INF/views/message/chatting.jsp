@@ -1,8 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
     <title>채팅</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         body {
             margin: 0;
@@ -187,7 +191,6 @@
             margin-bottom: 0;
         }
 
-        /* 데스크톱 화면에서는 최대 너비 제한 */
         @media (min-width: 800px) {
             .chat-container {
                 width: 800px;
@@ -195,7 +198,6 @@
             }
         }
 
-        /* 드롭다 메뉴 스타일 */
         .dropdown-menu {
             min-width: 100px;
             padding: 0.5rem 0;
@@ -221,7 +223,6 @@
             background-color: #fff5f5;
         }
 
-        /* 날짜 구분선 스타일 */
         .chat-date {
             text-align: center;
             margin: 20px 0;
@@ -237,7 +238,6 @@
             display: inline-block;
         }
 
-        /* 헤더 내부 요소들 정렬 */
         .header-content {
             display: flex;
             justify-content: space-between;
@@ -257,16 +257,17 @@
         <div class="chat-header">
             <div class="header-content">
                 <div class="header-left">
-                    <button type="button" class="btn" onclick="window.close()">
-                        <i class="bi bi-x-lg"></i>
+                    <button type="button" class="btn" onclick="location.href='/message/list'">
+                        <i class="bi bi-arrow-left"></i>
                     </button>
+                    <h3>${room.otherUserName}</h3>
                 </div>
                 <div class="dropdown">
-                    <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn" type="button" data-bs-toggle="dropdown">
                         <i class="bi bi-three-dots-vertical"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><button class="dropdown-item" type="button">채팅방 나가기</button></li>
+                        <li><button class="dropdown-item" type="button" onclick="leaveChatRoom()">채팅방 나가기</button></li>
                         <li><button class="dropdown-item" type="button">신고하기</button></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><button class="dropdown-item text-danger" type="button">차단하기</button></li>
@@ -278,170 +279,61 @@
         <!-- 상품 정보 영역 -->
         <div class="product-info">
             <div class="product-content">
-                <img src="${product.thumbnail.imagePath}" alt="상품 이미지">
-                <h4>2023 갤럭시탭A9 플러스 11인치 64GB WIFI SM-X210</h4>
-                <button class="btn-product" onclick="location.href='/product/view?productId=${productId}'">
-                    제품상세
-                </button>
+                <img src="${room.productImage}" alt="상품 이미지">
+                <div class="flex-grow-1">
+                    <h4>${room.productName}</h4>
+                </div>
+                <button class="btn-product" onclick="location.href='/product/view?productId=${room.productId}'">
+                    상품 보기
+                </button>   
             </div>
         </div>
 
         <!-- 채팅 메시지 영역 -->
-        <div class="chat-messages">
-            <!-- 11월 10일 -->
-            <div class="chat-date">
-                <span>2024년 11월 10일 일요일</span>
-            </div>
-
-            <div class="message-group">
-                <div class="sender-name">강감찬</div>
-                <div class="message received">
-                    <div class="message-content">
-                        안녕하세요 갤럭시탭 아직 파시나요?
-                        <div class="message-info">
-                            <span class="message-time">오후 2:30</span>
-                            
+        <div class="chat-messages" id="messageArea">
+            <c:forEach items="${messages}" var="msg">
+                <div class="message-group">
+                    <c:if test="${msg.type == 'LEAVE'}">
+                        <div class="chat-date">
+                            <span>${msg.message}</span>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="message-group">
-                <div class="message sent">
-                    <div class="message-content">
-                        네 아직 판매중입니다
-                        <div class="message-info">
-                            <span class="message-time">오후 2:35</span>
-                            <span class="read-status">읽음</span>
+                    </c:if>
+                    <c:if test="${msg.type != 'LEAVE'}">
+                        <c:if test="${msg.senderId != sessionScope.memberInfo.userId}">
+                            <div class="sender-name">${msg.senderName}</div>
+                        </c:if>
+                        <div class="message ${msg.senderId == sessionScope.memberInfo.userId ? 'sent' : 'received'}">
+                            <div class="message-content">
+                                ${msg.message}
+                                <div class="message-info">
+                                    <span class="message-time">
+                                        <fmt:formatDate value="${msg.regDate}" pattern="a h:mm"/>
+                                    </span>
+                                    <c:if test="${msg.senderId == sessionScope.memberInfo.userId}">
+                                        <span class="${msg.isRead == 'Y' ? 'read-status' : 'unread-status'}">
+                                            ${msg.isRead == 'Y' ? '읽음' : '1'}
+                                        </span>
+                                    </c:if>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </c:if>
                 </div>
-            </div>
-
-            <!-- 11월 11일 -->
-            <div class="chat-date">
-                <span>2024년 11월 11일 월요일</span>
-            </div>
-
-            <div class="message-group">
-                <div class="sender-name">강감찬</div>
-                <div class="message received">
-                    <div class="message-content">
-                        네고 가능할까요?
-                        <div class="message-info">
-                            <span class="message-time">오전 10:15</span>
-                            
-                        </div>
-                    </div>
-                </div>
-                <div class="message received">
-                    <div class="message-content">
-                        5만원 깎아주시면 바로 구매하고 싶습니다
-                        <div class="message-info">
-                            <span class="message-time">오전 10:16</span>
-                            
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="message-group">
-                <div class="message sent">
-                    <div class="message-content">
-                        죄송하지만 가격 네고는 어렵습니다
-                        <div class="message-info">
-                            <span class="message-time">오전 11:20</span>
-                            <span class="read-status">읽음</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="message sent">
-                    <div class="message-content">
-                        거의 새 제품이라 이 가격이 최선입니다
-                        <div class="message-info">
-                            <span class="message-time">오전 11:20</span>
-                            <span class="read-status">읽음</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 11월 12일 -->
-            <div class="chat-date">
-                <span>2024년 11월 12일 화요일</span>
-            </div>
-
-            <div class="message-group">
-                <div class="sender-name">강감찬</div>
-                <div class="message received">
-                    <div class="message-content">
-                        알겠습니다 그럼 내일 직거래 가능하신가요?
-                        <div class="message-info">
-                            <span class="message-time">오후 3:15</span>
-                            
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="message-group">
-                <div class="message sent">
-                    <div class="message-content">
-                        네 가능합니다
-                        <div class="message-info">
-                            <span class="message-time">오후 3:30</span>
-                            <span class="unread-status">1</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="message sent">
-                    <div class="message-content">
-                        강남역 어떠신가요?
-                        <div class="message-info">
-                            <span class="message-time">오후 3:31</span>
-                            <span class="unread-status">1</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="message-group">
-                <div class="sender-name">강감찬</div>
-                <div class="message received">
-                    <div class="message-content">
-                        좋습니다! 저녁 7시에 2번 출구 앞에서 뵐게요
-                        <div class="message-info">
-                            <span class="message-time">오후 4:00</span>
-                            
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="message-group">
-                <div class="message sent">
-                    <div class="message-content">
-                        네 알겠습니다 :)
-                        <div class="message-info">
-                            <span class="message-time">오후 4:05</span>
-                            <span class="read-status">읽음</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </c:forEach>
         </div>
 
         <!-- 입력창 -->
         <div class="chat-input">
             <div class="input-group">
-                <input type="text" class="form-control" placeholder="메시지 입력...">
-                <button class="btn btn-send" type="button">전송</button>
+                <input type="text" class="form-control" id="messageInput" 
+                       placeholder="메시지 입력..." />
+                <button class="btn btn-send" type="button" id="sendButton">
+                    전송
+                </button>
             </div>
         </div>
     </div>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // 드롭다운 메뉴 클릭 이벤트 처리
@@ -450,18 +342,15 @@
                     const action = this.textContent;
                     switch(action) {
                         case '채팅방 나가기':
-                            if(confirm('채팅방을 나가시겠습니까?')) {
-                                // 채팅방 나가기 처리
-                                console.log('채팅방 나가기');
-                            }
+                            leaveChatRoom();
                             break;
                         case '신고하기':
-                            // 신고 처리
+                            //미구현
                             console.log('신고하기');
                             break;
                         case '차단하기':
                             if(confirm('이 사용자를 차단하시겠습니까?')) {
-                                // 차단 처리
+                                //미구현
                                 console.log('차단하기');
                             }
                             break;
@@ -469,6 +358,162 @@
                 });
             });
         });
+        let ws = null;
+        const roomId = ${room.roomId};
+        const userId = '${sessionScope.memberInfo.userId}';
+        const userName = '${sessionScope.memberInfo.userName}';
+
+        let reconnectAttempts = 0;
+        const MAX_RECONNECT = 5;
+
+        function connect() {
+            ws = new WebSocket(`ws://\${window.location.host}/es/ws/chat?roomId=\${roomId}`);
+            
+            ws.onopen = function() {
+                console.log('웹소켓 연결 성공');
+                reconnectAttempts = 0;
+            };
+            
+            ws.onmessage = function(event) {
+                const message = JSON.parse(event.data);
+                addMessage(message);
+            };
+            
+            ws.onclose = function() {
+                console.log('웹소켓 연결 종료');
+                if (reconnectAttempts < MAX_RECONNECT) {
+                    reconnectAttempts++;
+                    setTimeout(connect, 2000 * reconnectAttempts);
+                } else {
+                    console.log('최대 재연결 시도 횟수 초과');
+                }
+            };
+
+            ws.onerror = function(error) {
+                console.error('WebSocket 에러:', error);
+            };
+        }
+
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            
+            if (!message) return;
+            
+            const chatMessage = {
+                type: 'CHAT',
+                roomId: roomId,
+                senderId: userId,
+                senderName: userName,
+                message: message
+            };
+            
+            // 웹소켓으로 전송
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify(chatMessage));
+                messageInput.value = '';
+                return;
+            }
+            
+            // 웹소켓이 연결되지 않은 경우에만 HTTP로 전송
+            fetch('${pageContext.request.contextPath}/message/send', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(chatMessage)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('메시지 전송 실패');
+                }
+                return response.json();
+            })
+            .then(data => {
+                messageInput.value = '';
+                addMessage(chatMessage);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('메시지 전송에 실패했습니다. 다시 시도해주세요.');
+            });
+        }
+
+        function leaveChatRoom() {
+            if (confirm('채팅방을 나가시겠습니까?\n나가기 후에는 대화내용이 삭제되며 복구할 수 없습니다.')) {
+                const leaveMessage = {
+                    type: 'LEAVE',
+                    roomId: roomId,
+                    senderId: userId,
+                    senderName: userName
+                };
+                
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify(leaveMessage));
+                }
+                
+                if (ws) {
+                    ws.close();
+                }
+                
+                window.location.href = '/message/list';
+            }
+        }
+
+        // 이벤트 리스너 등록
+        document.getElementById('sendButton').addEventListener('click', sendMessage);
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // 웹소켓 연결
+        connect();
+
+        function addMessage(message) {
+            const messageArea = document.getElementById('messageArea');
+            const messageGroup = document.createElement('div');
+            messageGroup.className = 'message-group';
+            
+            const currentTime = new Date().toLocaleTimeString('ko-KR', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            });
+            
+            if (message.type === 'LEAVE') {
+                messageGroup.innerHTML = `
+                    <div class="chat-date">
+                        <span>\${message.message}</span>
+                    </div>
+                `;
+            } else {
+                const isMyMessage = message.senderId === userId;
+                let html = '';
+                
+                if (!isMyMessage) {
+                    html += `<div class="sender-name">\${message.senderName}</div>`;
+                }
+                
+                html += `
+                    <div class="message \${isMyMessage ? 'sent' : 'received'}">
+                        <div class="message-content">
+                            \${message.message}
+                            <div class="message-info">
+                                <span class="message-time">\${currentTime}</span>
+                                \${isMyMessage ? '<span class="unread-status">1</span>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                messageGroup.innerHTML = html;
+            }
+            
+            messageArea.appendChild(messageGroup);
+            messageArea.scrollTop = messageArea.scrollHeight;
+        }
     </script>
 </body>
 </html>
