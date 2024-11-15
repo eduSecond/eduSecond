@@ -21,8 +21,8 @@ public interface ProductServiceIf {
     int getLastProductId();
     void insertProductImage(int productId, List<String> uploadFilePaths);
 
-    List<ProductDTO> selectAllByUser(int pageNo, int pageSize, int pageNavSize, String searchType, String searchValue, String userId, String type);
+    List<ProductDTO> selectAllByUser(int pageNo, int pageSize, int pageNavSize, String searchCategory, String searchValue, String userId, String type);
 
-    List<ProductDTO> selectAllByProductStatus(int pageNo, int pageSize, int pageNavSize, String searchType, String searchValue, String userId, String productStatus);
+    List<ProductDTO> selectAllByProductStatus(int pageNo, int pageSize, int pageNavSize, String searchCategory, String searchValue, String userId, String productStatus);
     public int totalCountByProductStatus(String searchCategory, String searchValue, String userId, String productStatus);
 }

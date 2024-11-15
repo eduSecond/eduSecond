@@ -62,9 +62,9 @@
     <!-- 검색 영역 -->
     <div class="search-bar">
         <form class="d-flex" role="search" action="/product/list" method="GET">
-            <select name="searchType" class="form-select" style="width: 120px;">
-                <option value="productName" ${searchType == 'productName' ? 'selected' : ''}>상품명</option>
-                <option value="sellerId" ${searchType == 'sellerId' ? 'selected' : ''}>판매자</option>
+            <select name="searchCategory" class="form-select" style="width: 120px;">
+                <option value="productName" ${searchCategory == 'productName' ? 'selected' : ''}>상품명</option>
+                <option value="sellerId" ${searchCategory == 'sellerId' ? 'selected' : ''}>판매자</option>
             </select>
             <input class="form-control me-2" type="search" name="searchValue" value="${searchValue}" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-primary" type="submit">Search</button>

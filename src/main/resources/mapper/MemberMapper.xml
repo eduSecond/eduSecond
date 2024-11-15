@@ -29,15 +29,15 @@
     <select id="selectTotalCount" resultType="int">
         SELECT COUNT(*) FROM tbl_member
         <where>
-            <if test="searchType != null and searchValue != null">
+            <if test="searchCategory != null and searchValue != null">
                 <choose>
-                    <when test="searchType == 'userId'">
+                    <when test="searchCategory == 'userId'">
                         userId LIKE CONCAT('%', #{searchValue}, '%')
                     </when>
-                    <when test="searchType == 'userName'">
+                    <when test="searchCategory == 'userName'">
                         userName LIKE CONCAT('%', #{searchValue}, '%')
                     </when>
-                    <when test="searchType == 'userEmail'">
+                    <when test="searchCategory == 'userEmail'">
                         userEmail LIKE CONCAT('%', #{searchValue}, '%')
                     </when>
                 </choose>

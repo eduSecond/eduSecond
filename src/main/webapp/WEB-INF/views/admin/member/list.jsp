@@ -15,10 +15,10 @@
             
             <!-- 검색 폼 -->
             <form class="d-flex gap-2" method="get" action="/admin/member/list">
-                <select name="searchType" class="form-select" style="width: 120px;">
-                    <option value="userId" ${searchType == 'userId' ? 'selected' : ''}>아이디</option>
-                    <option value="userName" ${searchType == 'userName' ? 'selected' : ''}>이름</option>
-                    <option value="userEmail" ${searchType == 'userEmail' ? 'selected' : ''}>이메일</option>
+                <select name="searchCategory" class="form-select" style="width: 120px;">
+                    <option value="userId" ${searchCategory == 'userId' ? 'selected' : ''}>아이디</option>
+                    <option value="userName" ${searchCategory == 'userName' ? 'selected' : ''}>이름</option>
+                    <option value="userEmail" ${searchCategory == 'userEmail' ? 'selected' : ''}>이메일</option>
                 </select>
                 <input type="text" name="searchValue" value="${searchValue}" class="form-control" placeholder="검색어 입력">
                 <button type="submit" class="btn btn-dark">검색</button>
