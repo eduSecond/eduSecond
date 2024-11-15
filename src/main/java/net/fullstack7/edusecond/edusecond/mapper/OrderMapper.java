@@ -17,4 +17,5 @@ public interface OrderMapper {
     int startDelivery(@Param("paymentNumber") String paymentNumber, @Param("status") String status);
     int confirm(@Param("paymentNumber") String paymentNumber);
     int reject(@Param("paymentNumber") String paymentNumber);
+    OrderListDTO getOrder(@Param("orderId") int orderId);
 }

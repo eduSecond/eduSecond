@@ -10,6 +10,7 @@ import net.fullstack7.edusecond.edusecond.dto.member.MypageDTO;
 import net.fullstack7.edusecond.edusecond.dto.order.OrderListDTO;
 import net.fullstack7.edusecond.edusecond.mapper.MemberMapper;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
+import net.fullstack7.edusecond.edusecond.mapper.ReviewMapper;
 import net.fullstack7.edusecond.edusecond.service.Like.LikeServiceIf;
 import net.fullstack7.edusecond.edusecond.mapper.OrderMapper;
 import net.fullstack7.edusecond.edusecond.service.member.MemberServiceIf;
@@ -38,6 +39,8 @@ public class MypageController {
     private final MemberMapper memberMapper;
     private final ProductServiceIf productService;
     private final OrderMapper orderMapper;
+    private final ReviewMapper reviewMapper;
+
 
     @GetMapping("/myInfo")
     public String myInfo(HttpSession session, Model model) {
@@ -147,7 +150,7 @@ public class MypageController {
         map.put("limit", 10);
         map.put("searchCategory", "p.productName");
         map.put("searchValue", searchValue);
-        log.info(searchValue);
+        log.info("searchValue : "+searchValue);
 
         Map<String,Object> countMap = new HashMap<>();
         countMap.put("searchCategory", "p.productName");
@@ -155,7 +158,9 @@ public class MypageController {
 
         List<OrderListDTO> orderList = orderMapper.getOrderList(map);
         int totalCount = orderMapper.totalCount(countMap);
-        log.info(totalCount);
+        log.info("totalcount : "+totalCount);
+        log.info("orderList의 첫 번째 레코드의 리뷰 아이디 : " + orderList.get(0).getReviewId());
+        log.info("orderList의 첫 번째 레코드의 리뷰 아이디 : " + orderList.get(1).getReviewId());
         Paging paging = new Paging(pageNo, 10, 5, totalCount);
 
         model.addAttribute("paging", paging);
@@ -187,6 +192,7 @@ public class MypageController {
         countMap.put("searchValue", searchValue);
 
         List<OrderListDTO> orderList = orderMapper.getOrderListSold(map);
+
         int totalCount = orderMapper.totalCountSold(countMap);
         log.info(totalCount);
         Paging paging = new Paging(pageNo, 10, 5, totalCount);

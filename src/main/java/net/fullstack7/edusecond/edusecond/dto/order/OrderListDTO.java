@@ -33,4 +33,5 @@ public class OrderListDTO {
     private String productDesc;
     private String productStatus;
     private String imagePath;
+    private int reviewId;
 }
