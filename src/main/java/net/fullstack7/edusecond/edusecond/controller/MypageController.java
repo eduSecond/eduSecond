@@ -1,3 +1,4 @@
+
 package net.fullstack7.edusecond.edusecond.controller;
 
 import lombok.RequiredArgsConstructor;
@@ -74,13 +75,14 @@ public class MypageController {
     }
 
     @GetMapping("/delete")
-    public String delete(HttpSession session) {
+    public String delete(HttpSession session, RedirectAttributes rttr) {
         MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
-        boolean result = memberService.deleteMember(memberLoginDTO.getUserId());
-        if(result){
+        if (memberService.requestWithdrawal(memberLoginDTO.getUserId())) {
+            session.invalidate(); // 세션 무효화
+            rttr.addFlashAttribute("message", "탈퇴 신청이 완료되었습니다. 관리자 승인 후 처리됩니다.");
             return "redirect:/main/goMain";
-        } else{
-            log.info("탈퇴실패");
+        } else {
+            rttr.addFlashAttribute("error", "탈퇴 신청 처리 중 오류가 발생했습니다.");
             return "redirect:/es/mypage/myInfo";
         }
     }

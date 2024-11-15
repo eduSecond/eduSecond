@@ -124,4 +124,17 @@
         AND buyerActive = 'Y'
         LIMIT 1
     </select>
+
+    <update id="updateChatRoomsByUserId">
+        UPDATE tbl_chatroom
+        SET sellerActive = CASE 
+                WHEN sellerId = #{userId} THEN 'N'
+                ELSE sellerActive
+            END,
+            buyerActive = CASE 
+                WHEN buyerId = #{userId} THEN 'N'
+                ELSE buyerActive
+            END
+        WHERE sellerId = #{userId} OR buyerId = #{userId}
+    </update>
 </mapper>

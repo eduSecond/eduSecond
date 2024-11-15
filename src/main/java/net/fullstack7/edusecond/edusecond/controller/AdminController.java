@@ -84,7 +84,7 @@ public class AdminController {
     @GetMapping("/member/status")
     public String updateMemberStatus(
             @RequestParam String userId,
-            @RequestParam boolean enabled,
+            @RequestParam String enabled,
             RedirectAttributes rttr) {
         
         if(memberService.updateEnabled(userId, enabled)) {
@@ -244,5 +244,47 @@ public class AdminController {
             rttr.addFlashAttribute("error", "공지사항 삭제에 실패했습니다.");
         }
         return "redirect:/admin/notice/list";
+    }
+
+    @GetMapping("/member/withdrawal/list")
+    public String withdrawalList(
+            @RequestParam(defaultValue = "1") int pageNo,
+            @RequestParam(required = false) String searchType,
+            @RequestParam(required = false) String searchValue,
+            Model model) {
+        
+        int pageSize = 10;
+        List<MemberDTO> members = memberService.getWithdrawalList(pageNo, pageSize, searchType, searchValue);
+        int totalCount = memberService.getWithdrawalTotalCount(searchType, searchValue);
+        
+        model.addAttribute("members", members);
+        model.addAttribute("paging", new Paging(pageNo, pageSize, 5, totalCount));
+        model.addAttribute("searchType", searchType);
+        model.addAttribute("searchValue", searchValue);
+        
+        return "admin/member/withdrawalList";
+    }
+
+    @PostMapping("/member/withdrawal/process")
+    public String processWithdrawal(
+            @RequestParam String userId,
+            @RequestParam String action,
+            RedirectAttributes rttr) {
+        
+        if ("approve".equals(action)) {
+            if (memberService.processWithdrawal(userId)) {
+                rttr.addFlashAttribute("message", "회원 탈퇴가 승인되었습니다.");
+            } else {
+                rttr.addFlashAttribute("error", "탈퇴 처리 중 오류가 발생했습니다.");
+            }
+        } else if ("reject".equals(action)) {
+            if (memberService.updateEnabled(userId, "Y")) {
+                rttr.addFlashAttribute("message", "회원 탈퇴가 거절되었습니다.");
+            } else {
+                rttr.addFlashAttribute("error", "탈퇴 거절 처리 중 오류가 발생했습니다.");
+            }
+        }
+        
+        return "redirect:/admin/member/withdrawal/list";
     }
 }

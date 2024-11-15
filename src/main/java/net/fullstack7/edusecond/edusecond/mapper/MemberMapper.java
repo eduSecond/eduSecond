@@ -21,4 +21,9 @@ public interface MemberMapper {
     int updateEnabled(@Param("userId") String userId,
                      @Param("enabled") String enabled);
     MypageDTO myProductCount(String userId);
+    int updateMemberWithdrawal(@Param("userId") String userId);
+    int updateProductStatusByUserId(@Param("userId") String userId);
+    List<MemberVO> selectWithdrawalList(Map<String, Object> params);
+    int selectWithdrawalTotalCount(@Param("searchType") String searchType, 
+                                 @Param("searchValue") String searchValue);
 } 

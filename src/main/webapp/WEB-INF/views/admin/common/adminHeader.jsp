@@ -57,12 +57,16 @@
                            href="/admin/product/list">상품관리</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${requestScope['javax.servlet.forward.servlet_path'].startsWith('/admin/member') ? 'active' : ''}" 
+                        <a class="nav-link ${requestScope['javax.servlet.forward.servlet_path'].startsWith('/admin/member/list') ? 'active' : ''}" 
                            href="/admin/member/list">회원관리</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${requestScope['javax.servlet.forward.servlet_path'].startsWith('/admin/notice') ? 'active' : ''}" 
                            href="/admin/notice/list">공지사항</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${requestScope['javax.servlet.forward.servlet_path'].startsWith('/admin/member/withdrawal') ? 'active' : ''}" 
+                           href="/admin/member/withdrawal/list">탈퇴관리</a>
                     </li>
                 </ul>
                 
@@ -80,8 +84,9 @@
                 <c:choose>
                     <c:when test="${requestScope['javax.servlet.forward.servlet_path'] == '/admin/dashboard'}">대시보드</c:when>
                     <c:when test="${requestScope['javax.servlet.forward.servlet_path'].startsWith('/admin/product')}">상품관리</c:when>
-                    <c:when test="${requestScope['javax.servlet.forward.servlet_path'].startsWith('/admin/member')}">회원관리</c:when>
+                    <c:when test="${requestScope['javax.servlet.forward.servlet_path'].startsWith('/admin/member/list')}">회원관리</c:when>
                     <c:when test="${requestScope['javax.servlet.forward.servlet_path'].startsWith('/admin/notice')}">공지사항</c:when>
+                    <c:when test="${requestScope['javax.servlet.forward.servlet_path'].startsWith('/admin/member/withdrawal')}">탈퇴관리</c:when>
                 </c:choose>
             </small>
         </div>
