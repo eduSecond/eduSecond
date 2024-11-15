@@ -25,7 +25,6 @@ public class SellerController {
     @GetMapping("/sellerpage")
     public String intro(
             @RequestParam String userId
-            , @RequestParam String productId
             , RedirectAttributes redirectAttributes
             , Model model
     ){

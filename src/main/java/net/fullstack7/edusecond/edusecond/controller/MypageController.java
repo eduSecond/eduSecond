@@ -197,8 +197,6 @@ public class MypageController {
     }
 
 
-
-
     @GetMapping("/myProduct")
     public String viewMyProduct(Model model,
                                HttpSession session,

@@ -451,40 +451,30 @@
 <section class="purchase-status">
   <h2>중고 물품 전체 리스트</h2>
   <div class="status-container">
-    <div class="status-item">
-      <div class="item-info">
-        <span>2023 갤럭시탭A9 플러스 11인치 64GB WIFI SM-X210</span>
-      </div>
-      <div class="user-info">
-        <span>이○○</span>
-        <span>2024.11.11</span>
-        <button class="status-button pending">상세보기</button>
-      </div>
-    </div>
-    <div class="status-item">
-      <div class="item-info">
-        <span>4.아이패드 에어4 64GB LTE A2324</span>
-      </div>
-      <div class="user-info">
-        <span>장○○</span>
-        <span>2024.11.11</span>
-        <button class="status-button pending">상세보기</button>
-      </div>
-    </div>
-    <div class="status-item">
-      <div class="item-info">
-        <span>1.아이패드 미니6 64GB WIFI A2567</span>
-      </div>
-      <div class="user-info">
-        <span>엄○○</span>
-        <span>2024.11.11</span>
-        <button class="status-button completed">판매완료</button>
-      </div>
-    </div>
+
+    <c:if test="${not empty pList}">
+      <c:forEach var="dto" items="${pList}" varStatus="loop" begin="0" end="5">
+        <a href="/product/view?productId=${dto.productId}" style="text-decoration: none; color: inherit;">
+          <div class="status-item">
+
+            <div class="item-info">
+              <span>${dto.productName}</span>
+            </div>
+            <div class="user-info">
+              <span>가격 : ${dto.price}원</span>
+              <span>등록일 : ${dto.formatRegDate}</span>
+              <button class="status-button pending" onclick="location.href='/product/view?productId=${dto.productId}'">상세보기</button>
+            </div>
+
+          </div>
+        </a>
+      </c:forEach>
+    </c:if>
+  </div>
 
   </div>
   <div class="more-button-container">
-    <button class="more-button">more &#10140;</button>
+    <button class="more-button" onclick="location.href='/product/list'">more &#10140;</button>
   </div>
 </section>
 
