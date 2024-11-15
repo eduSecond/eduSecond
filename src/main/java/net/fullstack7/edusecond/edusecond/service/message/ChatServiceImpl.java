@@ -17,6 +17,7 @@ public class ChatServiceImpl implements ChatServiceIf {
     
     private final ChatMapper chatMapper;
     private final ModelMapper modelMapper;
+    // private final ChatMessageDTO.MessageType messageType;
 
     @Override
     public List<ChatRoomDTO> getChatRoomList(String userId) {
@@ -41,9 +42,13 @@ public class ChatServiceImpl implements ChatServiceIf {
 
     @Override
     public void saveMessage(ChatMessageDTO messageDTO) {
-        log.info("메시지 저장 시도: {}", messageDTO);
-        chatMapper.insertMessage(messageDTO);
-        log.info("메시지 저장 완료");
+        if ("READ".equals(messageDTO.getType())) {
+            // 읽음 처리 업데이트
+            chatMapper.updateMessageRead(messageDTO.getRoomId(), messageDTO.getTargetId());
+        } else {
+            // 일반 메시지 저장
+            chatMapper.insertMessage(messageDTO);
+        }
     }
 
     @Override
@@ -53,8 +58,23 @@ public class ChatServiceImpl implements ChatServiceIf {
 
     @Override
     public void updateUserChatRoomStatus(int roomId, String userId, String status) {
-        String userType = getUserType(roomId, userId);
+        ChatRoomDTO chatRoom = getChatRoom(roomId, userId);
+        if (chatRoom == null) {
+            throw new RuntimeException("채팅방을 찾을 수 없습니다.");
+        }
+        
+        String userType = userId.equals(chatRoom.getSellerId()) ? "SELLER" : "BUYER";
         chatMapper.updateUserChatRoomStatus(roomId, userType, status);
+        
+        // 나가기 메시지 저장
+        if ("N".equals(status)) {
+            ChatMessageDTO leaveMessage = new ChatMessageDTO();
+            leaveMessage.setRoomId(roomId);
+            leaveMessage.setSenderId(userId);
+            leaveMessage.setType("LEAVE");
+            leaveMessage.setMessage(userId + "님이 채팅방을 나갔습니다.");
+            saveMessage(leaveMessage);
+        }
     }
 
     @Override
@@ -74,5 +94,10 @@ public class ChatServiceImpl implements ChatServiceIf {
     private String getUserType(int roomId, String userId) {
         ChatRoomDTO chatRoom = getChatRoom(roomId, userId);
         return userId.equals(chatRoom.getSellerId()) ? "SELLER" : "BUYER";
+    }
+
+    @Override
+    public boolean isActiveRoom(int roomId) {
+        return chatMapper.isActiveRoom(roomId);
     }
 }

@@ -52,9 +52,12 @@ public class ChatController {
         
         // 읽지 않은 메시지 읽음 처리
         chatService.updateMessageRead(roomId, memberInfo.getUserId());
+        //상대방이 나갔는지 확인
+        boolean isActive = chatService.isActiveRoom(roomId);
         
         model.addAttribute("room", room);
         model.addAttribute("messages", messages);
+        model.addAttribute("isActive", isActive);
         return "message/chatting";
     }
 
@@ -94,4 +97,26 @@ public class ChatController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    // @PostMapping("/room/leave")
+    // @ResponseBody
+    // public ResponseEntity<Void> leaveRoom(@RequestBody Map<String, Object> params) {
+    //     int roomId = Integer.parseInt(params.get("roomId").toString());
+    //     String userId = params.get("userId").toString();
+    //     String status = params.get("status").toString();
+        
+    //     chatService.updateUserChatRoomStatus(roomId, userId, status);
+    //     return ResponseEntity.ok().build();
+    // }
+
+    @GetMapping("/room/leave")
+public String leaveRoom(@RequestParam int roomId, HttpSession session) {
+    MemberLoginDTO memberInfo = (MemberLoginDTO) session.getAttribute("memberInfo");
+    if (memberInfo == null) {
+        return "redirect:/login/login";
+    }
+    
+    chatService.updateUserChatRoomStatus(roomId, memberInfo.getUserId(), "N");
+    return "redirect:/message/list";
+}
 }

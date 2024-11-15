@@ -22,7 +22,8 @@ public interface ChatMapper {
                                   @Param("sellerId") String sellerId,
                                   @Param("buyerId") String buyerId);
   int updateChatRoomsByUserId(@Param("userId") String userId);
-  int updateUserChatRoomStatus(@Param("roomId") Long roomId, 
-                              @Param("userType") String userType, 
-                              @Param("status") String status);
+  // int updateUserChatRoomStatus(@Param("roomId") Long roomId, 
+  //                             @Param("userType") String userType, 
+  //                             @Param("status") String status);
+  boolean isActiveRoom(@Param("roomId") int roomId);
 }
