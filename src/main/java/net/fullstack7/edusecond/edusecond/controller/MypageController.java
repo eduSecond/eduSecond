@@ -15,6 +15,7 @@ import net.fullstack7.edusecond.edusecond.service.Like.LikeServiceIf;
 import net.fullstack7.edusecond.edusecond.mapper.OrderMapper;
 import net.fullstack7.edusecond.edusecond.service.member.MemberServiceIf;
 import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
+import net.fullstack7.edusecond.edusecond.util.CommonDateUtil;
 import net.fullstack7.edusecond.edusecond.util.JSFunc;
 import net.fullstack7.edusecond.edusecond.util.Paging;
 import org.springframework.stereotype.Controller;
@@ -154,12 +155,14 @@ public class MypageController {
         Map<String,Object> countMap = new HashMap<>();
         countMap.put("searchCategory", "p.productName");
         countMap.put("searchValue", searchValue);
+        countMap.put("userId", userId);
 
         List<OrderListDTO> orderList = orderMapper.getOrderList(map);
         int totalCount = orderMapper.totalCount(countMap);
         log.info("totalcount : "+totalCount);
         Paging paging = new Paging(pageNo, 10, 5, totalCount);
 
+        model.addAttribute("dUtil", new CommonDateUtil());
         model.addAttribute("paging", paging);
         model.addAttribute("searchValue", searchValue);
         model.addAttribute("orderList", orderList);
@@ -187,6 +190,7 @@ public class MypageController {
         Map<String,Object> countMap = new HashMap<>();
         countMap.put("searchCategory", "p.productName");
         countMap.put("searchValue", searchValue);
+        countMap.put("userId", userId);
 
         List<OrderListDTO> orderList = orderMapper.getOrderListSold(map);
 
@@ -194,6 +198,7 @@ public class MypageController {
         log.info(totalCount);
         Paging paging = new Paging(pageNo, 10, 5, totalCount);
 
+        model.addAttribute("dUtil", new CommonDateUtil());
         model.addAttribute("paging", paging);
         model.addAttribute("searchValue", searchValue);
         model.addAttribute("orderList", orderList);

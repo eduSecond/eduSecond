@@ -18,15 +18,27 @@
       min-height: calc(100vh);
     }
     .sidebar {
-      background-color: #343a40;
+      background-color: #444444;
       padding: 15px;
       color: #fff;
+      height: 100%;
     }
-    .sidebar a {
-      color: #ddd;
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
     }
-    .sidebar a:hover {
+
+    .sidebar ul li {
+      margin-bottom: 10px;
+    }
+
+    .sidebar ul li a {
       color: #fff;
+      text-decoration: none;
+    }
+
+    .sidebar ul li a:hover {
       text-decoration: underline;
     }
     .content {
@@ -87,8 +99,7 @@
       <div class="col-md-4">
         <div class="card h-100">
           <div class="card-body text-center">
-            <h5 class="card-title"><a href="/seller/sellerpage?userId=${memberInfo.userId}">내 프로필</a></h5>
-            <p><strong>${mypageDTO.reviewCount}</strong> 개</p>
+            <h5 class="card-title"><a href="/product/seller/sellerpage?userId=${memberInfo.userId}">내 프로필 바로가기</a></h5>
           </div>
         </div>
       </div>
