@@ -233,10 +233,15 @@
 <%--      </c:if>--%>
       <div class="card">
         <div class="card-body">
-          <p class="card-text">아래 버튼을 클릭하여 문의하거나 제품을 구매할 수 있습니다.</p>
-          <a href="#" class="btn btn-primary" onclick="createChatRoom()">1:1 문의하기</a>
           <c:if test="${memberInfo.userId ne dto.sellerId}">
+            <p class="card-text">아래 버튼을 클릭하여 문의하거나 제품을 구매할 수 있습니다.</p>
+            <a href="#" class="btn btn-primary" onclick="createChatRoom()">1:1 문의하기</a>
             <a href="/es/payment/view?productId=${dto.productId}" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#purchaseModal">구매하기</a>
+          </c:if>
+          <c:if test="${memberInfo.userId eq dto.sellerId}">
+            <p class="card-text">아래 버튼을 클릭하여 제품을 삭제하거나 수정할 수 있습니다.</p>
+            <a href="/es/product/delete?productId=${dto.productId}" class="btn btn-danger">삭제하기</a>
+            <a href="/es/product/update?productId=${dto.productId}" class="btn btn-warning">수정하기</a>
           </c:if>
         </div>
       </div>

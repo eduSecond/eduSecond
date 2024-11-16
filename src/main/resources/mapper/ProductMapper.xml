@@ -122,6 +122,7 @@
     WHERE productId = #{productId}
     ORDER BY isMain DESC, imageId ASC
   </select>
+  
   <update id="updateViewCount">
     UPDATE tbl_product 
     SET viewCount = viewCount + 1 
@@ -235,4 +236,55 @@
         </if>
         </where>
     </select>
+    <update id="deleteProduct">
+      UPDATE tbl_product
+      SET productStatus = 'UNAVAILABLE'
+      WHERE productId = #{productId}
+    </update>
+
+    <update id="updateProduct">
+        UPDATE tbl_product
+        SET 
+            productName = #{productName},
+            productDesc = #{productDesc},
+            price = #{price},
+            quantity = #{quantity},
+            quality = #{quality},
+            productStatus = #{productStatus},
+            updateDate = NOW()
+        WHERE productId = #{productId}
+    </update>
+
+    <delete id="deleteProductImage">
+        DELETE FROM tbl_product_image
+        WHERE imageId = #{imageId}
+    </delete>
+
+    <update id="updateMainImage">
+        UPDATE tbl_product_image
+        SET isMain = 
+            CASE 
+                WHEN imageId = #{imageId} THEN 'Y'
+                ELSE 'N'
+            END
+        WHERE productId = #{productId}
+    </update>
+
+    <select id="hasMainImage">
+        SELECT COUNT(*)
+        FROM tbl_product_image
+        WHERE productId = #{productId}
+        AND isMain = 'Y'
+    </select>
+
+    <select id="selectImageById" resultType="net.fullstack7.edusecond.edusecond.domain.product.ProductImageVO">
+        SELECT 
+            imageId,
+            productId,
+            imagePath,
+            isMain
+        FROM tbl_product_image
+        WHERE imageId = #{imageId}
+    </select>
+
 </mapper>

@@ -20,7 +20,7 @@
     </insert>
 
     <select id="getLoginMember" resultType="net.fullstack7.edusecond.edusecond.domain.member.MemberVO">
-        SELECT userId, userName
+        SELECT userId, userName, enabled
         FROM tbl_member
         WHERE userId = #{userId}
     </select>
