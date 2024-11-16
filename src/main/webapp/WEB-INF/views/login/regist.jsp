@@ -156,7 +156,7 @@
     <select id="day" name="day" onchange="updateBirth();" disabled>
       <option selected disabled>일 선택</option>
     </select>
-    <input type="text" id="birth" name="userBirth" value="" readonly>
+    <input type="text" id="birth" name="userBirth" hidden="hidden" value="" readonly>
 
     <label for="userPostcode">우편번호:</label>
     <input type="text" id="userPostcode" name="userPostcode" readonly required>
