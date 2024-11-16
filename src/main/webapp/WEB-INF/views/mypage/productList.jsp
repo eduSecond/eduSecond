@@ -138,22 +138,22 @@
             </thead>
             <tbody>
             <c:if test="${not empty availableList}">
-                <c:forEach var="dto" items="${availableList}" >
+                <c:forEach var="dto" items="${availableList}">
                     <tr>
                         <td>
                             <a href="/product/view?productId=${dto.productId}">
-                            <c:choose>
-                                <c:when test="${not empty dto.thumbnail}">
-                                    <div class="image-container">
-                                        <img src="../${dto.thumbnail.imagePath}"
-                                             alt="상품 썸네일"
-                                             style="max-width: 100%; max-height: 100%; object-fit: cover;">
-                                    </div>
-                                </c:when>
-                                <c:otherwise>
-                                    <div class="no-image">준비된 이미지가 없습니다.</div>
-                                </c:otherwise>
-                            </c:choose>
+                                <c:choose>
+                                    <c:when test="${not empty dto.thumbnail}">
+                                        <div class="image-container">
+                                            <img src="../${dto.thumbnail.imagePath}"
+                                                 alt="상품 썸네일"
+                                                 style="max-width: 100%; max-height: 100%; object-fit: cover;">
+                                        </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="no-image">준비된 이미지가 없습니다.</div>
+                                    </c:otherwise>
+                                </c:choose>
                             </a>
                         </td>
                         <td>${dto.productName}</td>
@@ -163,7 +163,9 @@
                 </c:forEach>
             </c:if>
             <c:if test="${empty availableList}">
-                <p>존재하는 상품이 없습니다.</p>
+                <tr>
+                    <td colspan="4">존재하는 상품이 없습니다.</td>
+                </tr>
             </c:if>
             </tbody>
         </table>

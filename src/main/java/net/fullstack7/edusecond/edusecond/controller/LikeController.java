@@ -28,26 +28,29 @@ public class LikeController {
 
     @GetMapping("/insert")
     public String insertLike(Model model,
-                             HttpSession session,
-                             @RequestParam Integer productId){
-//        log.info("userId: " + userId);
-//        log.info("productId: " + productId);
-        MemberLoginDTO userDto = (MemberLoginDTO) session.getAttribute("memberInfo");
+                             @RequestParam String userId,
+                             @RequestParam Integer productId,
+                             HttpServletResponse response){
+        response.setCharacterEncoding("utf-8");
         try{
-            likeService.insertLike(userDto.getUserId(), productId);
+            if(userId != null && !userId.trim().isEmpty()){
+                likeService.insertLike(userId, productId);
+            }else{
+                JSFunc.alertBack("로그인 후 이용해주세요",response);
+                return null;
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
         return "redirect:/product/view?productId=" + productId;
     }
 
+
     @GetMapping("/delete")
     public String deleteLike(Model model,
                              HttpSession session,
                              @RequestParam Integer productId,
                              @RequestParam(required = false) String source){
-//        log.info("productId: " + productId);
-//        log.info("userId: " + userId);
         MemberLoginDTO loginDto = (MemberLoginDTO) session.getAttribute("memberInfo");
         try{
             likeService.deleteLike(loginDto.getUserId(), productId);
@@ -58,25 +61,8 @@ public class LikeController {
         if ("mypage".equals(source)) {
             return "redirect:/es/mypage/wishList";
         } else {
+            model.addAttribute("isLike", "false");
             return "redirect:/product/view?productId=" + productId;
         }
-        //return "redirect:/product/view?productId=" + productId;
-    }
-
-    private boolean validateListParameters(int pageNo, String searchCategory,
-                                           String searchValue, HttpServletResponse response) {
-        if (pageNo < 1) {
-            JSFunc.alertBack("페이지 번호는 1 이상이어야 합니다.", response);
-            return false;
-        }
-
-        if (searchCategory != null && !searchCategory.trim().isEmpty()
-                && searchValue != null && !searchValue.trim().isEmpty()) {
-            if (!("productName".equals(searchCategory) || "sellerId".equals(searchCategory))) {
-                JSFunc.alertBack("유효하지 않은 검색 카테고리입니다: " + searchCategory, response);
-                return false;
-            }
-        }
-        return true;
     }
 }

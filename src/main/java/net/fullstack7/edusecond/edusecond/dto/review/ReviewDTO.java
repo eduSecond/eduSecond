@@ -17,4 +17,14 @@ public class ReviewDTO {
     private int rating;
     private LocalDateTime regDate;
     private LocalDateTime modifyDate;
+
+
+    //날짜 변형 용도
+    private String formatRegDate;
+    public String getFormatRegDate() {
+        return formatRegDate;
+    }
+    public void setFormatRegDate(String formatRegDate) {
+        this.formatRegDate = formatRegDate;
+    }
 }

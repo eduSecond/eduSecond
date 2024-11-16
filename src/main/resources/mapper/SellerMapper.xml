@@ -34,7 +34,7 @@
                                 LEFT JOIN
                         tbl_review r ON r.orderId = o.orderId
                 WHERE
-                        m.userId = #{sellerId} AND p.productStatus = 'AVAILABLE'
+                        m.userId = #{sellerId} AND p.productStatus = 'AVAILABLE' AND pi.isMain = 'Y'
                 ORDER BY
                         p.productId, r.regDate DESC;
         </select>
