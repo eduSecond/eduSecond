@@ -57,7 +57,7 @@
                         <td>${product.sellerId}</td>
                         <td>${product.price}</td>
                         <td>${product.viewCount}</td>
-                        <td>${product.regDate}</td>
+                        <td>${product.formatRegDate}</td>
                         <td>
                             <a href="/admin/product/delete?productId=${product.productId}" 
                                class="btn btn-sm btn-outline-danger"

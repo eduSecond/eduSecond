@@ -101,13 +101,13 @@ public class ProductController {
                       @RequestParam int productId,
                       HttpServletResponse response) {
         MemberLoginDTO userDto = (MemberLoginDTO) session.getAttribute("memberInfo");
+
         response.setCharacterEncoding("utf-8");
         try {
             if (productId <= 0) {
                 JSFunc.alertBack("유효하지 않은 상품 ID입니다.", response);
                 return null;
             }
-
             ProductDTO dto = productService.view(productId);
             if (dto == null) {
                 JSFunc.alertBack("존재하지 않는 상품입니다.", response);
@@ -115,41 +115,23 @@ public class ProductController {
             }else{
                 List<ReviewDTO> reviewList = reviewService.viewReview(productId);
                 if(reviewList != null){
-//                    for(ReviewDTO i : reviewList){
-//                        System.out.println(i.getOrderId());
-//                        System.out.println(i.getReviewId());
-//                    }
+                    for (ReviewDTO i : reviewList) {
+                        String formatDate = CommonDateUtil.localDateTimeToString(i.getRegDate(), "yyyy-MM-dd");
+                        i.setFormatRegDate(formatDate);
+                    }
                     model.addAttribute("reviewList", reviewList);
                 }
 
+                boolean isLiked = false;
                 if( userDto != null && userDto.getUserId() != null) {
-                    boolean isLiked = likeService.checkExists(userDto.getUserId(), productId);
-                    //log.info("isLike: " + isLiked);
-                    model.addAttribute("isLiked", isLiked);
-                }else{
-                    log.info("로그인한 회원이 아님");
+                    model.addAttribute("userId", userDto.getUserId());
+                    isLiked = likeService.checkExists(userDto.getUserId(), productId);
                 }
-
+                System.out.println("isLike: " + isLiked);
+                model.addAttribute("isLiked", isLiked);
                 model.addAttribute("dto", dto);
                 return "product/view";
             }
-
-//            List<ReviewDTO> reviewDTO = reviewService.viewReview(productId);
-//            if(reviewDTO != null){
-//                model.addAttribute("reviewDTO", reviewDTO);
-//            }
-//
-//            if( userDto != null && userDto.getUserId() != null) {
-//                boolean isLiked = likeService.checkExists(userDto.getUserId(), productId);
-//                //log.info("isLike: " + isLiked);
-//                model.addAttribute("isLiked", isLiked);
-//            }else{
-//                log.info("로그인한 회원이 아님");
-//            }
-//
-//            model.addAttribute("dto", dto);
-//            return "product/view";
-            
         } catch (Exception e) {
             log.error("상품 상세 조회 중 오류 발생: ", e);
             JSFunc.alertBack("상품 정보를 불러오는 중 오류가 발생했습니다.", response);
