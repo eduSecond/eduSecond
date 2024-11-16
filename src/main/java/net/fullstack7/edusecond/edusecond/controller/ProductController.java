@@ -56,20 +56,28 @@ public class ProductController {
             if (!validateListParameters(pageNo, searchCategory, searchValue, response)) {
                 return null;
             }
-
             List<ProductDTO> pList = productService.list(pageNo, 10, 5, searchCategory, searchValue, "AVAILABLE");
+
+            if (pList == null || pList.isEmpty()) {
+                model.addAttribute("message", "등록된 상품이 없습니다.");
+                model.addAttribute("searchCategory", searchCategory);
+                model.addAttribute("searchValue", searchValue);
+                log.info("Message attribute set: " + model.getAttribute("message"));
+                return "product/list";
+            }
+
             for (ProductDTO dto : pList) {
                 String formatDate = CommonDateUtil.localDateTimeToString(dto.getRegDate(), "yyyy-MM-dd");
                 dto.setFormatRegDate(formatDate);
             }
             int totalCount = productService.totalCount(searchCategory, searchValue, "AVAILABLE");
             Paging paging = new Paging(pageNo, 10, 5, totalCount);
-            
+
             model.addAttribute("pList", pList);
             model.addAttribute("paging", paging);
             model.addAttribute("searchCategory", searchCategory);
             model.addAttribute("searchValue", searchValue);
-            
+
             return "product/list";
         } catch (Exception e) {
             log.error("상품 목록 조회 중 오류 발생: ", e);
