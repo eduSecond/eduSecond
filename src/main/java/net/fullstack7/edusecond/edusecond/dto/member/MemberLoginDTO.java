@@ -15,4 +15,5 @@ public class MemberLoginDTO {
     private String userId;
 //    private String userPw;
     private String userName;
+    private String enabled;
 }
