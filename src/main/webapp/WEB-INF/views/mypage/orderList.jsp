@@ -19,19 +19,10 @@
       flex-direction: column;
     }
 
-    .privacy-policy {
-      max-width: 1500px;
-      margin: 50px auto;
-      padding: 20px;
-      background-color: #fff;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-    }
-
     .mainpage {
       display: flex;
       flex-grow: 1;
-      min-height: calc(100vh); /* header와 footer를 제외한 높이 설정 */
+      min-height: calc(100vh);
     }
 
     .sidebar {
@@ -62,11 +53,38 @@
     .content {
       padding: 20px;
       flex-grow: 1;
+      overflow-x: auto;
     }
 
-    .action-buttons {
-      margin-top: 20px;
-      text-align: right;
+    .nav-tabs {
+      margin-bottom: 20px;
+    }
+
+    .table {
+      table-layout: fixed;
+      width: 100%;
+    }
+    .table th {
+      font-size: 14px;
+    }
+
+    .table td, .table th {
+      white-space: nowrap;
+      overflow:auto;
+      max-width: 150px;
+    }
+    .table td::-webkit-scrollbar {
+      display: none;  /* 웹킷 기반 브라우저(크롬, 사파리 등)에서 스크롤 바를 숨김 */
+    }
+
+    .table th::-webkit-scrollbar {
+      display: none;  /* 웹킷 기반 브라우저(크롬, 사파리 등)에서 스크롤 바를 숨김 */
+    }
+
+    .search-form {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
     }
 
     .footer {
@@ -96,78 +114,92 @@
 
   <div class="content col-10">
     <h2>거래 내역</h2>
-    <span><a href="/es/mypage/orderList">내가 구매한 상품</a></span> &nbsp; &nbsp; <span><a href="/es/mypage/orderList_1">내가 판매한 상품</a></span>
-    <form class="d-flex" action="/es/mypage/orderList" method="get">
-      <input class="form-control me-2" type="text" placeholder="Search" aria-label="Search" name="searchValue">
-      <input type="hidden" value="productName" name="searchCategory">
-      <button class="btn btn-outline-success" type="submit">Search</button>
-    </form>
-    <div>
-      <table class="table">
-        <thead>
-        <tr>
-          <th scope="col">상품 사진</th>
-          <th scope="col">상품명</th>
-          <th scope="col">판매자 아이디</th>
-          <th scope="col">단위가격/개수</th>
-          <th scope="col">총 가격</th>
-          <th scope="col">주문상태</th>
-          <th scope="col">배송 상태</th>
-          <th scope="col">받는분/배송주소</th>
-          <th scope="col">결제번호</th>
-          <th scope="col">결제방식/결제회사</th>
-          <th scope="col">결제일</th>
-        </tr>
-        </thead>
-        <tbody>
-        <c:if test="${not empty orderList}">
-          <c:forEach var="dto" items="${orderList}" >
-            <tr>
-              <td>
-              <c:if test="${not empty dto.imagePath}">
-                <img src="${dto.imagePath}"
-                     alt="상품 썸네일"
-                     style="width: 50px; height: 50px; object-fit: cover;">
-              </c:if>
-              </td>
-              <td><a href="/product/view?productId=${dto.productId}">${dto.productName}</a></td>
-              <td>${dto.sellerId}</td>
-              <td>${dto.unitPrice}원/${dto.orderQuantity}개</td>
-              <td>${dto.totalPrice}원</td>
-              <c:choose>
-                <c:when test="${dto.orderStatus eq '구매완료' || dto.orderStatus eq '직거래 완료'}">
-                  <td style="color:green;"
-                </c:when>
-                <c:otherwise>
-                  <td style="color:red;"
-                </c:otherwise>
-              </c:choose>
-              >
-                ${dto.orderStatus}
-              </td>
-              <td>
-                  <c:if test="${dto.deliveryStatus eq '배송중'}">
-                    <button onclick="location.href='/es/payment/confirmPurchase?paymentNumber=${dto.paymentNumber}&pageNo=${param.pageNo}'">구매확정</button>
-                  </c:if>
-                  ${dto.deliveryStatus} <br>
-                <c:if test="${dto.reviewId eq 0 && (dto.deliveryStatus eq '배송완료/구매확정' || dto.deliveryStatus eq '직거래 완료')}">
-                  <button onclick="location.href='/es/review/review?orderId=${dto.orderId}'">리뷰 작성</button>
-                </c:if>
-              </td>
-              <td>${dto.recipientName}/${dto.shippingAddress}</td>
-              <td>${dto.paymentNumber}</td>
-              <td>${dto.paymentMethod}/${dto.paymentCompany}</td>
-              <td>${dto.regDate}</td>
-            </tr>
-          </c:forEach>
-        </c:if>
-        <c:if test="${empty orderList}">
-          <tr>목록이 없습니다</tr>
-        </c:if>
-        </tbody>
-      </table>
-      <%@ include file="../common/paging.jsp"%>
+    <!-- 거래 내역 탭과 검색 폼 -->
+    <div class="d-flex align-items-center">
+      <ul class="nav nav-tabs flex-grow-1" id="orderTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <a class="nav-link active" id="purchased-tab" data-bs-toggle="tab" href="#purchased" role="tab" aria-controls="purchased" aria-selected="true">내가 구매한 상품</a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link" id="sold-tab" href="/es/mypage/orderList_1">내가 판매한 상품</a>
+        </li>
+      </ul>
+      <form class="search-form" action="/es/mypage/orderList" method="get">
+        <input class="form-control me-2" type="text" placeholder="Search" aria-label="Search" name="searchValue">
+        <input type="hidden" value="productName" name="searchCategory">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+    </div>
 
+    <div class="tab-content" id="orderTabsContent">
+      <div class="tab-pane fade show active" id="purchased" role="tabpanel" aria-labelledby="purchased-tab">
+        <!-- 내가 구매한 상품 리스트 -->
+        <div>
+          <table class="table">
+            <thead>
+            <tr>
+              <th scope="col">상품 사진</th>
+              <th scope="col">상품명</th>
+              <th scope="col">판매자</th>
+              <th scope="col">단위가격/개수</th>
+              <th scope="col">총 가격</th>
+              <th scope="col">주문상태</th>
+              <th scope="col">배송 상태</th>
+              <th scope="col">받는분/배송주소</th>
+              <th scope="col">결제번호</th>
+              <th scope="col">결제일</th>
+            </tr>
+            </thead>
+            <tbody>
+            <c:if test="${not empty orderList}">
+              <c:forEach var="dto" items="${orderList}" >
+                <tr>
+                  <td>
+                    <c:if test="${not empty dto.imagePath}">
+                      <img src="${dto.imagePath}"
+                           alt="상품 썸네일"
+                           style="width: 50px; height: 50px; object-fit: cover;">
+                    </c:if>
+                  </td>
+                  <td><a href="/product/view?productId=${dto.productId}">${dto.productName}</a></td>
+                  <td>${dto.sellerId}</td>
+                  <td>${dto.unitPrice}원/${dto.orderQuantity}개</td>
+                  <td>${dto.totalPrice}원</td>
+                  <c:choose>
+                    <c:when test="${dto.orderStatus eq '구매완료' || dto.orderStatus eq '직거래 완료'}">
+                      <td style="color:green;">${dto.orderStatus}</td>
+                    </c:when>
+                    <c:otherwise>
+                      <td style="color:red;">${dto.orderStatus}</td>
+                    </c:otherwise>
+                  </c:choose>
+                  <td>
+                    <c:if test="${dto.deliveryStatus eq '배송중'}">
+                      <button class="btn btn-sm btn-primary" onclick="location.href='/es/payment/confirmPurchase?paymentNumber=${dto.paymentNumber}&pageNo=${param.pageNo}'">구매확정</button>
+                    </c:if>
+                      ${dto.deliveryStatus} <br>
+                    <c:if test="${dto.reviewId eq 0 && (dto.deliveryStatus eq '배송완료/구매확정' || dto.deliveryStatus eq '직거래 완료')}">
+                      <button class="btn btn-sm btn-secondary" onclick="location.href='/es/review/review?orderId=${dto.orderId}'">리뷰 작성</button>
+                    </c:if>
+                  </td>
+                  <td>${dto.recipientName}/${dto.shippingAddress}</td>
+                  <td>${dto.paymentNumber}</td>
+                  <td>${dUtil.localDateTimeToString(dto.regDate, 'yyyy-MM-dd')}</td>
+                </tr>
+              </c:forEach>
+            </c:if>
+            </tbody>
+          </table>
+          <c:if test="${empty orderList}">
+            <p>목록이 없습니다</p>
+          </c:if>
+          <%@ include file="../common/paging.jsp"%>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="sold" role="tabpanel" aria-labelledby="sold-tab">
+        <!-- 내가 판매한 상품 리스트 -->
+        <p>판매한 상품 목록 내용이 여기에 표시됩니다.</p>
+      </div>
     </div>
   </div>
 </div>

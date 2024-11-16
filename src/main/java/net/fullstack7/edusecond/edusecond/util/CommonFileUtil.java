@@ -10,45 +10,72 @@ import java.util.UUID;
 
 public class CommonFileUtil {
 
-    private static final String UPLOAD_DIRECTORY = "D:\\project\\spring\\eduSecond\\src\\main\\webapp\\resources\\images\\product\\"; // 저장할 디렉토리 경로
-
+    // webapp 폴더까지의 절대 경로를 얻기 위한 상수
+    private static final String WEBAPP_PATH = "src/main/webapp/";
+    // 이미지가 저장될 상대 경로
+    private static final String UPLOAD_PATH = "resources/images/product/";
+    
     // 다중 파일 업로드 메서드
     public static List<String> uploadFiles(List<MultipartFile> files) throws IOException {
         List<String> uploadedFilePaths = new ArrayList<>();
+        String projectPath = System.getProperty("user.dir");
+        File uploadDir = new File(projectPath, WEBAPP_PATH + UPLOAD_PATH);
+        
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
+
         for (MultipartFile file : files) {
             String originalFileName = file.getOriginalFilename();
             if (originalFileName != null && !originalFileName.isEmpty()) {
                 String uniqueFileName = generateUniqueFileName(originalFileName);
-                String fullPath = UPLOAD_DIRECTORY + uniqueFileName;
+                String fullPath = uploadDir.getPath() + File.separator + uniqueFileName;
                 File destinationFile = new File(fullPath);
                 file.transferTo(destinationFile);
-                uploadedFilePaths.add(fullPath); // 경로를 포함한 파일명을 추가
+                // DB에는 웹에서 접근 가능한 경로로 저장
+                uploadedFilePaths.add("/" + UPLOAD_PATH + uniqueFileName);
             }
         }
         return uploadedFilePaths;
     }
 
     // 파일 삭제 메서드
-    public static boolean deleteFile(String fileName) {
-        File file = new File(UPLOAD_DIRECTORY + fileName);
+    public static boolean deleteFile(String filePath) {
+        if (filePath == null || filePath.isEmpty()) return false;
+        
+        // 웹 경로를 실제 파일 시스템 경로로 변환
+        String projectPath = System.getProperty("user.dir");
+        // filePath에서 앞의 "/" 제거
+        String cleanPath = filePath.startsWith("/") ? filePath.substring(1) : filePath;
+        String realPath = projectPath + File.separator + WEBAPP_PATH + cleanPath;
+        
+        File file = new File(realPath);
         return file.exists() && file.delete();
     }
 
     // 파일명 변경 메서드
     public static String renameFile(String oldFileName, String newFileName) throws IOException {
-        File oldFile = new File(UPLOAD_DIRECTORY + oldFileName);
-        String newFilePath = UPLOAD_DIRECTORY + newFileName;
-        File newFile = new File(newFilePath);
+        String projectPath = System.getProperty("user.dir");
+        
+        // 웹 경로를 실제 경로로 변환
+        String oldPath = oldFileName.startsWith("/") ? oldFileName.substring(1) : oldFileName;
+        String oldFullPath = projectPath + File.separator + WEBAPP_PATH + oldPath;
+        
+        File oldFile = new File(oldFullPath);
+        
+        // 새 파일명에 경로 추가
+        String uniqueNewFileName = generateUniqueFileName(newFileName);
+        String newPath = UPLOAD_PATH + uniqueNewFileName;
+        String newFullPath = projectPath + File.separator + WEBAPP_PATH + newPath;
+        File newFile = new File(newFullPath);
 
-        // 파일이 이미 존재하는지 확인
-        if (newFile.exists()) {
-            newFileName = generateUniqueFileName(newFileName);
-            newFilePath = UPLOAD_DIRECTORY + newFileName;
-            newFile = new File(newFilePath);
+        // 새 파일 경로의 디렉토리가 없다면 생성
+        if (!newFile.getParentFile().exists()) {
+            newFile.getParentFile().mkdirs();
         }
 
         if (oldFile.exists() && oldFile.renameTo(newFile)) {
-            return newFilePath; // 전체 경로를 반환
+            return "/" + newPath; // 웹에서 접근 가능한 경로 반환
         } else {
             throw new IOException("파일명을 변경할 수 없습니다.");
         }

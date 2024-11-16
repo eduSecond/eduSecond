@@ -217,6 +217,10 @@
                                 <a href="/es/payment/view?productId=${dto.productId}" class="btn btn-primary"
                                    data-bs-toggle="modal" data-bs-target="#purchaseModal">구매하기</a>
                             </c:if>
+                            <c:if test="${memberInfo.userId eq dto.sellerId}">
+                                <a href="/es/product/delete?productId=${dto.productId}" class="btn btn-danger">삭제하기</a>
+                                <a href="/es/product/update?productId=${dto.productId}" class="btn btn-warning">수정하기</a>
+                            </c:if>
                         </div>
                     </div>
                 </div>

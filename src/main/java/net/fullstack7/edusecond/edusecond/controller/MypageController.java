@@ -1,4 +1,3 @@
-
 package net.fullstack7.edusecond.edusecond.controller;
 
 import lombok.RequiredArgsConstructor;
@@ -15,6 +14,7 @@ import net.fullstack7.edusecond.edusecond.service.Like.LikeServiceIf;
 import net.fullstack7.edusecond.edusecond.mapper.OrderMapper;
 import net.fullstack7.edusecond.edusecond.service.member.MemberServiceIf;
 import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
+import net.fullstack7.edusecond.edusecond.util.CommonDateUtil;
 import net.fullstack7.edusecond.edusecond.util.JSFunc;
 import net.fullstack7.edusecond.edusecond.util.Paging;
 import org.springframework.stereotype.Controller;
@@ -89,6 +89,29 @@ public class MypageController {
         }
     }
 
+    @GetMapping("/deleteCancel")
+    public String deleteCancel(HttpSession session, RedirectAttributes rttr) {
+        MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
+        if (memberLoginDTO == null) {
+            rttr.addFlashAttribute("error", "로그인이 필요합니다.");
+            return "redirect:/main/main";
+        }
+
+        try {
+            int result = memberMapper.updateEnabled(memberLoginDTO.getUserId(), "Y");
+            if (result > 0) {
+                rttr.addFlashAttribute("message", "탈퇴 신청이 취소되었습니다.");
+            } else {
+                rttr.addFlashAttribute("error", "탈퇴 신청 취소 처리 중 오류가 발생했습니다.");
+            }
+        } catch (Exception e) {
+            log.error("탈퇴 신청 취소 중 오류 발생: ", e);
+            rttr.addFlashAttribute("error", "탈퇴 신청 취소 처리 중 오류가 발생했습니다.");
+        }
+
+        return "redirect:/es/mypage/myInfo";
+    }
+
     private boolean validateListParameters(int pageNo, String searchCategory,
                                            String searchValue, HttpServletResponse response) {
         if (pageNo < 1) {
@@ -154,12 +177,14 @@ public class MypageController {
         Map<String,Object> countMap = new HashMap<>();
         countMap.put("searchCategory", "p.productName");
         countMap.put("searchValue", searchValue);
+        countMap.put("userId", userId);
 
         List<OrderListDTO> orderList = orderMapper.getOrderList(map);
         int totalCount = orderMapper.totalCount(countMap);
         log.info("totalcount : "+totalCount);
         Paging paging = new Paging(pageNo, 10, 5, totalCount);
 
+        model.addAttribute("dUtil", new CommonDateUtil());
         model.addAttribute("paging", paging);
         model.addAttribute("searchValue", searchValue);
         model.addAttribute("orderList", orderList);
@@ -187,6 +212,7 @@ public class MypageController {
         Map<String,Object> countMap = new HashMap<>();
         countMap.put("searchCategory", "p.productName");
         countMap.put("searchValue", searchValue);
+        countMap.put("userId", userId);
 
         List<OrderListDTO> orderList = orderMapper.getOrderListSold(map);
 
@@ -194,6 +220,7 @@ public class MypageController {
         log.info(totalCount);
         Paging paging = new Paging(pageNo, 10, 5, totalCount);
 
+        model.addAttribute("dUtil", new CommonDateUtil());
         model.addAttribute("paging", paging);
         model.addAttribute("searchValue", searchValue);
         model.addAttribute("orderList", orderList);

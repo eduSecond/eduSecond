@@ -18,15 +18,27 @@
             min-height: calc(100vh);
         }
         .sidebar {
-            background-color: #343a40;
+            background-color: #444444;
             padding: 15px;
             color: #fff;
+            height: 100%;
         }
-        .sidebar a {
-            color: #ddd;
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
         }
-        .sidebar a:hover {
+
+        .sidebar ul li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar ul li a {
             color: #fff;
+            text-decoration: none;
+        }
+
+        .sidebar ul li a:hover {
             text-decoration: underline;
         }
         .content {
@@ -117,8 +129,18 @@
                             <td><input type="text" class="form-control" value="${member.userPhone}" name="userPhone"></td>
                         </tr>
                         <tr>
+                            <th>우편번호</th>
+                            <td>
+                                <input type="text" id="userPostcode" class="form-control" name="userPostcode" readonly required>
+                                <div id="div_err_zipCode" style="display: none;"></div>
+                                <input type="button" onclick="goZip()" value="우편번호 찾기" />
+                            </td>
+                        </tr>
+                        <tr>
                             <th>주소</th>
-                            <td><input type="text" class="form-control" value="${member.userAddress}" name="userAddress"></td>
+                            <td>
+                                <input type="text" class="form-control" id="userAddr" name="userAddress" value="${member.userAddress}"readonly required>
+                            </td>
                         </tr>
                         <tr>
                             <th>생일</th>
@@ -140,5 +162,51 @@
 </div>
 
 <%@ include file="../main/footer.jsp" %>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+    function goZip() {
+        new daum.Postcode({
+            oncomplete: function (data) {
+                var roadAddr = data.roadAddress; // 도로명 주소
+                var jibunAddr = data.jibunAddress; // 지번 주소
+                var extraRoadAddr = ""; // 참고 항목
+
+                // 법정동명이 있을 경우 추가
+                if (data.bname !== "" && /[동|로|가]$/g.test(data.bname)) {
+                    extraRoadAddr += data.bname;
+                }
+                // 건물명이 있고, 공동주택일 경우 추가
+                if (data.buildingName !== "" && data.apartment === "Y") {
+                    extraRoadAddr += (extraRoadAddr !== "" ? ", " + data.buildingName : data.buildingName);
+                }
+                // 참고항목이 있을 경우 괄호까지 추가
+                if (extraRoadAddr !== "") {
+                    extraRoadAddr = " (" + extraRoadAddr + ")";
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣음
+                document.getElementById("userPostcode").value = data.zonecode;
+                document.getElementById("userAddr").value = roadAddr + extraRoadAddr;
+                document.getElementById("userJibunAddr").value = jibunAddr;
+
+                var guideTextBox = document.getElementById("guide");
+                if (data.autoRoadAddress) {
+                    var expRoadAddr = data.autoRoadAddress + extraRoadAddr;
+                    guideTextBox.innerHTML = "(예상 도로명 주소 : " + expRoadAddr + ")";
+                    guideTextBox.style.display = "block";
+                } else if (data.autoJibunAddress) {
+                    var expJibunAddr = data.autoJibunAddress;
+                    guideTextBox.innerHTML = "(예상 지번 주소 : " + expJibunAddr + ")";
+                    guideTextBox.style.display = "block";
+                } else {
+                    guideTextBox.innerHTML = "";
+                    guideTextBox.style.display = "none";
+                }
+            },
+        }).open();
+    }
+</script>
 </body>
 </html>
+
+

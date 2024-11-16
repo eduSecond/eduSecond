@@ -6,6 +6,8 @@ import net.fullstack7.edusecond.edusecond.dto.member.MemberDTO;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberLoginDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductRegistDTO;
+import net.fullstack7.edusecond.edusecond.dto.product.ProductImageDTO;
+import net.fullstack7.edusecond.edusecond.dto.product.ProductUpdateDTO;
 import net.fullstack7.edusecond.edusecond.dto.review.ReviewDTO;
 import net.fullstack7.edusecond.edusecond.dto.seller.SellerDTO;
 import net.fullstack7.edusecond.edusecond.dto.seller.StarAvgDTO;
@@ -236,5 +238,126 @@ public class ProductController {
         return "product/seller/sellerpage";
     }
 
+    @GetMapping("delete")
+    public String delete(
+            @RequestParam int productId,
+            HttpServletResponse response,
+            Model model,
+            HttpSession session
+    ){
+        try{
+            MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
+            if(memberLoginDTO == null || memberLoginDTO.getUserId() == null){
+                JSFunc.alertBack("로그인한 회원만 삭제할 수 있습니다.", response);
+                return null;
+            }else if(memberLoginDTO.getUserId().equals(productService.view(productId).getSellerId())){
+                productService.deleteProduct(productId);
+                return "redirect:/product/list";
+            }else{
+                JSFunc.alertBack("자신의 상품만 삭제할 수 있습니다.", response);
+                return null;
+            }
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("update")
+    public String update(
+            @RequestParam int productId,
+            Model model,
+            HttpSession session,
+            HttpServletResponse response
+    ) {
+        try {
+            // 로그인 체크
+            MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
+            if(memberLoginDTO == null || memberLoginDTO.getUserId() == null) {
+                JSFunc.alertBack("로그인한 회원만 수정할 수 있습니다.", response);
+                return null;
+            }
+            
+            // 상품 정보 조회
+            ProductDTO dto = productService.view(productId);
+            if(dto == null) {
+                JSFunc.alertBack("존재하지 않는 상품입니다.", response);
+                return null;
+            }
+            
+            // 본인 상품 체크
+            if(!memberLoginDTO.getUserId().equals(dto.getSellerId())) {
+                JSFunc.alertBack("자신의 상품만 수정할 수 있습니다.", response);
+                return null;
+            }
+            
+            // 상품 이미지 조회
+            List<ProductImageDTO> images = productService.getProductImages(productId);
+            
+            model.addAttribute("dto", dto);
+            model.addAttribute("images", images);
+            return "product/update";
+        } catch(Exception e) {
+            log.error("상품 수정 페이지 로드 중 오류 발생: ", e);
+            JSFunc.alertBack("상품 수정 페이지를 불러오는 중 오류가 발생했습니다.", response);
+            return null;
+        }
+    }
+
+    @PostMapping("/updateOk")
+    public String updateOk(
+            ProductUpdateDTO productUpdateDTO,
+            @RequestParam(value = "files", required = false) List<MultipartFile> files,
+            HttpSession session,
+            HttpServletResponse response
+    ) {
+        try {
+            // 1. 기본 데이터 검증
+            if (productUpdateDTO.getProductId() == null || 
+                productUpdateDTO.getProductName() == null || productUpdateDTO.getProductName().trim().isEmpty() ||
+                productUpdateDTO.getProductDesc() == null || productUpdateDTO.getProductDesc().trim().isEmpty() ||
+                productUpdateDTO.getPrice() == null || productUpdateDTO.getPrice() < 0 ||
+                productUpdateDTO.getQuantity() == null || productUpdateDTO.getQuantity() < 0) {
+                JSFunc.alertBack("필수 입력값이 누락되었습니다.", response);
+                return null;
+            }
+
+            // 2. quality와 productStatus 검증
+            String quality = productUpdateDTO.getQuality();
+            String productStatus = productUpdateDTO.getProductStatus();
+            if (quality == null || !quality.matches("^(NEW|LIKE_NEW|GOOD|FAIR)$") ||
+                productStatus == null || !productStatus.matches("^(AVAILABLE|RESERVED|SOLD)$")) {
+                JSFunc.alertBack("올바른 상품 상태를 선택해주세요.", response);
+                return null;
+            }
+
+            // 3. 로그인 체크
+            MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
+            if (memberLoginDTO == null) {
+                JSFunc.alertBack("로그인이 필요합니다.", response);
+                return null;
+            }
+
+            // 4. 상품 소유자 체크
+            ProductDTO originalProduct = productService.view(productUpdateDTO.getProductId());
+            if (!memberLoginDTO.getUserId().equals(originalProduct.getSellerId())) {
+                JSFunc.alertBack("자신의 상품만 수정할 수 있습니다.", response);
+                return null;
+            }
+
+            // 5. 이미지 처리 및 업데이트
+            int result = productService.updateProduct(productUpdateDTO, files);
+            
+            if (result > 0) {
+                return "redirect:/product/view?productId=" + productUpdateDTO.getProductId();
+            } else {
+                JSFunc.alertBack("상품 수정에 실패했습니다.", response);
+                return null;
+            }
+        } catch (Exception e) {
+            log.error("상품 수정 중 오류 발생: ", e);
+            JSFunc.alertBack("상품 수정 중 오류가 발생했습니다.", response);
+            return null;
+        }
+    }
 
 }

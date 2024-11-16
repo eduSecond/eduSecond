@@ -450,7 +450,7 @@
                                 })
                                 .catch(error => {
                                     console.error('Error:', error);
-                                    alert('메시지 전송에 실패했습니다.');
+                                    alert('메시지 전송에 패했습니다.');
                                 });
                         }
                     }
