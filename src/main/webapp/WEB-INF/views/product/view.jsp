@@ -212,7 +212,6 @@
                             <a href="seller/sellerpage?userId=${dto.sellerId}">➡️ 판매자 페이지 보러가기</a>
                         </div>
                         <div class="button-container">
-
                             <c:if test="${memberInfo.userId ne dto.sellerId}">
                                 <a href="#" class="btn btn-primary" onclick="createChatRoom()">1:1 문의하기</a>
                                 <a href="/es/payment/view?productId=${dto.productId}" class="btn btn-primary"
