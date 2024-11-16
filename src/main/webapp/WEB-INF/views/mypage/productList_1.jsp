@@ -161,7 +161,9 @@
                     </c:forEach>
                 </c:if>
                 <c:if test="${empty soldOutList}">
-                    <p>존재하는 상품이 없습니다.</p>
+                    <tr>
+                        <td colspan="4">존재하는 상품이 없습니다.</td>
+                    </tr>
                 </c:if>
             </tbody>
         </table>

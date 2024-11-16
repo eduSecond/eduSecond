@@ -71,6 +71,9 @@
         </form>
     </div>
     <!-- 메인 상품 목록 영역 -->
+    <c:if test="${not empty message}">
+        ${message}
+    </c:if>
     <div class="main">
         ${dto.thumbnail.imagePath}
         <c:if test="${not empty pList}">

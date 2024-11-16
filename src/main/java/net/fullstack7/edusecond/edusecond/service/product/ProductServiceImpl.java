@@ -7,10 +7,15 @@ import net.fullstack7.edusecond.edusecond.domain.product.ProductVO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductImageDTO;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductRegistDTO;
+import net.fullstack7.edusecond.edusecond.dto.product.ProductUpdateDTO;
 import net.fullstack7.edusecond.edusecond.mapper.ProductMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import net.fullstack7.edusecond.edusecond.util.CommonFileUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -95,8 +100,8 @@ public class ProductServiceImpl implements ProductServiceIf {
 
     @Override
     public List<ProductImageDTO> getProductImages(int productId) {
-        List<ProductImageVO> voList = productMapper.selectProductImages(productId);
-        return voList.stream()
+        List<ProductImageVO> imageVOs = productMapper.selectProductImages(productId);
+        return imageVOs.stream()
                 .map(vo -> modelMapper.map(vo, ProductImageDTO.class))
                 .collect(Collectors.toList());
     }
@@ -167,7 +172,7 @@ public class ProductServiceImpl implements ProductServiceIf {
         return list.stream()
                 .map(vo -> {
                     ProductDTO dto = modelMapper.map(vo, ProductDTO.class);
-                    // 썸네일 이미지 설정
+                    // 썸���일 이미지 설정
                     ProductImageVO thumbnailImage = productMapper.selectThumbnailImage(vo.getProductId());
                     if (thumbnailImage != null) {
                         dto.setThumbnail(modelMapper.map(thumbnailImage, ProductImageDTO.class));
@@ -214,5 +219,66 @@ public class ProductServiceImpl implements ProductServiceIf {
         return productMapper.totalCountByProductStatus(map);
     }
 
+    @Override
+    public void deleteProduct(int productId) {
+        productMapper.deleteProduct(productId);
+    }
 
+    @Override
+    @Transactional
+    public int updateProduct(ProductUpdateDTO dto, List<MultipartFile> newFiles) throws IOException {
+        // 1. 기본 정보 업데이트
+        productMapper.updateProduct(dto);
+
+        // 2. 이미지 삭제 처리
+        if (dto.getDeleteImageIds() != null && !dto.getDeleteImageIds().isEmpty()) {
+            List<ProductImageDTO> currentImages = getProductImages(dto.getProductId());
+            
+            // 최소 1개의 이미지는 남아있어야 함
+            int remainingImages = currentImages.size() - dto.getDeleteImageIds().size();
+            int newImageCount = (newFiles != null) ? newFiles.size() : 0;
+            
+            if (remainingImages + newImageCount < 1) {
+                throw new IllegalStateException("최소 1개의 이미지가 필요합니다.");
+            }
+
+            for (Integer imageId : dto.getDeleteImageIds()) {
+                ProductImageDTO image = modelMapper.map(productMapper.selectImageById(imageId), ProductImageDTO.class);
+                if (image != null) {
+                    if ("Y".equals(image.getIsMain()) && remainingImages == 0 && newImageCount == 0) {
+                        throw new IllegalStateException("대표 이미지는 삭제할 수 없습니다.");
+                    }
+                    CommonFileUtil.deleteFile(image.getImagePath());
+                    productMapper.deleteProductImage(imageId);
+                }
+            }
+        }
+
+        // 3. 새 이미지 추가
+        if (newFiles != null && !newFiles.isEmpty()) {
+            List<ProductImageDTO> currentImages = getProductImages(dto.getProductId());
+            if (currentImages.size() + newFiles.size() > 4) {
+                throw new IllegalStateException("이미지는 최대 4개까지만 등록 가능합니다.");
+            }
+
+            List<String> uploadFileNames = CommonFileUtil.uploadFiles(newFiles);
+            boolean needMainImage = productMapper.hasMainImage(dto.getProductId()) == 0;
+
+            for (int i = 0; i < uploadFileNames.size(); i++) {
+                ProductImageDTO productImage = ProductImageDTO.builder()
+                        .productId(dto.getProductId())
+                        .imagePath(uploadFileNames.get(i))
+                        .isMain(needMainImage && i == 0 ? "Y" : "N")
+                        .build();
+                
+                if (needMainImage && i == 0) {
+                    productMapper.insertProductImageMain(modelMapper.map(productImage, ProductImageVO.class));
+                } else {
+                    productMapper.insertProductImage(modelMapper.map(productImage, ProductImageVO.class));
+                }
+            }
+        }
+
+        return 1;
+    }
 }

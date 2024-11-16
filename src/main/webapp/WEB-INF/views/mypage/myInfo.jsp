@@ -143,7 +143,12 @@
         </table>
         <div class="btn-container text-end">
           <button class="btn btn-primary me-2" onclick="location.href='/es/mypage/modify'">수정</button>
-          <button class="btn btn-danger" onclick="confirmWithdrawal()">탈퇴</button>
+          <c:if test="${member.enabled == 'Y'}">
+            <button class="btn btn-danger" onclick="confirmWithdrawal()">탈퇴</button>
+          </c:if>
+          <c:if test="${member.enabled == 'Q'}">
+            <button class="btn btn-danger" onclick="confirmWithdrawalCancel()">탈퇴취소</button>
+          </c:if>
         </div>
       </div>
     </div>
@@ -156,6 +161,11 @@
 function confirmWithdrawal() {
     if (confirm('정말 탈퇴하시겠습니까?\n탈퇴 신청 후 관리자 승인 시 계정이 비활성화됩니다.')) {
         location.href = '/es/mypage/delete';
+    }
+}
+function confirmWithdrawalCancel() {
+    if (confirm('탈퇴 신청을 취소하시겠습니까?')) {
+        location.href = '/es/mypage/deleteCancel';
     }
 }
 </script>

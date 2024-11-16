@@ -1,4 +1,3 @@
-
 package net.fullstack7.edusecond.edusecond.controller;
 
 import lombok.RequiredArgsConstructor;
@@ -88,6 +87,29 @@ public class MypageController {
             rttr.addFlashAttribute("error", "탈퇴 신청 처리 중 오류가 발생했습니다.");
             return "redirect:/es/mypage/myInfo";
         }
+    }
+
+    @GetMapping("/deleteCancel")
+    public String deleteCancel(HttpSession session, RedirectAttributes rttr) {
+        MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
+        if (memberLoginDTO == null) {
+            rttr.addFlashAttribute("error", "로그인이 필요합니다.");
+            return "redirect:/main/main";
+        }
+
+        try {
+            int result = memberMapper.updateEnabled(memberLoginDTO.getUserId(), "Y");
+            if (result > 0) {
+                rttr.addFlashAttribute("message", "탈퇴 신청이 취소되었습니다.");
+            } else {
+                rttr.addFlashAttribute("error", "탈퇴 신청 취소 처리 중 오류가 발생했습니다.");
+            }
+        } catch (Exception e) {
+            log.error("탈퇴 신청 취소 중 오류 발생: ", e);
+            rttr.addFlashAttribute("error", "탈퇴 신청 취소 처리 중 오류가 발생했습니다.");
+        }
+
+        return "redirect:/es/mypage/myInfo";
     }
 
     private boolean validateListParameters(int pageNo, String searchCategory,
