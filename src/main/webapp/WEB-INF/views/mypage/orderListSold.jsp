@@ -166,15 +166,22 @@
                   <td>${dto.unitPrice}원/${dto.orderQuantity}개</td>
                   <td>${dto.totalPrice}원</td>
                   <c:choose>
-                    <c:when test="${dto.orderStatus eq '구매완료' || dto.orderStatus eq '직거래 완료'}">
-                      <td style="color:green;">${dto.orderStatus}</td>
-                    </c:when>
-                    <c:otherwise>
-                      <td style="color:red;">${dto.orderStatus}</td>
-                    </c:otherwise>
+                  <c:when test="${dto.orderStatus eq '구매완료' || dto.orderStatus eq '직거래 완료'}">
+                    <td style="color:green;"
+                  </c:when>
+                  <c:otherwise>
+                  <td style="color:red;"
+                  </c:otherwise>
                   </c:choose>
+                  >
+                      ${dto.orderStatus}<br>
+                    <c:if test="${dto.orderStatus eq '구매대기'}">
+                      <button class="btn btn-sm btn-outline-primary" onclick="location.href='/es/payment/confirm?paymentNumber=${dto.paymentNumber}&pageNo=${param.pageNo}'">수락</button>
+                      <button class="btn btn-sm btn-outline-danger" onclick="location.href='/es/payment/reject?paymentNumber=${dto.paymentNumber}&pageNo=${param.pageNo}'">거부</button>
+                    </c:if>
+                  </td>
                   <td>
-                      ${dto.deliveryStatus}
+                      ${dto.deliveryStatus}<br>
                     <c:if test="${dto.orderStatus eq '직거래'}">
                       <button class="btn btn-sm btn-primary" onclick="location.href='/es/payment/direct?paymentNumber=${dto.paymentNumber}&pageNo=${param.pageNo}'">직거래완료</button>
                     </c:if>

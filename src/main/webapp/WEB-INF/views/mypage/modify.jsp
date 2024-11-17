@@ -23,21 +23,17 @@
             color: #fff;
             height: 100%;
         }
-
         .sidebar ul {
             list-style: none;
             padding: 0;
         }
-
         .sidebar ul li {
             margin-bottom: 10px;
         }
-
         .sidebar ul li a {
             color: #fff;
             text-decoration: none;
         }
-
         .sidebar ul li a:hover {
             text-decoration: underline;
         }
@@ -58,6 +54,10 @@
         .btn-container {
             margin-top: 20px;
         }
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
@@ -77,40 +77,11 @@
 
     <!-- 콘텐츠 영역 -->
     <div class="content col-md-10">
-        <!-- 대시보드 -->
-        <div class="row g-4 mb-4 dashboard">
-            <div class="col-md-4">
-                <div class="card h-100">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">내가 등록한 상품</h5>
-                        <p><a href="/es/mypage/productList">판매중: <strong>${mypageDTO.productAvailableCount}</strong></a></p>
-                        <p><a href="/es/mypage/productList_1">판매완료: <strong>${mypageDTO.productSoldCount}</strong></a></p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-100">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">내가 찜한 상품</h5>
-                        <p><a href="/es/mypage/wishList"><strong>${mypageDTO.wishListCount}</strong>개</a></p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-100">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">내가 받은 리뷰</h5>
-                        <p><strong>${mypageDTO.reviewCount}</strong> 개</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- 내 정보 수정 -->
         <h2 class="mb-4">내 정보 수정</h2>
         <div class="card">
             <div class="card-body">
-                <form method="post" action="/es/mypage/modifyOk">
+                <form method="post" action="/es/mypage/modifyOk" onsubmit="return validateForm()">
                     <table class="table table-borderless">
                         <tr>
                             <th>아이디</th>
@@ -122,33 +93,53 @@
                         </tr>
                         <tr>
                             <th>이메일</th>
-                            <td><input type="email" class="form-control" value="${member.userEmail}" name="userEmail"></td>
+                            <td>
+                                <input type="email" class="form-control" value="${member.userEmail}" name="userEmail">
+                                <c:if test="${errors != null && errors.hasFieldErrors('userEmail')}">
+                                    <span class="error-message">${errors.getFieldError('userEmail').defaultMessage}</span>
+                                </c:if>
+                            </td>
                         </tr>
                         <tr>
                             <th>전화번호</th>
-                            <td><input type="text" class="form-control" value="${member.userPhone}" name="userPhone"></td>
+                            <td>
+                                <input type="text" class="form-control" value="${member.userPhone}" name="userPhone">
+                                <c:if test="${errors != null && errors.hasFieldErrors('userPhone')}">
+                                    <span class="error-message">${errors.getFieldError('userPhone').defaultMessage}</span>
+                                </c:if>
+                            </td>
                         </tr>
                         <tr>
                             <th>우편번호</th>
                             <td>
-                                <input type="text" id="userPostcode" class="form-control" name="userPostcode" readonly required>
-                                <div id="div_err_zipCode" style="display: none;"></div>
-                                <input type="button" onclick="goZip()" value="우편번호 찾기" />
+                                <input type="text" id="userPostcode" class="form-control" name="userPostcode" value="${member.userPostcode}" readonly required>
+                                <c:if test="${errors != null && errors.hasFieldErrors('userPostcode')}">
+                                    <span class="error-message">${errors.getFieldError('userPostcode').defaultMessage}</span>
+                                </c:if>
+                                <input type="button" class="btn btn-secondary" onclick="goZip()" value="우편번호 찾기" />
                             </td>
                         </tr>
                         <tr>
                             <th>주소</th>
                             <td>
-                                <input type="text" class="form-control" id="userAddr" name="userAddress" value="${member.userAddress}"readonly required>
+                                <input type="text" class="form-control" id="userAddr" name="userAddress" value="${member.userAddress}" readonly required>
+                                <c:if test="${errors != null && errors.hasFieldErrors('userAddress')}">
+                                    <span class="error-message">${errors.getFieldError('userAddress').defaultMessage}</span>
+                                </c:if>
                             </td>
                         </tr>
                         <tr>
                             <th>생일</th>
-                            <td><input type="date" class="form-control" value="${member.userBirth}" name="userBirth"></td>
+                            <td>
+                                <input type="date" class="form-control" value="${member.userBirth}" name="userBirth">
+                                <c:if test="${errors != null && errors.hasFieldErrors('userBirth')}">
+                                    <span class="error-message">${errors.getFieldError('userBirth').defaultMessage}</span>
+                                </c:if>
+                            </td>
                         </tr>
                         <tr>
                             <th>가입일</th>
-                            <td>${member.regDate}</td>
+                            <td>${dUtil.localDateTimeToString(member.regDate, 'yyyy-MM-dd')}</td>
                         </tr>
                     </table>
                     <div class="btn-container text-end">
@@ -165,10 +156,12 @@
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
     function goZip() {
+        // 팝업 창을 명시적으로 열기
+        var postcodeWindow = window.open('', '_blank', 'width=500,height=600');
+
         new daum.Postcode({
             oncomplete: function (data) {
                 var roadAddr = data.roadAddress; // 도로명 주소
-                var jibunAddr = data.jibunAddress; // 지번 주소
                 var extraRoadAddr = ""; // 참고 항목
 
                 // 법정동명이 있을 경우 추가
@@ -187,26 +180,15 @@
                 // 우편번호와 주소 정보를 해당 필드에 넣음
                 document.getElementById("userPostcode").value = data.zonecode;
                 document.getElementById("userAddr").value = roadAddr + extraRoadAddr;
-                document.getElementById("userJibunAddr").value = jibunAddr;
 
-                var guideTextBox = document.getElementById("guide");
-                if (data.autoRoadAddress) {
-                    var expRoadAddr = data.autoRoadAddress + extraRoadAddr;
-                    guideTextBox.innerHTML = "(예상 도로명 주소 : " + expRoadAddr + ")";
-                    guideTextBox.style.display = "block";
-                } else if (data.autoJibunAddress) {
-                    var expJibunAddr = data.autoJibunAddress;
-                    guideTextBox.innerHTML = "(예상 지번 주소 : " + expJibunAddr + ")";
-                    guideTextBox.style.display = "block";
-                } else {
-                    guideTextBox.innerHTML = "";
-                    guideTextBox.style.display = "none";
-                }
+                // 팝업 창 닫기
+                postcodeWindow.close();
             },
-        }).open();
+            // 팝업 창 내부에 띄우기
+            width: '100%',
+            height: '100%'
+        }).embed(postcodeWindow.document.body);
     }
 </script>
 </body>
 </html>
-
-

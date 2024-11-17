@@ -75,7 +75,6 @@
         ${message}
     </c:if>
     <div class="main">
-        ${dto.thumbnail.imagePath}
         <c:if test="${not empty pList}">
             <c:forEach var="dto" items="${pList}" varStatus="loop" begin="0" end="9">
                 <a href="/product/view?productId=${dto.productId}" style="text-decoration: none; color: inherit;">
@@ -87,8 +86,7 @@
                                  style="height: 150px; object-fit: cover;">
                         </c:if>
                         <div class="card-body">
-                            <p class="card-title">${dto.productId}</p>
-                            <p class="card-title">${dto.productName}</p>
+                            <p class="card-text">${dto.productName}</p>
                             <p class="card-text">가격: ${dto.price}원</p>
                             <p class="card-text">판매상태: <c:if test="${dto.productStatus.equals('AVAILABLE')}">판매중</c:if></p>
                             <p class="card-text">조회수: ${dto.viewCount}</p>

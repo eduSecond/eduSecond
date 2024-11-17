@@ -210,8 +210,8 @@ public class ProductController {
             model.addAttribute("dto", dto);
             return "product/pay";
         }catch(Exception e){
-            log.error("상품 상세 조회 중 오류 발생: ", e);
-            JSFunc.alertBack("상품 정보를 불러오는 중 오류가 발생했습니다.", response);
+            log.error("상품 결제창 중 오류 발생: ", e);
+            JSFunc.alertBack("상품 결제창을 불러오는 중 오류가 발생했습니다.", response);
             return null;
         }
 

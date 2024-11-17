@@ -17,11 +17,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -52,18 +54,27 @@ public class PaymentController {
             model.addAttribute("dto", dto);
             return "payment/pay";
         }catch (Exception e){
-            log.error("상품 상세 조회 중 오류 발생: ", e);
-            JSFunc.alertBack("상품 정보를 불러오는 중 오류가 발생했습니다.", response);
+            log.error("상품 결제창 조회 중 오류 발생: ", e);
+            JSFunc.alertBack("상품 결제창을 불러오는 중 오류가 발생했습니다.", response);
             return null;
         }
     }
 
     @PostMapping("/pay")
-    public String pay(HttpSession session, PaymentDTO paymentDTO, @RequestParam int totalQuantity, HttpServletResponse response){
+    public String pay(HttpSession session,
+                      @Valid PaymentDTO paymentDTO,
+                      BindingResult bindingResult,
+                      RedirectAttributes redirectAttributes,
+                      @RequestParam int totalQuantity,
+                      HttpServletResponse response){
 
-        if(paymentDTO.getOrderQuantity() > totalQuantity){
+        if(paymentDTO.getOrderQuantity() != null && paymentDTO.getOrderQuantity() > totalQuantity){
             JSFunc.alertBack("최대 수량을 넘길 수 없습니다.", response);
             return null;
+        }
+        if(bindingResult.hasErrors()){
+            redirectAttributes.addFlashAttribute("errors", bindingResult);
+            return "redirect:/es/payment/view?productId=" + paymentDTO.getProductId();
         }
 
         MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
@@ -71,7 +82,7 @@ public class PaymentController {
 
         String paymentNumber = UUID.randomUUID().toString();
         paymentDTO.setPaymentNumber(paymentNumber);
-
+        paymentDTO.setPaymentMethod("신용카드");
         int totalPrice = paymentDTO.getUnitPrice() * paymentDTO.getOrderQuantity();
         paymentDTO.setTotalPrice(totalPrice);
 
@@ -106,13 +117,21 @@ public class PaymentController {
     }
 
     @PostMapping("/pay_1")
-    public String pay_1(HttpSession session, PaymentDTO paymentDTO, @RequestParam int totalQuantity, HttpServletResponse response){
+    public String pay_1(HttpSession session,
+                        @Valid PaymentDTO paymentDTO,
+                        BindingResult bindingResult,
+                        RedirectAttributes redirectAttributes,
+                        @RequestParam int totalQuantity,
+                        HttpServletResponse response){
 
-        if(paymentDTO.getOrderQuantity() > totalQuantity){
+        if(paymentDTO.getOrderQuantity() != null && paymentDTO.getOrderQuantity() > totalQuantity){
             JSFunc.alertBack("최대 수량을 넘길 수 없습니다.", response);
             return null;
         }
-
+        if(bindingResult.hasErrors()){
+            redirectAttributes.addFlashAttribute("errors", bindingResult);
+            return "redirect:/es/payment/view_1?productId=" + paymentDTO.getProductId();
+        }
         MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
         paymentDTO.setBuyerId(memberLoginDTO.getUserId());
 
@@ -121,7 +140,7 @@ public class PaymentController {
 
         int totalPrice = paymentDTO.getUnitPrice() * paymentDTO.getOrderQuantity();
         paymentDTO.setTotalPrice(totalPrice);
-
+        paymentDTO.setPaymentMethod("직거래");
         int result = paymentService.insert_1(paymentDTO);
         if(result > 0){
             return "redirect:/es/mypage/orderList";
