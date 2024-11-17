@@ -86,7 +86,7 @@
 
     <update id="updateMember">
         UPDATE tbl_member
-        SET userEmail = #{userEmail}, userPhone = #{userPhone}, userAddress = #{userAddress}, userBirth = #{userBirth}
+        SET userEmail = #{userEmail}, userPhone = #{userPhone}, userAddress = #{userAddress}, userBirth = #{userBirth}, userPostcode = #{userPostcode}
         WHERE userId = #{userId}
     </update>
 
