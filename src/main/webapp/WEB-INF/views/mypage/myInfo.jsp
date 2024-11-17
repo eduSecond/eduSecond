@@ -137,7 +137,7 @@
           </tr>
           <tr>
             <th>가입일</th>
-            <td>${member.regDate}</td>
+            <td>${dUtil.localDateTimeToString(member.regDate, 'yyyy-MM-dd')}</td>
           </tr>
           </tbody>
         </table>

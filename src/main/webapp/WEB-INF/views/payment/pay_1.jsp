@@ -7,7 +7,9 @@
       padding: 0;
       box-sizing: border-box;
     }
-
+    .error-message{
+      color : red;
+    }
     body {
       font-family: Arial, sans-serif;
       line-height: 1.6;
@@ -104,34 +106,33 @@
       <div class="mb-3">
         <label for="name" class="form-label">받는 사람</label>
         <input type="text" class="form-control" id="name" name="recipientName" placeholder="이름을 입력해주세요">
+        <c:if test="${errors != null && errors.hasFieldErrors('recipientName')}">
+          <span class="error-message">${errors.getFieldError('recipientName').defaultMessage}</span>
+        </c:if>
       </div>
       <div class="mb-3">
         <label for="tel" class="form-label">전화번호</label>
         <input type="text" class="form-control" id="tel" name="recipientPhone" placeholder="000-0000-0000">
+        <c:if test="${errors != null && errors.hasFieldErrors('recipientPhone')}">
+          <span class="error-message">${errors.getFieldError('recipientPhone').defaultMessage}</span>
+        </c:if>
       </div>
       <div class="mb-3">
         <label for="email" class="form-label">이메일</label>
         <input type="email" class="form-control" id="email" placeholder="name@example.com" name="recipientEmail">
+        <c:if test="${errors != null && errors.hasFieldErrors('recipientEmail')}">
+          <span class="error-message">${errors.getFieldError('recipientEmail').defaultMessage}</span>
+        </c:if>
       </div>
-      <div class="mb-3">
-        <label for="addr" class="form-label">주소</label>
-        <input type="text" class="form-control" id="addr" name="shippingAddress" value="직거래" readonly>
-      </div>
-      <div class="mb-3">
-        <label for="zipcode" class="form-label">우편번호</label>
-        <input type="text" class="form-control" id="zipcode" name="shippingPostcode" value="직거래" readonly>
-      </div>
-      <div class="mb-3">
-        <label for="paymentMethod" class="form-label">결제방식</label>
-        <input type="text" class="form-control" id="paymentMethod" name="paymentMethod" value="직거래" readonly>
-      </div>
-      <div class="mb-3">
-        <label for="paymentCompany" class="form-label">결제회사</label>
-        <input type="text" class="form-control" id="paymentCompany" name="paymentCompany" value="직거래" readonly>
-      </div>
+        <input type="hidden" class="form-control" id="addr" name="shippingAddress" value="직거래" readonly>
+        <input type="hidden" class="form-control" id="zipcode" name="shippingPostcode" value="직거래" readonly>
+        <input type="hidden" class="form-control" id="paymentCompany" name="paymentCompany" value="직거래" readonly>
       <div class="mb-3">
         <label for="orderQuantity" class="form-label">결제수량(최대 : ${dto.quantity})</label>
         <input type="number" class="form-control" id="orderQuantity" name="orderQuantity" max="${dto.quantity}">
+        <c:if test="${errors != null && errors.hasFieldErrors('orderQuantity')}">
+          <span class="error-message">${errors.getFieldError('orderQuantity').defaultMessage}</span>
+        </c:if>
       </div>
 
 

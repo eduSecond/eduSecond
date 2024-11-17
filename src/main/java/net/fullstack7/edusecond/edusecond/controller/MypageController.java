@@ -43,18 +43,32 @@ public class MypageController {
 
 
     @GetMapping("/myInfo")
-    public String myInfo(HttpSession session, Model model) {
+    public String myInfo(HttpSession session, Model model,HttpServletResponse response) {
+
         MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
+        response.setCharacterEncoding("UTF-8");
+        if(memberLoginDTO == null) {
+            JSFunc.alertBack("로그인 후 이용 가능합니다.",response);
+        }
+
         MypageDTO mypageDTO = memberMapper.myProductCount(memberLoginDTO.getUserId());
         MemberDTO memberDTO = memberService.getMember(memberLoginDTO.getUserId());
+
+        model.addAttribute("dUtil", new CommonDateUtil());
         model.addAttribute("mypageDTO", mypageDTO);
         model.addAttribute("member", memberDTO);
         return "mypage/myInfo";
     }
 
     @GetMapping("/modify")
-    public String modify(HttpSession session, Model model) {
+    public String modify(HttpSession session, Model model, HttpServletResponse response) {
         MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
+        response.setCharacterEncoding("UTF-8");
+        if(memberLoginDTO == null) {
+            JSFunc.alertBack("로그인 후 이용 가능합니다.",response);
+        }
+
+        model.addAttribute("dUtil", new CommonDateUtil());
         model.addAttribute("member", memberService.getMember(memberLoginDTO.getUserId())); //예시임. 바꿔줘야함
         return "mypage/modify";
     }
@@ -66,6 +80,10 @@ public class MypageController {
                            RedirectAttributes redirectAttributes) {
 
         MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
+        if(bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errors", bindingResult);
+            return "redirect:/es/mypage/modify";
+        }
         memberModifyDTO.setUserId(memberLoginDTO.getUserId());  //예시임. 바꿔줘야 함
         int result = memberService.modifyMember(memberModifyDTO);
         if(result > 0){
