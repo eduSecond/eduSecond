@@ -46,7 +46,10 @@
 
     <select id="selectChatRoomList" resultType="net.fullstack7.edusecond.edusecond.dto.message.ChatRoomDTO">
         SELECT 
-            c.roomId, c.productId, c.sellerId, c.buyerId,
+            c.roomId,
+            c.productId,
+            c.sellerId,
+            c.buyerId,
             p.productName,
             pi.imagePath as productImage,
             m.userName as otherUserName,
@@ -66,12 +69,14 @@
                 ELSE m.userId = c.sellerId
             END
         LEFT JOIN (
-            SELECT roomId, message, regDate
-            FROM tbl_chat_message
-            WHERE (roomId, regDate) IN (
-                SELECT roomId, MAX(regDate)
-                FROM tbl_chat_message
-                GROUP BY roomId
+            SELECT cm1.roomId, cm1.message, cm1.regDate
+            FROM tbl_chat_message cm1
+            WHERE cm1.messageId = (
+                SELECT cm2.messageId
+                FROM tbl_chat_message cm2
+                WHERE cm1.roomId = cm2.roomId
+                ORDER BY cm2.regDate DESC, cm2.messageId DESC
+                LIMIT 1
             )
         ) lcm ON c.roomId = lcm.roomId
         WHERE (c.sellerId = #{userId} AND c.sellerActive = 'Y') 
@@ -121,7 +126,7 @@
         FROM tbl_chat_message m
         LEFT JOIN tbl_member mb ON m.senderId = mb.userId
         WHERE m.roomId = #{roomId}
-        ORDER BY m.regDate ASC
+        ORDER BY m.messageId ASC
     </select>
 
     <!-- 메시지 저장 -->

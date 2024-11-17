@@ -90,7 +90,7 @@
                             <p class="card-title">${dto.productId}</p>
                             <p class="card-title">${dto.productName}</p>
                             <p class="card-text">가격: ${dto.price}원</p>
-                            <p class="card-text">판매상태: ${dto.productStatus}</p>
+                            <p class="card-text">판매상태: <c:if test="${dto.productStatus.equals('AVAILABLE')}">판매중</c:if></p>
                             <p class="card-text">조회수: ${dto.viewCount}</p>
                             <p class="card-text">등록일: ${dto.formatRegDate}</p>
                         </div>

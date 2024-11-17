@@ -72,8 +72,8 @@ public class ProductServiceImpl implements ProductServiceIf {
         }
         dto.setImages(imageList);
 
-        // 조회수 증가
-        productMapper.updateViewCount(productId);
+        // // 조회수 증가
+        // productMapper.updateViewCount(productId);
 
         return dto;
     }
@@ -280,5 +280,10 @@ public class ProductServiceImpl implements ProductServiceIf {
         }
 
         return 1;
+    }
+
+    @Override
+    public void updateViewCount(Integer productId) {
+        productMapper.updateViewCount(productId);
     }
 }
