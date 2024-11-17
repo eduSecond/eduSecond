@@ -122,7 +122,7 @@
     WHERE productId = #{productId}
     ORDER BY isMain DESC, imageId ASC
   </select>
-  
+
   <update id="updateViewCount">
     UPDATE tbl_product 
     SET viewCount = viewCount + 1 
@@ -251,7 +251,7 @@
             quantity = #{quantity},
             quality = #{quality},
             productStatus = #{productStatus},
-            updateDate = NOW()
+            modifyDate = NOW()
         WHERE productId = #{productId}
     </update>
 

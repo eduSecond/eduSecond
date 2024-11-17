@@ -25,6 +25,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -55,6 +56,7 @@ public class ProductController {
                   @RequestParam(required = false) String searchValue,
                   HttpServletResponse response) {
         try {
+            response.setCharacterEncoding("utf-8");
             if (!validateListParameters(pageNo, searchCategory, searchValue, response)) {
                 return null;
             }
@@ -109,7 +111,8 @@ public class ProductController {
     public String view(Model model,
                       HttpSession session,
                       @RequestParam int productId,
-                      HttpServletResponse response) {
+                      HttpServletResponse response,
+                      HttpServletRequest request) {
         MemberLoginDTO userDto = (MemberLoginDTO) session.getAttribute("memberInfo");
 
         response.setCharacterEncoding("utf-8");
@@ -122,9 +125,48 @@ public class ProductController {
             if (dto == null) {
                 JSFunc.alertBack("존재하지 않는 상품입니다.", response);
                 return null;
-            }else{
+            }if(dto.getProductStatus().equals("UNAVAILABLE")){
+                JSFunc.alertBack("현재 판매중인 상품이 아닙니다.", response);
+                return null;
+            }else {
+                // 로그인한 사용자일 경우에만 조회수 증가 처리
+                if (userDto != null) {
+                    String viewedProducts = null;
+                    Cookie[] cookies = request.getCookies();
+                    
+                    // 기존 쿠키 확인
+                    if (cookies != null) {
+                        for (Cookie cookie : cookies) {
+                            if (cookie.getName().equals("viewedProducts_" + userDto.getUserId())) {
+                                viewedProducts = cookie.getValue();
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // 해당 상품 조회 여부 확인
+                    if (viewedProducts == null || !viewedProducts.contains("[" + productId + "]")) {
+                        // 조회수 증가
+                        if(!dto.getSellerId().equals(userDto.getUserId())){
+                            log.info("조회수 증가");
+                            productService.updateViewCount(productId);
+                        }else{
+                            log.info("본인 상품 조회수 증가 안함");
+                        }
+                        // 쿠키 생성 또는 업데이트
+                        String newValue = (viewedProducts == null) ? 
+                            "[" + productId + "]" : 
+                            viewedProducts + "[" + productId + "]";
+                            
+                        Cookie viewCookie = new Cookie("viewedProducts_" + userDto.getUserId(), newValue);
+                        viewCookie.setMaxAge(24 * 60 * 60); // 24시간
+                        viewCookie.setPath("/");
+                        response.addCookie(viewCookie);
+                    }
+                }
+
                 List<ReviewDTO> reviewList = reviewService.viewReview(productId);
-                if(reviewList != null){
+                if(reviewList != null) {
                     for (ReviewDTO i : reviewList) {
                         String formatDate = CommonDateUtil.localDateTimeToString(i.getRegDate(), "yyyy-MM-dd");
                         i.setFormatRegDate(formatDate);
@@ -133,11 +175,11 @@ public class ProductController {
                 }
 
                 boolean isLiked = false;
-                if( userDto != null && userDto.getUserId() != null) {
+                if(userDto != null && userDto.getUserId() != null) {
                     model.addAttribute("userId", userDto.getUserId());
                     isLiked = likeService.checkExists(userDto.getUserId(), productId);
                 }
-                System.out.println("isLike: " + isLiked);
+                
                 model.addAttribute("isLiked", isLiked);
                 model.addAttribute("dto", dto);
                 return "product/view";
@@ -155,6 +197,7 @@ public class ProductController {
                           @RequestParam int productId,
                           HttpServletResponse response){
         try{
+            response.setCharacterEncoding("utf-8");
             if (productId <= 0) {
                 JSFunc.alertBack("유효하지 않은 상품 ID입니다.", response);
                 return null;
@@ -174,7 +217,12 @@ public class ProductController {
 
     }
     @GetMapping("/regist")
-    public String regist(){
+    public String regist(HttpSession session, HttpServletResponse response){
+        MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
+        if(memberLoginDTO == null || memberLoginDTO.getUserId() == null){
+            JSFunc.alertBack("로그인한 회원만 상품 등록이 가능합니다.", response);
+            return null;
+        }
         return "product/regist";
     }
 
@@ -246,6 +294,7 @@ public class ProductController {
             HttpSession session
     ){
         try{
+            response.setCharacterEncoding("utf-8");
             MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
             if(memberLoginDTO == null || memberLoginDTO.getUserId() == null){
                 JSFunc.alertBack("로그인한 회원만 삭제할 수 있습니다.", response);
@@ -270,6 +319,7 @@ public class ProductController {
             HttpServletResponse response
     ) {
         try {
+            response.setCharacterEncoding("utf-8");
             // 로그인 체크
             MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
             if(memberLoginDTO == null || memberLoginDTO.getUserId() == null) {
@@ -311,6 +361,7 @@ public class ProductController {
             HttpServletResponse response
     ) {
         try {
+            response.setCharacterEncoding("utf-8");
             // 1. 기본 데이터 검증
             if (productUpdateDTO.getProductId() == null || 
                 productUpdateDTO.getProductName() == null || productUpdateDTO.getProductName().trim().isEmpty() ||

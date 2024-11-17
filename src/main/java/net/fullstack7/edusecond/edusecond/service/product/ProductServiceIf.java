@@ -31,4 +31,5 @@ public interface ProductServiceIf {
     public int totalCountByProductStatus(String searchCategory, String searchValue, String userId, String productStatus);
     public void deleteProduct(int productId);
     int updateProduct(ProductUpdateDTO productUpdateDTO, List<MultipartFile> files) throws IOException;
+    void updateViewCount(Integer productId);
 }
