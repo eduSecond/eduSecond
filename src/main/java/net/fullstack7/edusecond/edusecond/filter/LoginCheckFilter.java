@@ -7,16 +7,17 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.stereotype.Component;
-
+import lombok.extern.log4j.Log4j2;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberLoginDTO;
 import net.fullstack7.edusecond.edusecond.util.JSFunc;
 
-@Component
+@WebFilter(urlPatterns = {"/es/*", "/product/regist", "/notice/view"})
+@Log4j2
 public class LoginCheckFilter implements Filter {
 
     @Override
@@ -28,6 +29,7 @@ public class LoginCheckFilter implements Filter {
         HttpSession session = httpRequest.getSession();
         
         String requestURI = httpRequest.getRequestURI();
+        log.info("LoginCheckFilter - 요청 URI: {}", requestURI);
         
         // 로그인 여부 확인
         MemberLoginDTO loginMember = (MemberLoginDTO) session.getAttribute("memberInfo");
@@ -35,14 +37,15 @@ public class LoginCheckFilter implements Filter {
         if (loginMember == null) {
             // 로그인되지 않은 경우
             if (requestURI.startsWith("/es/")) {
-                // /es/* 경로는 메인으로 리다이렉트
-                httpResponse.sendRedirect("/");
+                log.info("비로그인 사용자 /es/ 접근 시도 - 메인으로 리다이렉트");
+                httpResponse.sendRedirect("/login/login");
                 return;
             } else if (requestURI.contains("/product/regist") || 
                       requestURI.contains("/notice/view")) {
-                // product/regist, notice/view는 이전 페이지로
+                log.info("비로그인 사용자 제한된 페이지 접근 시도");
                 httpResponse.setContentType("text/html; charset=UTF-8");
-                JSFunc.alertBack("로그인이 필요한 서비스입니다.", httpResponse);
+                // JSFunc.alertBack("로그인이 필요한 서비스입니다.", httpResponse);
+                JSFunc.alertLocation("로그인이 필요한 서비스입니다.", "/login/login", httpResponse);
                 return;
             }
         }

@@ -81,4 +81,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         }
         log.info("웹소켓 연결 종료: {}", session.getId());
     }
+
+    @Override
+    public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+        log.error("웹소켓 에러 발생", exception);
+    }
 }

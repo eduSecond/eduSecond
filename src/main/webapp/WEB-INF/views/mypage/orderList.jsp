@@ -143,7 +143,7 @@
               <th scope="col">판매자</th>
               <th scope="col">단위가격/개수</th>
               <th scope="col">총 가격</th>
-              <th scope="col">주문상태</th>
+              <th scope="col">주문 상태</th>
               <th scope="col">배송 상태</th>
               <th scope="col">받는분/배송주소</th>
               <th scope="col">결제번호</th>
