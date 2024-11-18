@@ -120,7 +120,7 @@
   <div class="container">
     <h1 class="title">공지사항</h1>
     <div class="meta-info">
-      <span style="display: block; text-align: left;">작성자 : ${notice.adminId}</span> | <span>${notice.regDate}</span> | <span>조회수 : ${notice.viewCount}</span>
+      <span style="display: block; text-align: left;">작성자 : ${notice.adminId}</span> | <span>${dUtil.localDateTimeToString(notice.regDate, 'yyyy-MM-dd')}</span> | <span>조회수 : ${notice.viewCount}</span>
     </div>
 
     <p class="description">${notice.title}</p>

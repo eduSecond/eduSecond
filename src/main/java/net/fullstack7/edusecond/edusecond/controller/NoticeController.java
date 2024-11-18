@@ -9,6 +9,7 @@ import net.fullstack7.edusecond.edusecond.service.admin.AdminServiceIf;
 import net.fullstack7.edusecond.edusecond.service.member.MemberServiceIf;
 import net.fullstack7.edusecond.edusecond.service.notice.NoticeServiceIf;
 import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
+import net.fullstack7.edusecond.edusecond.util.CommonDateUtil;
 import net.fullstack7.edusecond.edusecond.util.Paging;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,6 +41,7 @@ public class NoticeController {
             int totalCount = noticeService.getTotalCount(searchCategory, searchValue);
             Paging paging = new Paging(pageNo, pageSize, 5, totalCount);
 
+            model.addAttribute("dUtil", new CommonDateUtil());
             model.addAttribute("notices", notices);
             model.addAttribute("paging", paging);
             model.addAttribute("searchCategory", searchCategory);
@@ -59,6 +61,7 @@ public class NoticeController {
             if (notice == null) {
                 return "redirect:/notice/list";
             }
+            model.addAttribute("dUtil", new CommonDateUtil());
             model.addAttribute("notice", notice);
             return "/notice/view";
         } catch (Exception e) {

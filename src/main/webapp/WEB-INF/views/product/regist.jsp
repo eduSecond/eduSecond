@@ -81,6 +81,9 @@
             border-top: 1px solid #ddd;
             width: 100%;
         }
+        .error-message{
+            color:red;
+        }
     </style>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -99,18 +102,30 @@
             <div class="mb-3">
                 <label for="productName" class="form-label">상품명</label>
                 <input type="text" class="form-control" id="productName" name="productName">
+                <c:if test="${errors != null && errors.hasFieldErrors('productName')}">
+                    <span class="error-message">${errors.getFieldError('productName').defaultMessage}</span>
+                </c:if>
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">상품 설명</label>
                 <textarea class="form-control" id="exampleFormControlTextarea1" rows="10" name="productDesc"></textarea>
+                <c:if test="${errors != null && errors.hasFieldErrors('productDesc')}">
+                    <span class="error-message">${errors.getFieldError('productDesc').defaultMessage}</span>
+                </c:if>
             </div>
             <div class="mb-3">
                 <label for="price" class="form-label">가격</label>
                 <input type="number" class="form-control" id="price" name="price">
+                <c:if test="${errors != null && errors.hasFieldErrors('price')}">
+                    <span class="error-message">${errors.getFieldError('price').defaultMessage}</span>
+                </c:if>
             </div>
             <div class="mb-3">
                 <label for="quantity" class="form-label">수량</label>
                 <input type="number"  class="form-control" id="quantity" name="quantity">
+                <c:if test="${errors != null && errors.hasFieldErrors('quantity')}">
+                    <span class="error-message">${errors.getFieldError('quantity').defaultMessage}</span>
+                </c:if>
             </div>
             <div class="mb-3">
                 <label for="quality" class="form-label">상품 상태</label>
@@ -120,24 +135,17 @@
                     <option value="GOOD">good</option>
                     <option value="FAIR">fair</option>
                 </select>
-
-
-
-
+                <c:if test="${errors != null && errors.hasFieldErrors('quality')}">
+                    <span class="error-message">${errors.getFieldError('quality').defaultMessage}</span>
+                </c:if>
             </div>
             <div class="mb-3">
-                <input type="file"  class="form-control" name="files" multiple>
+                <input type="file"  class="form-control" name="files" multiple required>
+                <c:if test="${not empty errorMessage}">
+                    <span class="error-message">${errorMessage}</span>
+                </c:if>
             </div>
             <button type="submit" class="btn btn-primary">등록하기</button>
-            <c:if test="${not empty errors}">
-                <div class="alert alert-danger">
-                    <ul>
-                        <c:forEach var="error" items="${errors}">
-                            <li>${error.defaultMessage}</li>
-                        </c:forEach>
-                    </ul>
-                </div>
-            </c:if>
         </form>
     </div>
 </div>

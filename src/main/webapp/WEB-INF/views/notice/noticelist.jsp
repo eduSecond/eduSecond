@@ -192,7 +192,7 @@
                 ${notice.title}
             </a>
           </td>
-          <td>${notice.regDate}</td>
+          <td>${dUtil.localDateTimeToString(notice.regDate, 'yyyy-MM-dd')}</td>
           <td>${notice.viewCount}</td>
         </tr>
       <!-- Add more rows as needed -->

@@ -114,7 +114,7 @@
                     <option value="sellerId" ${searchCategory == 'sellerId' ? 'selected' : ''}>판매자</option>
                 </select>
                 <input class="form-control me-2" type="search" name="searchValue" value="${searchValue}" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-primary" type="submit">Search</button>
+                <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
         </div>
         <table class="table">
