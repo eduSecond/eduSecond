@@ -218,8 +218,8 @@
                                    data-bs-toggle="modal" data-bs-target="#purchaseModal">구매하기</a>
                             </c:if>
                             <c:if test="${memberInfo.userId eq dto.sellerId}">
-                                <a href="/es/product/delete?productId=${dto.productId}" class="btn btn-danger">삭제하기</a>
-                                <a href="/es/product/update?productId=${dto.productId}" class="btn btn-warning">수정하기</a>
+                                <a href="/product/delete?productId=${dto.productId}" class="btn btn-danger">삭제하기</a>
+                                <a href="/product/update?productId=${dto.productId}" class="btn btn-warning">수정하기</a>
                             </c:if>
                         </div>
                     </div>
@@ -306,7 +306,7 @@
 
         if (!buyerId) {
             alert('로그인이 필요한 서비스입니다.');
-            window.location.href = '/member/login';
+            window.location.href = '/login/login';
             return;
         }
 
