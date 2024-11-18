@@ -4,6 +4,7 @@ import net.fullstack7.edusecond.edusecond.domain.product.ProductImageVO;
 import net.fullstack7.edusecond.edusecond.domain.product.ProductVO;
 import net.fullstack7.edusecond.edusecond.domain.product.ProductImageVO;
 import net.fullstack7.edusecond.edusecond.dto.payment.PaymentDTO;
+import org.apache.ibatis.annotations.Param;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductUpdateDTO;
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
@@ -37,8 +38,14 @@ public interface ProductMapper {
 
     void updateProduct(ProductUpdateDTO productUpdateDTO);
     void deleteProductImage(int imageId);
-    void updateMainImage(int productId, int imageId);
+    void updateMainImage(@Param("productId") Integer productId, @Param("newMainImageId") Integer newMainImageId);
     int hasMainImage(int productId);
 
     ProductImageVO selectImageById(Integer imageId);
+
+    void updateProductImageMain(@Param("imageId") Integer imageId, @Param("isMain") String isMain);
+
+    void updateAllImagesMain(@Param("productId") Integer productId, @Param("isMain") String isMain);
+    
+    void updateImageMain(@Param("imageId") Integer imageId, @Param("isMain") String isMain);
 }

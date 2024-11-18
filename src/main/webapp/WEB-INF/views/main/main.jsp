@@ -71,7 +71,7 @@
       position: fixed;
       bottom: 20px;
       right: 20px;
-      background-color: #ff3d3d;
+      background-color: #ff0404;
       color: #fff;
       padding: 15px 20px;
       border-radius: 50px;
@@ -385,6 +385,49 @@
       }
     }
 
+
+    .icon {
+      width: 50px;
+      height: 50px;
+      background-color: #ff0202;
+      display: block;
+      margin: auto; /* Center the icon inside the container */
+    }
+
+    .speech-bubble {
+      position: absolute;
+      top: -30px; /* Move the bubble above the icon */
+      left: -10px; /* Move the bubble to the left */
+      width: 50px;
+      height: 40px;
+      background-color: white;
+      border-radius: 20px; /* Round the corners to make it look like a bubble */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      z-index: 1; /* Ensure the bubble is above other elements */
+    }
+
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -6px; /* Position the tail at the bottom of the bubble */
+      left: 15px; /* Adjust the position of the tail */
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid white; /* Match the bubble's background color */
+    }
+
+    .notification-number {
+      font-size: 14px;
+      font-weight: bold;
+      color: black;
+    }
+
+
   </style>
 </head>
 <body>
@@ -413,8 +456,13 @@
     </div>
   </div>
   <div class="floating-button">
-    <a href="#">
-      <img src="<%= request.getContextPath() %>/resources/images/mainbanner/selltalk.png" alt="상담사" class="process-icon">
+    <a href="/message/list">
+        <c:if test="${not empty unreadCount}">
+              <div class="speech-bubble">
+                <span class="notification-number">${unreadCount}</span>
+              </div>
+        </c:if>
+      <img src="<%= request.getContextPath() %>/resources/images/mainbanner/selltalk.png" alt="셀파톡" class="icon">
     </a>
   </div>
 </section>

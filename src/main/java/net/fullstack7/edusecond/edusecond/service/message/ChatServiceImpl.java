@@ -100,4 +100,9 @@ public class ChatServiceImpl implements ChatServiceIf {
     public boolean isActiveRoom(int roomId) {
         return chatMapper.isActiveRoom(roomId);
     }
+
+    @Override
+    public int getUnreadCount(String userId) {
+        return chatMapper.getUnreadCount(userId);
+    }
 }

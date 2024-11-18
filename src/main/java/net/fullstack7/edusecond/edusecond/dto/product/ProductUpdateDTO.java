@@ -21,6 +21,5 @@ public class ProductUpdateDTO {
     private Integer quantity;
     private String quality;
     private String productStatus;
-    private List<String> imagePaths;
-    private List<Integer> deleteImageIds;
+    private String imageUpdateType;
 }

@@ -130,7 +130,7 @@
         <table class="table">
             <thead>
             <tr>
-                <th scope="col">#</th>
+                <th scope="col">상품 이미지</th>
                 <th scope="col">상품명</th>
                 <th scope="col">가격</th>
                 <th scope="col">상태</th>
@@ -145,7 +145,7 @@
                                 <c:choose>
                                     <c:when test="${not empty dto.thumbnail}">
                                         <div class="image-container">
-                                            <img src="../${dto.thumbnail.imagePath}"
+                                            <img src="${dto.thumbnail.imagePath}"
                                                  alt="상품 썸네일"
                                                  style="max-width: 100%; max-height: 100%; object-fit: cover;">
                                         </div>
