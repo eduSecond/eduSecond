@@ -5,12 +5,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.mariadb.jdbc.plugin.codec.LocalDateTimeCodec;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -20,7 +24,7 @@ import java.time.LocalDate;
 public class MemberRegistDTO {
     @NotBlank(message = "아이디는 필수입니다")
     @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{6,20}$",
-            message = "아이디는 6자 이상, 영문, 숫자를 포함해야 합니다")
+            message = "아이디는 6자 이상, 20자 이하 영문, 숫자를 포함해야 합니다")
     private String userId;
     
     @NotBlank(message = "비밀번호는 필수입니다")
@@ -48,5 +52,7 @@ public class MemberRegistDTO {
     
     @NotNull(message = "생년월일은 필수입니다")
     @Past(message = "생년월일은 과거 날짜여야 합니다")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate userBirth;
-} 
+
+}

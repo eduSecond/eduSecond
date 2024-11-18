@@ -210,7 +210,7 @@ public class ProductServiceImpl implements ProductServiceIf {
         Map<String, Object> map = new HashMap<>();
         map.put("searchCategory", searchCategory);
         map.put("searchValue", searchValue);
-        map.put("status", productStatus);
+        map.put("productStatus", productStatus);
         map.put("userId", userId);
         return productMapper.totalCountByProductStatus(map);
     }
