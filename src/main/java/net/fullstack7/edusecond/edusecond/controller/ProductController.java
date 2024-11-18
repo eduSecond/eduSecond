@@ -218,6 +218,7 @@ public class ProductController {
     }
     @GetMapping("/regist")
     public String regist(HttpSession session, HttpServletResponse response){
+        response.setCharacterEncoding("utf-8");
         MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
         if(memberLoginDTO == null || memberLoginDTO.getUserId() == null){
             JSFunc.alertBack("로그인한 회원만 상품 등록이 가능합니다.", response);
@@ -233,14 +234,23 @@ public class ProductController {
             @Valid ProductRegistDTO productRegistDTO,
             BindingResult bindingResult,
             @RequestParam(value = "files", required = false) List<MultipartFile> files,
-            RedirectAttributes redirectAttributes
+            RedirectAttributes redirectAttributes,
+            HttpServletResponse response
     ) throws IOException {
+        response.setCharacterEncoding("utf-8");
 
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
+            redirectAttributes.addFlashAttribute("errors", bindingResult);
             log.info("RegistOk에서 Validation error");
             return "redirect:/product/regist";
         }
+
+        if (files == null || files.isEmpty() || files.stream().allMatch(MultipartFile::isEmpty)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "상품 사진은 필수입니다.");
+            log.info("파일이 비어 있습니다. 상품 사진은 필수입니다.");
+            return "redirect:/product/regist";
+        }
+
         MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
         productRegistDTO.setSellerId(memberLoginDTO.getUserId());
 
@@ -249,9 +259,12 @@ public class ProductController {
         if (result > 0) { // 상품이 정상적으로 등록되었을 때
             // 파일이 있는 경우에만 업로드 및 DB 삽입 수행
             if (files != null && !files.isEmpty()) {
+                log.info(files.toString());
                 List<String> uploadFileNames = CommonFileUtil.uploadFiles(files); // 파일 업로드 완료
                 int lastProductId = productService.getLastProductId(); // 마지막에 삽입한 ProductId 가져오기
                 productService.insertProductImage(lastProductId, uploadFileNames); // 파일 정보를 DB에 삽입
+            } else {
+                JSFunc.alertBack("상품 사진은 필수입니다.", response);
             }
             log.info("[ProductController] >> registOk [SUCCESS] >> /product/list");
             return "redirect:/product/list"; // 성공 시 리다이렉트

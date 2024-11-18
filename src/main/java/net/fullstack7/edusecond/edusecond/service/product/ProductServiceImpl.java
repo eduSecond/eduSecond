@@ -43,11 +43,9 @@ public class ProductServiceImpl implements ProductServiceIf {
         return voList.stream()
                 .map(vo -> {
                     ProductDTO dto = modelMapper.map(vo, ProductDTO.class);
-                    //log.info("Fetching thumbnail for Product ID: " + vo.getProductId());
                     // 썸네일 이미지 설정
                     ProductImageVO thumbnailImage = productMapper.selectThumbnailImage(vo.getProductId());
                     if (thumbnailImage != null) {
-                        //log.info("Thumbnail found: " + thumbnailImage.getImagePath());
                         dto.setThumbnail(modelMapper.map(thumbnailImage, ProductImageDTO.class));
                     }
                     return dto;
@@ -73,10 +71,6 @@ public class ProductServiceImpl implements ProductServiceIf {
             imageList.add(imageDTO);
         }
         dto.setImages(imageList);
-
-        // // 조회수 증가
-        // productMapper.updateViewCount(productId);
-
         return dto;
     }
 
