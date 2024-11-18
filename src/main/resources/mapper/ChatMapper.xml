@@ -197,8 +197,20 @@
     </select>
     <select id="getUnreadCount" resultType="int">
         SELECT COUNT(*) as unreadCount
-        FROM tbl_chat_message
-        WHERE isRead = 'N'
-        AND senderId != #{userId}
+        FROM tbl_chat_message m
+        JOIN tbl_chatroom r ON m.roomId = r.roomId
+        WHERE m.isRead = 'N'
+        AND m.senderId != #{userId}
+        AND (
+            (r.sellerId = #{userId} AND r.sellerActive = 'Y')
+            OR 
+            (r.buyerId = #{userId} AND r.buyerActive = 'Y')
+        )
+        AND r.roomId IN (
+            SELECT roomId 
+            FROM tbl_chatroom 
+            WHERE (sellerId = #{userId} AND sellerActive = 'Y')
+               OR (buyerId = #{userId} AND buyerActive = 'Y')
+        )
     </select>
 </mapper>

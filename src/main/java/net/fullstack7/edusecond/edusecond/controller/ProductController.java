@@ -220,6 +220,7 @@ public class ProductController {
     public String regist(HttpSession session, HttpServletResponse response){
         response.setCharacterEncoding("utf-8");
         MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
+        
         if(memberLoginDTO == null || memberLoginDTO.getUserId() == null){
             JSFunc.alertBack("로그인한 회원만 상품 등록이 가능합니다.", response);
             return null;
@@ -238,6 +239,9 @@ public class ProductController {
             HttpServletResponse response
     ) throws IOException {
         response.setCharacterEncoding("utf-8");
+        log.info("파일 업로드 시작");
+        log.info("- 파일 개수: {}", files.size());
+        log.info("- 첫번째 파일 정보: {}", files.get(0).getOriginalFilename());
 
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errors", bindingResult);

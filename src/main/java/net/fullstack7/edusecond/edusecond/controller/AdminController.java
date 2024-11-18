@@ -149,6 +149,18 @@ public class AdminController {
         }
     }
     
+    @GetMapping("/product/delete")
+    public String productDelete(@RequestParam int productId, RedirectAttributes rttr) {
+        try{
+            productService.deleteProduct(productId);
+            rttr.addFlashAttribute("message", "상품이 삭제되었습니다.");
+        } catch (Exception e) {
+            log.error("상품 삭제 중 오류 발생: ", e);
+            rttr.addFlashAttribute("error", "상품 삭제 중 오류가 발생했습니다.");
+        }
+        return "redirect:/admin/product/list";
+    }
+    
     @GetMapping("/notice/list")
     public String noticeList(
             @RequestParam(defaultValue = "1") int pageNo,

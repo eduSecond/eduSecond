@@ -53,26 +53,13 @@ public class LoginController extends HttpServlet {
     public String loginOk (
              @RequestParam String userId
             , @RequestParam String password
-//          , @RequestParam String saveId
-            , HttpServletRequest req, HttpServletResponse res, HttpSession session,
+            ,HttpSession session,
              RedirectAttributes redirectAttributes
     ){
-        log.info("============================================");
-        log.info("loginOK");
-//        if(bindingResult.hasErrors()){
-//            log.info("hasErrors");
-//            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
-//            return "redirect:/login/login";
-//        }
 
         try{
-//            if("Y".equals(saveId)){
-//                session.setAttribute("userId", userId);
-//                cUtil.setCookiesInfo(req, res, "/",30 * 24 * 60 * 60,"userId",userId);
-//                req.setAttribute("userId", userId);
-//            }
             boolean result = MemberService.loginMember(userId, password);
-            if(result == true){
+            if(result){
                 MemberLoginDTO mdto = MemberService.getLoginMember(userId);
                 session.setAttribute("memberInfo", mdto);
                 return "redirect:/main/main";
@@ -88,43 +75,29 @@ public class LoginController extends HttpServlet {
 
     @PostMapping("/regist")
     public String registOk(
-              @RequestParam String userId
-            , @RequestParam String userPw
-            , @RequestParam String userName
-            , @RequestParam String userEmail
-            , @RequestParam String userPhone
-            , @RequestParam String userAddress
-            , @RequestParam String userPostcode
-            , @RequestParam String userBirth
-            , HttpServletRequest req, HttpServletResponse res
-              , RedirectAttributes redirectAttributes
+            @Valid MemberRegistDTO memberRegistDTO,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes,
+            HttpServletResponse response
     ){
-
+        response.setCharacterEncoding("UTF-8");
         try{
-            MemberRegistDTO dto = MemberRegistDTO.builder()
-                    .userId(userId)
-                    .userPw(userPw)
-                    .userName(userName)
-                    .userEmail(userEmail)
-                    .userPhone(userPhone)
-                    .userAddress(userAddress)
-                    .userPostcode(userPostcode)
-                    .userBirth(LocalDate.parse(userBirth))
-                    .build();
+            if(bindingResult.hasErrors()){
+                redirectAttributes.addFlashAttribute("errors", bindingResult);
+                return "redirect:/login/regist";
+            }
 
-            boolean result = MemberService.registerMember(dto);
-            if(result == true){
-                redirectAttributes.addFlashAttribute("errorMessage", "회원가입이 성공했습니다!");
-                return "redirect:/main/main";
+            boolean result = MemberService.registerMember(memberRegistDTO);
+            if(result){
+                net.fullstack7.edusecond.edusecond.util.JSFunc.alertLocation("회원가입 성공", "/main/main", response);
+                return null;
             }else{
-                redirectAttributes.addFlashAttribute("errorMessage", "회원가입이 성공하지 못했습니다");
-
+                net.fullstack7.edusecond.edusecond.util.JSFunc.alertBack("회원가입 실패", response);
+                return null;
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-        return "redirect:/login/regist";
     }
 
     //아이디 중복 확인

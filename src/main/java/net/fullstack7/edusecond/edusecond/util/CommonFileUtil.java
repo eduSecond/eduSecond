@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class CommonFileUtil implements ApplicationContextAware {
-
-    private static String UPLOAD_PATH = "resources/images/product/";
+    private static final String UPLOAD_PATH = "uploads/products/";
+    private static final String EXTERNAL_PATH = "/home/gyeongmini/uploads/products/";  
     private static ServletContext servletContext;
     private static final Logger log = LogManager.getLogger(CommonFileUtil.class);
 
@@ -23,79 +23,99 @@ public class CommonFileUtil implements ApplicationContextAware {
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         try {
             servletContext = applicationContext.getBean(ServletContext.class);
-            log.info("ServletContext 초기화 성공");
+            // 외부 디렉토리 생성
+            File uploadDir = new File(EXTERNAL_PATH);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs();
+            }
+            log.info("외부 업로드 디렉토리 생성: {}", EXTERNAL_PATH);
         } catch (BeansException e) {
-            log.error("ServletContext 초기화 실패: ", e);
+            log.error("초기화 실패: ", e);
             throw new RuntimeException("파일 업로드 유틸 초기화 실패", e);
         }
     }
 
     public static List<String> uploadFiles(List<MultipartFile> files) throws IOException {
-        if (servletContext == null) {
-            throw new RuntimeException("ServletContext가 초기화되지 않았습니다.");
-        }
-
-        String realPath = servletContext.getRealPath("/");
         List<String> uploadedFilePaths = new ArrayList<>();
         
-        File uploadDir = new File(realPath + UPLOAD_PATH);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
-        }
-
+        log.info("파일 업로드 시작 - CommonFileUtil");
+        log.info("업로드 경로: {}", EXTERNAL_PATH);
+        
+        File uploadDir = new File(EXTERNAL_PATH);
+        log.info("디렉토리 상태:");
+        log.info("- 존재여부: {}", uploadDir.exists());
+        log.info("- 쓰기권한: {}", uploadDir.canWrite());
+        
         for (MultipartFile file : files) {
+            if (file.isEmpty()) {
+                log.warn("빈 파일이 전달됨");
+                continue;
+            }
+
             String originalFileName = file.getOriginalFilename();
+            log.info("처리할 파일: {}", originalFileName);
+            
             if (originalFileName != null && !originalFileName.isEmpty()) {
                 String uniqueFileName = generateUniqueFileName(originalFileName);
-                String fullPath = uploadDir.getPath() + File.separator + uniqueFileName;
+                String fullPath = EXTERNAL_PATH + uniqueFileName;
+                
                 File destinationFile = new File(fullPath);
-                file.transferTo(destinationFile);
-                uploadedFilePaths.add("/" + UPLOAD_PATH + uniqueFileName);
+                try {
+                    log.info("파일 저장 시도: {}", fullPath);
+                    file.transferTo(destinationFile);
+                    
+                    if (destinationFile.exists()) {
+                        log.info("파일 저장 성공: {}", fullPath);
+                        log.info("- 파일크기: {}", destinationFile.length());
+                        log.info("- 권한: r={}, w={}", destinationFile.canRead(), destinationFile.canWrite());
+                        
+                        String webPath = "/" + UPLOAD_PATH + uniqueFileName;
+                        uploadedFilePaths.add(webPath);
+                        log.info("웹 경로 추가: {}", webPath);
+                    } else {
+                        log.error("파일이 저장되지 않음: {}", fullPath);
+                    }
+                } catch (IOException e) {
+                    log.error("파일 저장 실패: ", e);
+                    throw e;
+                }
             }
         }
+        
+        log.info("총 {} 개 파일 처리 완료", uploadedFilePaths.size());
         return uploadedFilePaths;
     }
 
     public static boolean deleteFile(String filePath) {
-        if (servletContext == null) {
-            throw new RuntimeException("ServletContext가 초기화되지 않았습니다.");
-        }
-
         if (filePath == null || filePath.isEmpty()) {
             return false;
         }
 
-        String realPath = servletContext.getRealPath("/");
-        String cleanPath = filePath.startsWith("/") ? filePath.substring(1) : filePath;
-        String fullPath = realPath + cleanPath;
+        String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
+        File file = new File(EXTERNAL_PATH + fileName);
+        boolean result = file.exists() && file.delete();
         
-        File file = new File(fullPath);
-        return file.exists() && file.delete();
+        if (result) {
+            log.info("파일 삭제 완료: {}", file.getPath());
+        } else {
+            log.warn("파일 삭제 실패: {}", file.getPath());
+        }
+        
+        return result;
     }
 
     public static String renameFile(String oldFileName, String newFileName) throws IOException {
-        if (servletContext == null) {
-            throw new RuntimeException("ServletContext가 초기화되지 않았습니다.");
-        }
-
-        String realPath = servletContext.getRealPath("/");
-        String oldPath = oldFileName.startsWith("/") ? oldFileName.substring(1) : oldFileName;
-        String oldFullPath = realPath + oldPath;
-        
-        File oldFile = new File(oldFullPath);
+        String oldName = oldFileName.substring(oldFileName.lastIndexOf("/") + 1);
+        File oldFile = new File(EXTERNAL_PATH + oldName);
         
         String uniqueNewFileName = generateUniqueFileName(newFileName);
-        String newPath = UPLOAD_PATH + uniqueNewFileName;
-        String newFullPath = realPath + newPath;
-        File newFile = new File(newFullPath);
-
-        if (!newFile.getParentFile().exists()) {
-            newFile.getParentFile().mkdirs();
-        }
+        File newFile = new File(EXTERNAL_PATH + uniqueNewFileName);
 
         if (oldFile.exists() && oldFile.renameTo(newFile)) {
-            return "/" + newPath;
+            log.info("파일 이름 변경 완료: {} -> {}", oldFile.getPath(), newFile.getPath());
+            return "/" + UPLOAD_PATH + uniqueNewFileName;
         } else {
+            log.error("파일 이름 변경 실패: {}", oldFile.getPath());
             throw new IOException("파일명을 변경할 수 없습니다.");
         }
     }
