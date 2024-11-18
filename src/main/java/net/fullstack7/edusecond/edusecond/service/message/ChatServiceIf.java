@@ -19,4 +19,5 @@ public interface ChatServiceIf {
 
     ChatRoomDTO findExistingChatRoom(int productId, String sellerId, String buyerId);
     boolean isActiveRoom(int roomId);
+    int getUnreadCount(String userId);
 } 

@@ -1,26 +1,44 @@
 package net.fullstack7.edusecond.edusecond.util;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.beans.BeansException;
+import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class CommonFileUtil {
+public class CommonFileUtil implements ApplicationContextAware {
 
-    // webapp 폴더까지의 절대 경로를 얻기 위한 상수
-    private static final String WEBAPP_PATH = "src/main/webapp/";
-    // 이미지가 저장될 상대 경로
-    private static final String UPLOAD_PATH = "resources/images/product/";
-    
-    // 다중 파일 업로드 메서드
+    private static String UPLOAD_PATH = "resources/images/product/";
+    private static ServletContext servletContext;
+    private static final Logger log = LogManager.getLogger(CommonFileUtil.class);
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        try {
+            servletContext = applicationContext.getBean(ServletContext.class);
+            log.info("ServletContext 초기화 성공");
+        } catch (BeansException e) {
+            log.error("ServletContext 초기화 실패: ", e);
+            throw new RuntimeException("파일 업로드 유틸 초기화 실패", e);
+        }
+    }
+
     public static List<String> uploadFiles(List<MultipartFile> files) throws IOException {
+        if (servletContext == null) {
+            throw new RuntimeException("ServletContext가 초기화되지 않았습니다.");
+        }
+
+        String realPath = servletContext.getRealPath("/");
         List<String> uploadedFilePaths = new ArrayList<>();
-        String projectPath = System.getProperty("user.dir");
-        File uploadDir = new File(projectPath, WEBAPP_PATH + UPLOAD_PATH);
         
+        File uploadDir = new File(realPath + UPLOAD_PATH);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
         }
@@ -32,56 +50,56 @@ public class CommonFileUtil {
                 String fullPath = uploadDir.getPath() + File.separator + uniqueFileName;
                 File destinationFile = new File(fullPath);
                 file.transferTo(destinationFile);
-                // DB에는 웹에서 접근 가능한 경로로 저장
                 uploadedFilePaths.add("/" + UPLOAD_PATH + uniqueFileName);
             }
         }
         return uploadedFilePaths;
     }
 
-    // 파일 삭제 메서드
     public static boolean deleteFile(String filePath) {
-        if (filePath == null || filePath.isEmpty()) return false;
-        
-        // 웹 경로를 실제 파일 시스템 경로로 변환
-        String projectPath = System.getProperty("user.dir");
-        // filePath에서 앞의 "/" 제거
+        if (servletContext == null) {
+            throw new RuntimeException("ServletContext가 초기화되지 않았습니다.");
+        }
+
+        if (filePath == null || filePath.isEmpty()) {
+            return false;
+        }
+
+        String realPath = servletContext.getRealPath("/");
         String cleanPath = filePath.startsWith("/") ? filePath.substring(1) : filePath;
-        String realPath = projectPath + File.separator + WEBAPP_PATH + cleanPath;
+        String fullPath = realPath + cleanPath;
         
-        File file = new File(realPath);
+        File file = new File(fullPath);
         return file.exists() && file.delete();
     }
 
-    // 파일명 변경 메서드
     public static String renameFile(String oldFileName, String newFileName) throws IOException {
-        String projectPath = System.getProperty("user.dir");
-        
-        // 웹 경로를 실제 경로로 변환
+        if (servletContext == null) {
+            throw new RuntimeException("ServletContext가 초기화되지 않았습니다.");
+        }
+
+        String realPath = servletContext.getRealPath("/");
         String oldPath = oldFileName.startsWith("/") ? oldFileName.substring(1) : oldFileName;
-        String oldFullPath = projectPath + File.separator + WEBAPP_PATH + oldPath;
+        String oldFullPath = realPath + oldPath;
         
         File oldFile = new File(oldFullPath);
         
-        // 새 파일명에 경로 추가
         String uniqueNewFileName = generateUniqueFileName(newFileName);
         String newPath = UPLOAD_PATH + uniqueNewFileName;
-        String newFullPath = projectPath + File.separator + WEBAPP_PATH + newPath;
+        String newFullPath = realPath + newPath;
         File newFile = new File(newFullPath);
 
-        // 새 파일 경로의 디렉토리가 없다면 생성
         if (!newFile.getParentFile().exists()) {
             newFile.getParentFile().mkdirs();
         }
 
         if (oldFile.exists() && oldFile.renameTo(newFile)) {
-            return "/" + newPath; // 웹에서 접근 가능한 경로 반환
+            return "/" + newPath;
         } else {
             throw new IOException("파일명을 변경할 수 없습니다.");
         }
     }
 
-    // 고유 파일명 생성 메서드
     private static String generateUniqueFileName(String originalFileName) {
         String extension = "";
         int index = originalFileName.lastIndexOf(".");

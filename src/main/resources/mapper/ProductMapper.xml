@@ -36,7 +36,7 @@
     FROM tbl_product p
     LEFT JOIN tbl_member m ON p.sellerId = m.userId
     WHERE 1=1
-      <if test="productStatus != null and !productStatus.isEmpty()">
+      <if test="productStatus != null and productStatus != ''">
           AND p.productStatus = #{productStatus}
       </if>
     <if test="searchCategory != null and searchCategory == 'productName'">
@@ -152,7 +152,7 @@
         AND isMain = 'Y'
         LIMIT 1) as thumbnailPath
         FROM tbl_product p
-        LEFT JOIN tbl_wishList w ON p.productId = w.productId
+        LEFT JOIN tbl_wishlist w ON p.productId = w.productId
         LEFT JOIN tbl_member m ON p.sellerId = m.userId
         WHERE w.userId = #{userId}
         <if test="searchCategory != null and searchCategory == 'productName'">
@@ -228,12 +228,12 @@
             <if test="userId != null">
                 AND p.sellerId = #{userId}
             </if>
-        <if test="productStatus != null and !productStatus.isEmpty()">
-            AND p.productStatus = #{productStatus}
-        </if>
-        <if test="searchCategory != null and searchCategory == 'productName'">
-            AND p.productName LIKE CONCAT('%', #{searchValue}, '%')
-        </if>
+            <if test="productStatus != null and !productStatus.isEmpty()">
+                AND p.productStatus = #{productStatus}
+            </if>
+            <if test="searchCategory != null and searchCategory == 'productName'">
+                AND p.productName LIKE CONCAT('%', #{searchValue}, '%')
+            </if>
         </where>
     </select>
     <update id="deleteProduct">
@@ -263,10 +263,10 @@
     <update id="updateMainImage">
         UPDATE tbl_product_image
         SET isMain = 
-            CASE 
-                WHEN imageId = #{imageId} THEN 'Y'
-                ELSE 'N'
-            END
+        CASE 
+            WHEN imageId = #{newMainImageId} THEN 'Y'
+            ELSE 'N'    
+        END
         WHERE productId = #{productId}
     </update>
 
@@ -286,5 +286,14 @@
         FROM tbl_product_image
         WHERE imageId = #{imageId}
     </select>
-
+    <!-- <update id="updateProductImageMain">
+        UPDATE tbl_product_image 
+        SET isMain = #{isMain}
+        WHERE imageId = #{imageId}
+    </update> -->
+    <update id="updateAllImagesMain">
+        UPDATE tbl_product_image 
+        SET isMain = #{isMain}
+        WHERE productId = #{productId}
+    </update>
 </mapper>

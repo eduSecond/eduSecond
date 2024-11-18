@@ -195,4 +195,10 @@
         AND sellerActive = 'Y' 
         AND buyerActive = 'Y'
     </select>
+    <select id="getUnreadCount" resultType="int">
+        SELECT COUNT(*) as unreadCount
+        FROM tbl_chat_message
+        WHERE isRead = 'N'
+        AND senderId != #{userId}
+    </select>
 </mapper>

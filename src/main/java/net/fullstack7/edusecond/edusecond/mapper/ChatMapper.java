@@ -26,4 +26,5 @@ public interface ChatMapper {
   //                             @Param("userType") String userType, 
   //                             @Param("status") String status);
   boolean isActiveRoom(@Param("roomId") int roomId);
+  int getUnreadCount(@Param("userId") String userId);
 }

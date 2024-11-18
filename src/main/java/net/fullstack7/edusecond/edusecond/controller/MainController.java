@@ -4,6 +4,7 @@ package net.fullstack7.edusecond.edusecond.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.fullstack7.edusecond.edusecond.dto.product.ProductDTO;
+import net.fullstack7.edusecond.edusecond.dto.member.MemberLoginDTO;
 import net.fullstack7.edusecond.edusecond.service.Like.LikeServiceIf;
 import net.fullstack7.edusecond.edusecond.service.product.ProductServiceIf;
 import net.fullstack7.edusecond.edusecond.util.CommonDateUtil;
@@ -14,7 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import net.fullstack7.edusecond.edusecond.service.message.ChatServiceIf;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -26,6 +27,7 @@ import java.util.List;
 @Log4j2
 public class MainController {
     private final ProductServiceIf productService;
+    private final ChatServiceIf chatService;
 
     private boolean validateListParameters(int pageNo, String searchCategory,
                                            String searchValue, HttpServletResponse response) {
@@ -50,7 +52,8 @@ public class MainController {
             @RequestParam(defaultValue = "1") int pageNo,
             @RequestParam(required = false) String searchCategory,
             @RequestParam(required = false) String searchValue,
-            HttpServletResponse response
+            HttpServletResponse response,
+            HttpSession session
     ){
         try {
             if (!validateListParameters(pageNo, searchCategory, searchValue, response)) {
@@ -69,7 +72,12 @@ public class MainController {
             model.addAttribute("paging", paging);
             model.addAttribute("searchCategory", searchCategory);
             model.addAttribute("searchValue", searchValue);
-
+            MemberLoginDTO memberLoginDTO = (MemberLoginDTO) session.getAttribute("memberInfo");
+            if (memberLoginDTO != null) {
+                int unreadCount = chatService.getUnreadCount(memberLoginDTO.getUserId());
+                model.addAttribute("unreadCount", unreadCount);
+            }
+            
             return "main/main";
         } catch (Exception e) {
             log.error("상품 목록 조회 중 오류 발생: ", e);

@@ -260,7 +260,7 @@ public class ProductController {
             // 파일이 있는 경우에만 업로드 및 DB 삽입 수행
             if (files != null && !files.isEmpty()) {
                 log.info(files.toString());
-                List<String> uploadFileNames = CommonFileUtil.uploadFiles(files); // 파일 업로드 완료
+                List<String> uploadFileNames = CommonFileUtil.uploadFiles(files); // 파일 로드 완료
                 int lastProductId = productService.getLastProductId(); // 마지막에 삽입한 ProductId 가져오기
                 productService.insertProductImage(lastProductId, uploadFileNames); // 파일 정보를 DB에 삽입
             } else {
@@ -370,11 +370,13 @@ public class ProductController {
     public String updateOk(
             ProductUpdateDTO productUpdateDTO,
             @RequestParam(value = "files", required = false) List<MultipartFile> files,
+            @RequestParam String imageUpdateType,
             HttpSession session,
             HttpServletResponse response
     ) {
         try {
             response.setCharacterEncoding("utf-8");
+            
             // 1. 기본 데이터 검증
             if (productUpdateDTO.getProductId() == null || 
                 productUpdateDTO.getProductName() == null || productUpdateDTO.getProductName().trim().isEmpty() ||
@@ -408,7 +410,24 @@ public class ProductController {
                 return null;
             }
 
-            // 5. 이미지 처리 및 업데이트
+            // imageUpdateType을 DTO에 설정
+            productUpdateDTO.setImageUpdateType(imageUpdateType);
+
+            // 이미지 업데이트 타입이 'update'인 경우에만 파일 검증
+            if ("update".equals(imageUpdateType)) {
+                if (files == null || files.isEmpty() || files.size() > 4) {
+                    JSFunc.alertBack("1~4개의 이미지를 선택해주세요.", response);
+                    return null;
+                }
+                
+                for (MultipartFile file : files) {
+                    if (file.isEmpty() || !file.getContentType().startsWith("image/")) {
+                        JSFunc.alertBack("올바른 이미지 파일을 선택해주세요.", response);
+                        return null;
+                    }
+                }
+            }
+
             int result = productService.updateProduct(productUpdateDTO, files);
             
             if (result > 0) {
