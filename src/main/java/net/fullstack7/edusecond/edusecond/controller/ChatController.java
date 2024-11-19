@@ -24,7 +24,6 @@ import java.util.Map;
 public class ChatController {
 
     private final ChatServiceIf chatService;
-
     @GetMapping("/list")
     public String chatList(Model model, HttpSession session) {
         MemberLoginDTO member = (MemberLoginDTO) session.getAttribute("memberInfo");
