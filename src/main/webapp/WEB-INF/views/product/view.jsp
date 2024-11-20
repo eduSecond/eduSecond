@@ -214,7 +214,7 @@
                         <div class="button-container">
                             <c:if test="${memberInfo.userId ne dto.sellerId}">
                                 <a href="#" class="btn btn-primary" onclick="createChatRoom()">1:1 문의하기</a>
-                                <a href="/es/payment/view?productId=${dto.productId}" class="btn btn-primary"
+                                <a href="#" class="btn btn-primary" onclick="purchase()"
                                    data-bs-toggle="modal" data-bs-target="#purchaseModal">구매하기</a>
                             </c:if>
                             <c:if test="${memberInfo.userId eq dto.sellerId}">
@@ -290,13 +290,32 @@
         const heartImage = document.getElementById("heartImage");
         const productId = "${dto.productId}"
         const userId = "${userId}"
-        if (heartImageRed) {
-            // 현재 빨간 하트인 경우 (좋아요를 취소하는 경우)
-            window.location.href = "/es/like/delete?productId=" + productId + "&userId=" + userId;
-        } else if (heartImage) {
-            // 현재 빈 하트인 경우 (좋아요를 추가하는 경우)
-            window.location.href = "/es/like/insert?productId=" + productId + "&userId=" + userId;
+        if(!userId){
+            alert('로그인이 필요한 서비스입니다.');
+            window.location.href = '/login/login';
+            return;
         }
+        else{
+            if (heartImageRed) {
+                // 현재 빨간 하트인 경우 (좋아요를 취소하는 경우)
+                window.location.href = "/es/like/delete?productId=" + productId + "&userId=" + userId;
+            } else if (heartImage) {
+                // 현재 빈 하트인 경우 (좋아요를 추가하는 경우)
+                window.location.href = "/es/like/insert?productId=" + productId + "&userId=" + userId;
+            }
+        }
+    }
+
+    function purchase(){
+        const userId = "${userId}"
+        if(!userId){    
+            alert('로그인이 필요한 서비스입니다.');
+            window.location.href = '/login/login';
+            return;
+        }
+        else{
+            window.location.href ='/es/payment/view?productId=${dto.productId}'
+            }
     }
 
     function createChatRoom() {

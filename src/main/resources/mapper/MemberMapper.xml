@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.fullstack7.edusecond.edusecond.mapper.MemberMapper">
-    
+
     <select id="selectMemberById" resultType="net.fullstack7.edusecond.edusecond.domain.member.MemberVO">
-        SELECT * 
-        FROM tbl_member 
+        SELECT *
+        FROM tbl_member
         WHERE userId = #{userId}
-        AND enabled != 'N'
+          AND enabled != 'N'
     </select>
-    
+
     <insert id="insertMember">
         INSERT INTO tbl_member (
-            userId, userPw, userName, userEmail, 
+            userId, userPw, userName, userEmail,
             userPhone, userAddress, userPostcode, userBirth
         ) VALUES (
-            #{userId}, #{userPw}, #{userName}, #{userEmail}, 
-            #{userPhone}, #{userAddress}, #{userPostcode}, #{userBirth}
-        )
+                     #{userId}, #{userPw}, #{userName}, #{userEmail},
+                     #{userPhone}, #{userAddress}, #{userPostcode}, #{userBirth}
+                 )
     </insert>
 
     <select id="getLoginMember" resultType="net.fullstack7.edusecond.edusecond.domain.member.MemberVO">
@@ -46,28 +46,28 @@
     </select>
 
     <select id="selectList" resultType="net.fullstack7.edusecond.edusecond.domain.member.MemberVO">
-        SELECT 
-            userId,
-            userName,
-            userEmail,
-            userPhone,
-            userAddress,
-            userPostcode,
-            userBirth,
-            enabled,
-            regDate,
-            modifyDate
+        SELECT
+        userId,
+        userName,
+        userEmail,
+        userPhone,
+        userAddress,
+        userPostcode,
+        userBirth,
+        enabled,
+        regDate,
+        modifyDate
         FROM tbl_member
         <where>
-            <if test="searchType != null and searchValue != null">
+            <if test="searchCategory != null and searchValue != null">
                 <choose>
-                    <when test="searchType == 'userId'">
+                    <when test="searchCategory == 'userId'">
                         userId LIKE CONCAT('%', #{searchValue}, '%')
                     </when>
-                    <when test="searchType == 'userName'">
+                    <when test="searchCategory == 'userName'">
                         userName LIKE CONCAT('%', #{searchValue}, '%')
                     </when>
-                    <when test="searchType == 'userEmail'">
+                    <when test="searchCategory == 'userEmail'">
                         userEmail LIKE CONCAT('%', #{searchValue}, '%')
                     </when>
                 </choose>
@@ -78,7 +78,7 @@
     </select>
 
     <update id="updateEnabled">
-        UPDATE tbl_member 
+        UPDATE tbl_member
         SET enabled = #{enabled},
             modifyDate = CURRENT_TIMESTAMP
         WHERE userId = #{userId}
@@ -100,8 +100,8 @@
             (SELECT COUNT(*) FROM tbl_product WHERE sellerId = #{userId} AND tbl_product.productStatus = 'AVAILABLE') AS productAvailableCount,
             (SELECT COUNT(*) FROM tbl_product WHERE sellerId = #{userId} AND tbl_product.productStatus = 'SOLDOUT') AS productSoldCount,
             (SELECT  COUNT(r.reviewId) FROM tbl_product AS p
-                LEFT OUTER JOIN  tbl_order AS o ON p.productId = o.productId
-                LEFT OUTER join tbl_review AS r ON o.orderId = r.orderId
+                                                LEFT OUTER JOIN  tbl_order AS o ON p.productId = o.productId
+                                                LEFT OUTER join tbl_review AS r ON o.orderId = r.orderId
              WHERE p.sellerId = #{userId}) AS reviewCount,
             (SELECT COUNT(*) FROM tbl_wishlist WHERE userId = #{userId}) AS wishListCount
     </select>
@@ -125,12 +125,12 @@
         SELECT *
         FROM tbl_member
         WHERE enabled = 'Q'
-        <if test="searchType != null and searchValue != null">
+        <if test="searchCategory != null and searchValue != null">
             <choose>
-                <when test="searchType == 'userId'">
+                <when test="searchCategory == 'userId'">
                     AND userId LIKE CONCAT('%', #{searchValue}, '%')
                 </when>
-                <when test="searchType == 'userName'">
+                <when test="searchCategory == 'userName'">
                     AND userName LIKE CONCAT('%', #{searchValue}, '%')
                 </when>
             </choose>
@@ -143,12 +143,12 @@
         SELECT COUNT(*)
         FROM tbl_member
         WHERE enabled = 'Q'
-        <if test="searchType != null and searchValue != null">
+        <if test="searchCategory != null and searchValue != null">
             <choose>
-                <when test="searchType == 'userId'">
+                <when test="searchCategory == 'userId'">
                     AND userId LIKE CONCAT('%', #{searchValue}, '%')
                 </when>
-                <when test="searchType == 'userName'">
+                <when test="searchCategory == 'userName'">
                     AND userName LIKE CONCAT('%', #{searchValue}, '%')
                 </when>
             </choose>
