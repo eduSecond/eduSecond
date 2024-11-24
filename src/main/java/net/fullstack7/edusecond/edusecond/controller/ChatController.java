@@ -118,5 +118,5 @@ public String leaveRoom(@RequestParam int roomId, HttpSession session) {
     
     chatService.updateUserChatRoomStatus(roomId, memberInfo.getUserId(), "N");
     return "redirect:/message/list";
-}
+    }
 }
