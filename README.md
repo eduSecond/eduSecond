@@ -350,6 +350,7 @@ public class Paging {
     }
 }
 ```
+#### 검색 카테코리 유효성 체크 
 ```java
 private boolean validateListParameters(int pageNo, String searchCategory,
                                         String searchValue, HttpServletResponse response) {
