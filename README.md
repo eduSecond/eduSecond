@@ -322,6 +322,56 @@ function sendMessage() {
 #### 페이징 모듈 구현
 - 백엔드 페이징 모듈
 - 프론트엔드 페이징 모듈
+```java
+public class Paging {
+    private int pageNo;
+    private int pageSize;
+    private int blockSize;
+    private int totalCnt;
+    public int getStartIdx(){
+        return  (pageNo - 1) * pageSize;
+    }
+
+    public int getTotalPage(){
+        return  (int) Math.ceil((double) totalCnt / pageSize);
+    }
+    public int getStartBlockPage(){
+        return ((pageNo - 1) / blockSize) * blockSize + 1;
+    }
+    public int getEndBlockPage() {
+        int endPage = getStartBlockPage() + blockSize - 1;
+        return Math.min(endPage, getTotalPage());
+    }
+    public boolean getPrevBlock () {
+        return getStartBlockPage() > 1;
+    }
+    public boolean getNextBlock () {
+        return getEndBlockPage() < getTotalPage();
+    }
+}
+```
+```java
+private boolean validateListParameters(int pageNo, String searchCategory,
+                                        String searchValue, HttpServletResponse response) {
+        if (pageNo < 1) {
+            JSFunc.alertBack("페이지 번호는 1 이상이어야 합니다.", response);
+            return false;
+        }
+        
+        if (searchCategory != null && !searchCategory.trim().isEmpty()
+            && searchValue != null && !searchValue.trim().isEmpty()) {
+            if (!("productName".equals(searchCategory) || "sellerId".equals(searchCategory))) {
+                JSFunc.alertBack("유효하지 않은 검색 카테고리입니다: " + searchCategory, response);
+                return false;
+            }
+        }
+        return true;
+    }
+if (!validateListParameters(pageNo, searchCategory, searchValue, response)) {
+                return null;
+            }
+```
+
 
 ## 🎯 트러블 슈팅
 
