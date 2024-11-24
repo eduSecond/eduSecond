@@ -81,16 +81,16 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </head>
 <body>
-<%@ include file="/main/header.jsp"%>
+<%@ include file="../main/header.jsp"%>
 
 <div class="mainpage">
   <div class="sidebar col-2">
-    <ul>
+    <ul class="list-unstyled">
       <li><a href="/es/mypage/myInfo">내 정보</a></li>
       <li><a href="/es/mypage/wishList">찜 목록</a></li>
       <li><a href="/es/mypage/orderList">거래 내역</a></li>
-      <li><a href="/es/product/productList">내 상품</a></li>
-      <li><a href="/es/mypage/messageList">셀파톡</a></li>
+      <li><a href="/es/mypage/productList">내 상품</a></li>
+      <li><a href="/message/list">셀파톡</a></li>
     </ul>
   </div>
 
@@ -104,6 +104,6 @@
   </div>
 </div>
 
-<%@include file="/main/footer.jsp"%>
+<%@include file="../main/footer.jsp"%>
 </body>
 </html>

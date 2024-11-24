@@ -10,7 +10,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT Shop</title>
+  <title>당신 마켓</title>
   <style>
     * {
       margin: 0;
@@ -71,7 +71,7 @@
       position: fixed;
       bottom: 20px;
       right: 20px;
-      background-color: #ff3d3d;
+      background-color: #ff0404;
       color: #fff;
       padding: 15px 20px;
       border-radius: 50px;
@@ -385,10 +385,58 @@
       }
     }
 
+
+    .icon {
+      width: 50px;
+      height: 50px;
+      background-color: #ff0202;
+      display: block;
+      margin: auto; /* Center the icon inside the container */
+    }
+
+    .speech-bubble {
+      position: absolute;
+      top: -30px; /* Move the bubble above the icon */
+      left: -10px; /* Move the bubble to the left */
+      width: 50px;
+      height: 40px;
+      background-color: white;
+      border-radius: 20px; /* Round the corners to make it look like a bubble */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      z-index: 1; /* Ensure the bubble is above other elements */
+    }
+
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -6px; /* Position the tail at the bottom of the bubble */
+      left: 15px; /* Adjust the position of the tail */
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid white; /* Match the bubble's background color */
+    }
+
+    .notification-number {
+      font-size: 14px;
+      font-weight: bold;
+      color: black;
+    }
+
+
   </style>
 </head>
 <body>
 <%@include file="header.jsp"%>
+<c:if test="${not empty errorMessage}">
+  <script>
+    alert("${errorMessage}");
+  </script>
+</c:if>
 <section class="hero">
   <div class="hero-content">
     <div class="main-banner" id="mainBanner">
@@ -398,7 +446,7 @@
       <div class="banner-dots" id="bannerDots"></div>
     </div>
 
-    <p class="highlight">실시간 중고시세를 확인해 보세요.</p>
+    <p class="highlight" style="text-decoration-line: none;">실시간 중고시세를 확인해 보세요.</p>
     <div class="tags">
       <span># 초등 교과서</span>
       <span># 중등 교과서</span>
@@ -408,8 +456,13 @@
     </div>
   </div>
   <div class="floating-button">
-    <a href="#">
-      <img src="<%= request.getContextPath() %>/resources/images/mainbanner/selltalk.png" alt="상담사" class="process-icon">
+    <a href="/message/list">
+        <c:if test="${not empty unreadCount}">
+              <div class="speech-bubble">
+                <span class="notification-number">${unreadCount}</span>
+              </div>
+        </c:if>
+      <img src="<%= request.getContextPath() %>/resources/images/mainbanner/selltalk.png" alt="셀파톡" class="icon">
     </a>
   </div>
 </section>
@@ -446,40 +499,30 @@
 <section class="purchase-status">
   <h2>중고 물품 전체 리스트</h2>
   <div class="status-container">
-    <div class="status-item">
-      <div class="item-info">
-        <span>2023 갤럭시탭A9 플러스 11인치 64GB WIFI SM-X210</span>
-      </div>
-      <div class="user-info">
-        <span>이○○</span>
-        <span>2024.11.11</span>
-        <button class="status-button pending">상세보기</button>
-      </div>
-    </div>
-    <div class="status-item">
-      <div class="item-info">
-        <span>4.아이패드 에어4 64GB LTE A2324</span>
-      </div>
-      <div class="user-info">
-        <span>장○○</span>
-        <span>2024.11.11</span>
-        <button class="status-button pending">상세보기</button>
-      </div>
-    </div>
-    <div class="status-item">
-      <div class="item-info">
-        <span>1.아이패드 미니6 64GB WIFI A2567</span>
-      </div>
-      <div class="user-info">
-        <span>엄○○</span>
-        <span>2024.11.11</span>
-        <button class="status-button completed">판매완료</button>
-      </div>
-    </div>
+
+    <c:if test="${not empty pList}">
+      <c:forEach var="dto" items="${pList}" varStatus="loop" begin="0" end="5">
+        <a href="/product/view?productId=${dto.productId}" style="text-decoration: none; color: inherit;">
+          <div class="status-item">
+
+            <div class="item-info">
+              <span>${dto.productName}</span>
+            </div>
+            <div class="user-info">
+              <span>가격 : ${dto.price}원</span>
+              <span>등록일 : ${dto.formatRegDate}</span>
+              <button class="status-button pending" onclick="location.href='/product/view?productId=${dto.productId}'">상세보기</button>
+            </div>
+
+          </div>
+        </a>
+      </c:forEach>
+    </c:if>
+  </div>
 
   </div>
   <div class="more-button-container">
-    <button class="more-button">more &#10140;</button>
+    <button class="more-button" onclick="location.href='/product/list'">more &#10140;</button>
   </div>
 </section>
 

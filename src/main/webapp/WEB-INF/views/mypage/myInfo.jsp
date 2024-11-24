@@ -18,15 +18,27 @@
       min-height: calc(100vh);
     }
     .sidebar {
-      background-color: #343a40;
+      background-color: #444444;
       padding: 15px;
       color: #fff;
+      height: 100%;
     }
-    .sidebar a {
-      color: #ddd;
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
     }
-    .sidebar a:hover {
+
+    .sidebar ul li {
+      margin-bottom: 10px;
+    }
+
+    .sidebar ul li a {
       color: #fff;
+      text-decoration: none;
+    }
+
+    .sidebar ul li a:hover {
       text-decoration: underline;
     }
     .content {
@@ -43,10 +55,15 @@
     .btn-container {
       margin-top: 20px;
     }
+    a{
+      text-decoration-line: none;
+      color: black;
+    }
+
   </style>
 </head>
 <body>
-<%@ include file="/main/header.jsp" %>
+<%@ include file="../main/header.jsp" %>
 
 <div class="mainpage">
   <div class="sidebar col-md-2">
@@ -54,8 +71,8 @@
       <li><a href="/es/mypage/myInfo">내 정보</a></li>
       <li><a href="/es/mypage/wishList">찜 목록</a></li>
       <li><a href="/es/mypage/orderList">거래 내역</a></li>
-      <li><a href="/es/product/productList">내 상품</a></li>
-      <li><a href="/es/mypage/messageList">셀파톡</a></li>
+      <li><a href="/es/mypage/productList">내 상품</a></li>
+      <li><a href="/message/list">셀파톡</a></li>
     </ul>
   </div>
 
@@ -66,9 +83,8 @@
         <div class="card h-100">
           <div class="card-body text-center">
             <h5 class="card-title">내가 등록한 상품</h5>
-            <p>판매중: <strong>${mypageDTO.productAvailableCount}</strong></p>
-            <p>예약중: <strong>${mypageDTO.productReservedCount}</strong></p>
-            <p>판매완료: <strong>${mypageDTO.productSoldCount}</strong></p>
+            <p><a href="/es/mypage/productList">판매중: <strong>${mypageDTO.productAvailableCount}</strong></a></p>
+            <p><a href="/es/mypage/productList_1">판매완료: <strong>${mypageDTO.productSoldCount}</strong></a></p>
           </div>
         </div>
       </div>
@@ -76,15 +92,14 @@
         <div class="card h-100">
           <div class="card-body text-center">
             <h5 class="card-title">내가 찜한 상품</h5>
-            <p><strong>${mypageDTO.wishListCount}</strong> 개</p>
+            <p><a href="/es/mypage/wishList"><strong>${mypageDTO.wishListCount}</strong>개</a></p>
           </div>
         </div>
       </div>
       <div class="col-md-4">
         <div class="card h-100">
           <div class="card-body text-center">
-            <h5 class="card-title">내가 받은 리뷰</h5>
-            <p><strong>${mypageDTO.reviewCount}</strong> 개</p>
+            <h5 class="card-title"><a href="/product/seller/sellerpage?userId=${memberInfo.userId}">내 프로필 바로가기</a></h5>
           </div>
         </div>
       </div>
@@ -122,7 +137,7 @@
           </tr>
           <tr>
             <th>가입일</th>
-            <td>${member.regDate}</td>
+            <td>${dUtil.localDateTimeToString(member.regDate, 'yyyy-MM-dd')}</td>
           </tr>
           </tbody>
         </table>
@@ -140,7 +155,8 @@
   </div>
 </div>
 
-<%@ include file="/main/footer.jsp" %>
+<%@ include file="../main/footer.jsp" %>
+
 <script>
 function confirmWithdrawal() {
     if (confirm('정말 탈퇴하시겠습니까?\n탈퇴 신청 후 관리자 승인 시 계정이 비활성화됩니다.')) {

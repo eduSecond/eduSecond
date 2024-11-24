@@ -61,7 +61,7 @@
   </style>
 </head>
 <body>
-<%@ include file="/main/header.jsp"%>
+<%@ include file="../main/header.jsp"%>
 
 <section class="terms-section">
   <h1>이용약관</h1>
@@ -116,6 +116,6 @@
   </div>
 </section>
 
-<%@ include file="/main/footer.jsp"%>
+<%@ include file="../main/footer.jsp"%>
 </body>
 </html>

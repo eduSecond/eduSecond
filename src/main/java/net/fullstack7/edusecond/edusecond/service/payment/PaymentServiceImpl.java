@@ -21,4 +21,11 @@ public class PaymentServiceImpl implements PaymentServiceIf{
         int result = paymentMapper.insert(vo);
         return result;
     }
+    @Override
+    public int insert_1(PaymentDTO dto) {
+        PaymentVO vo = modelMapper.map(dto, PaymentVO.class);
+        int result = paymentMapper.insert_1(vo);
+        return result;
+    }
+
 }

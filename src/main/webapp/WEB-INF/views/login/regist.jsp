@@ -7,222 +7,153 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>회원가입</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      background-color: #f9f9f9;
-      color: #333;
-    }
-
-    .privacy-policy {
-      max-width: 800px;
-      margin: 50px auto;
-      padding: 20px;
-      background-color: #fff;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-    }
-
-    h1 {
-      text-align: center;
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-
-    label {
-      font-weight: bold;
-      margin-top: 10px;
-      display: block;
-    }
-
-    input[type="text"], input[type="password"], input[type="email"], select {
-      width: 100%;
-      padding: 10px;
-      margin: 5px 0 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    button {
-      width: 100%;
-      padding: 10px;
-      background-color: #333;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #555;
-    }
-
-    .error-message {
-      color: red;
-      font-size: 12px;
-      display: none;
-    }
-    option{
-      color: black;
-    }
-  </style>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </head>
 <body>
-<%@include file="/main/header.jsp"%>
+<%@include file="../main/header.jsp"%>
 
-<div class="privacy-policy">
-  <h1>회원가입</h1>
-  <form id="registrationForm" onsubmit="return validateForm()">
-    <label for="userId">아이디</label>
-    <input type="text" id="userId" name="userId" placeholder="아이디를 입력해주세요.">
-    <p class="error-message" id="userIdError">아이디를 입력해주세요.</p>
+<div class="container mt-5 w-50" style="margin-bottom:20px;">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h1 class="text-center mb-4">회원가입</h1>
+      <form id="registrationForm" method="post" action="/login/regist" >
+        <div class="mb-3">
+          <label for="userId" class="form-label">아이디</label>
+          <input type="text" id="userId" name="userId" class="form-control" placeholder="영문, 숫자 포함 6~20자 입력해주세요.">
+          <c:if test="${errors != null && errors.hasFieldErrors('userId')}">
+            <span class="text-danger">${errors.getFieldError('userId').defaultMessage}</span>
+          </c:if>
+        </div>
 
-    <label for="password">비밀번호</label>
-    <input type="password" id="password" name="password" placeholder="영문, 숫자, 특수문자(@#$%^&+=) 포함 8~20자 입력해주세요.">
-    <p class="error-message" id="passwordError">비밀번호를 올바르게 입력해주세요.</p>
+        <div class="mb-3">
+          <label for="password" class="form-label">비밀번호</label>
+          <input type="password" id="password" name="userPw" class="form-control" placeholder="영문, 숫자, 특수문자(@#$%^&+=) 포함 8~20자 입력해주세요.">
+          <c:if test="${errors != null && errors.hasFieldErrors('userPw')}">
+            <span class="text-danger">${errors.getFieldError('userPw').defaultMessage}</span>
+          </c:if>
+        </div>
 
-    <label for="confirmPassword">비밀번호 확인</label>
-    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="비밀번호를 다시 한번 입력해주세요.">
-    <p class="error-message" id="confirmPasswordError">비밀번호가 일치하지 않습니다.</p>
+        <div class="mb-3">
+          <label for="confirmPassword" class="form-label">비밀번호 확인</label>
+          <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="비밀번호를 다시 한번 입력해주세요.">
+          <p class="text-danger" id="confirmPasswordError" style="display: none;">비밀번호가 일치하지 않습니다.</p>
+        </div>
 
-    <label for="name">이름</label>
-    <input type="text" id="name" name="name" placeholder="이름을 입력해주세요.">
-    <p class="error-message" id="nameError">이름을 입력해주세요.</p>
+        <div class="mb-3">
+          <label for="name" class="form-label">이름</label>
+          <input type="text" id="name" name="userName" class="form-control" placeholder="이름을 입력해주세요.">
+          <c:if test="${errors != null && errors.hasFieldErrors('userName')}">
+            <span class="text-danger">${errors.getFieldError('userName').defaultMessage}</span>
+          </c:if>
+        </div>
 
-    <label for="addr">주소</label>
-    <input type="text" id="addr" name="addr" placeholder="주소를 입력해주세요.">
-    <p class="error-message" id="addrError">주소를 입력해주세요.</p>
+        <div class="mb-3">
+          <label for="phone" class="form-label">휴대전화번호</label>
+          <input type="text" id="phone" name="userPhone" class="form-control" placeholder="000-0000-0000">
+          <c:if test="${errors != null && errors.hasFieldErrors('userPhone')}">
+            <span class="text-danger">${errors.getFieldError('userPhone').defaultMessage}</span>
+          </c:if>
+        </div>
 
-    <label>생년월일</label>
-    <select id="year" name="year" onchange="updateMonths()">
-      <option selected disabled>연도 선택</option>
-      <c:forEach begin="1950" end="2017" var="i">
-        <option value="${i}">${i}</option>
-      </c:forEach>
-    </select>
-    <select id="month" name="month" onchange="updateDays()" disabled>
-      <option selected disabled>월 선택</option>
-      <option value="01">1</option>
-      <option value="02">2</option>
-      <option value="03">3</option>
-      <option value="04">4</option>
-      <option value="05">5</option>
-      <option value="06">6</option>
-      <option value="07">7</option>
-      <option value="08">8</option>
-      <option value="09">9</option>
-      <option value="10">10</option>
-      <option value="11">11</option>
-      <option value="12">12</option>
-    </select>
-    <select id="day" name="day" disabled>
-      <option selected disabled>일 선택</option>
-    </select>
+        <div class="mb-3">
+          <label for="email" class="form-label">이메일</label>
+          <input type="email" id="email" name="userEmail" class="form-control" placeholder="@ 기호 다음에는 알파벳과 숫자로 이루어진 도메인이 오게 해주세요">
+          <c:if test="${errors != null && errors.hasFieldErrors('userEmail')}">
+            <span class="text-danger">${errors.getFieldError('userEmail').defaultMessage}</span>
+          </c:if>
+        </div>
 
-    <label for="phone">휴대전화번호</label>
-    <input type="text" id="phone" name="phone" placeholder="숫자만 입력해주세요.">
-    <p class="error-message" id="phoneError">휴대전화번호를 입력해주세요.</p>
+        <div class="mb-3">
+          <label for="birth" class="form-label">생년월일</label>
+          <input type="date" value="${member.userBirth}" name="userBirth" id="birth" class="form-control">
+          <c:if test="${errors != null && errors.hasFieldErrors('userBirth')}">
+            <span class="text-danger">${errors.getFieldError('userBirth').defaultMessage}</span>
+          </c:if>
+        </div>
 
-    <label for="email">이메일</label>
-    <input type="email" id="email" name="email" placeholder="이메일을 입력해주세요.">
-    <p class="error-message" id="emailError">이메일을 입력해주세요.</p>
+        <div class="mb-3">
+          <label for="userPostcode" class="form-label">우편번호</label>
+          <div class="input-group">
+            <input type="text" id="userPostcode" name="userPostcode" class="form-control" readonly required>
+            <button type="button" onclick="goZip()" class="btn btn-secondary">우편번호 찾기</button>
+          </div>
+          <c:if test="${errors != null && errors.hasFieldErrors('userPostcode')}">
+            <span class="text-danger">${errors.getFieldError('userPostcode').defaultMessage}</span>
+          </c:if>
+        </div>
 
-    <button type="submit">회원가입</button>
-  </form>
+        <div class="mb-3">
+          <label for="userAddr" class="form-label">주소</label>
+          <input type="text" id="userAddr" name="userAddress" class="form-control" readonly required>
+          <c:if test="${errors != null && errors.hasFieldErrors('userAddress')}">
+            <span class="text-danger">${errors.getFieldError('userAddress').defaultMessage}</span>
+          </c:if>
+        </div>
+
+        <button type="submit" class="btn btn-dark w-100">회원가입</button>
+      </form>
+    </div>
+  </div>
 </div>
 
-<%@include file="/main/footer.jsp"%>
+<%@include file="../main/footer.jsp"%>
 
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
-  function validateForm() {
-    let isValid = true;
+  function goZip() {
+    // 팝업 창을 명시적으로 열기
+    var postcodeWindow = window.open('', '_blank', 'width=500,height=600');
 
-    const userId = document.getElementById('userId').value.trim();
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-    const name = document.getElementById('name').value.trim();
-    const addr = document.getElementById('addr').value.trim();
-    const phone = document.getElementById('phone').value.trim();
-    const email = document.getElementById('email').value.trim();
+    new daum.Postcode({
+      oncomplete: function (data) {
+        var roadAddr = data.roadAddress; // 도로명 주소
+        var extraRoadAddr = ""; // 참고 항목
 
-    document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+        // 법정동명이 있을 경우 추가
+        if (data.bname !== "" && /[동|로|가]$/g.test(data.bname)) {
+          extraRoadAddr += data.bname;
+        }
+        // 건물명이 있고, 공동주택일 경우 추가
+        if (data.buildingName !== "" && data.apartment === "Y") {
+          extraRoadAddr += (extraRoadAddr !== "" ? ", " + data.buildingName : data.buildingName);
+        }
+        // 참고항목이 있을 경우 괄호까지 추가
+        if (extraRoadAddr !== "") {
+          extraRoadAddr = " (" + extraRoadAddr + ")";
+        }
 
-    if (!userId) {
-      document.getElementById('userIdError').style.display = 'block';
-      isValid = false;
-    }
+        // 우편번호와 주소 정보를 해당 필드에 넣음
+        document.getElementsByName("userPostcode")[0].value = data.zonecode;
+        document.getElementsByName("userAddress")[0].value = roadAddr + extraRoadAddr;
 
-    const passwordPattern = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[@#$%^&+=]).{8,20}$/;
-    if (!passwordPattern.test(password)) {
-      document.getElementById('passwordError').style.display = 'block';
-      isValid = false;
-    }
+        // 팝업 창 닫기
+        postcodeWindow.close();
+      },
+      // 팝업 창 내부에 띄우기
+      width: '100%',
+      height: '100%'
+    }).embed(postcodeWindow.document.body);
+  }
+
+  function validatePasswordMatch() {
+    var password = document.getElementById("password").value;
+    var confirmPassword = document.getElementById("confirmPassword").value;
+    var errorMessage = document.getElementById("confirmPasswordError");
 
     if (password !== confirmPassword) {
-      document.getElementById('confirmPasswordError').style.display = 'block';
-      isValid = false;
-    }
-
-    if (!name) {
-      document.getElementById('nameError').style.display = 'block';
-      isValid = false;
-    }
-
-    if (!addr) {
-      document.getElementById('addrError').style.display = 'block';
-      isValid = false;
-    }
-
-    const phonePattern = /^[0-9]+$/;
-    if (!phonePattern.test(phone)) {
-      document.getElementById('phoneError').style.display = 'block';
-      isValid = false;
-    }
-
-    if (!email) {
-      document.getElementById('emailError').style.display = 'block';
-      isValid = false;
-    }
-
-    return isValid;
-  }
-
-  function updateMonths() {
-    const year = document.getElementById("year").value;
-    const monthSelect = document.getElementById("month");
-
-    monthSelect.selectedIndex = 0;
-    updateDays(); // 일 선택 초기화
-
-    monthSelect.disabled = !year;
-  }
-
-  function updateDays() {
-    const year = document.getElementById("year").value;
-    const month = document.getElementById("month").value;
-    const daySelect = document.getElementById("day");
-
-    daySelect.innerHTML = '<option selected disabled>일 선택</option>'; // 일 초기화
-
-    if (year && month) {
-      const daysInMonth = new Date(year, month, 0).getDate(); // 해당 월의 일 수 계산
-      for (let day = 1; day <= daysInMonth; day++) {
-        const dayValue = day < 10 ? '0' + day : day;
-        daySelect.innerHTML += '<option value="' +(day < 10 ? '0' + day : day)+'">'+day+'</option>';
-      }
-      daySelect.disabled = false;
+      errorMessage.style.display = "block";
+      return false;
     } else {
-      daySelect.disabled = true;
+      errorMessage.style.display = "none";
+      return true;
     }
   }
+
+  document.getElementById("confirmPassword").addEventListener("keyup", function() {
+    validatePasswordMatch();
+  });
 </script>
+
 </body>
 </html>

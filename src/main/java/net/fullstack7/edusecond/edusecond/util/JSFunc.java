@@ -9,6 +9,7 @@ public class JSFunc {
 	public static void alertLocation(String msg, String url, HttpServletResponse response) {
 		try {
 			PrintWriter writer = response.getWriter();
+			response.setCharacterEncoding("UTF-8");
 			response.setContentType("text/html;charset=UTF-8");
 			String code = "<script>"
 					+ "alert('" + msg + "');"
@@ -23,6 +24,7 @@ public class JSFunc {
 	public static void back(HttpServletResponse response) {
 		try {
 			PrintWriter writer = response.getWriter();
+			response.setCharacterEncoding("UTF-8");
 			response.setContentType("text/html;charset=UTF-8");
 			String code = "<script>"
 					+ "history.back();"
@@ -36,6 +38,7 @@ public class JSFunc {
 	public static void alertBack(String msg, HttpServletResponse response) {
 		try {
 			PrintWriter writer = response.getWriter();
+			response.setCharacterEncoding("UTF-8");
 			response.setContentType("text/html;charset=UTF-8");
 			String code = "<script>"
 					+ "alert('" + msg + "');"
@@ -50,6 +53,7 @@ public class JSFunc {
 	public static void alert(String msg, HttpServletResponse response) {
 		try {
 			PrintWriter writer = response.getWriter();
+			response.setCharacterEncoding("UTF-8");
 			response.setContentType("text/html;charset=UTF-8");
 			String code = "<script>"
 					+ "alert('" + msg + "');"

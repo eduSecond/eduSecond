@@ -20,4 +20,9 @@
         FROM tbl_wishlist
         WHERE userId = #{userId} AND productId = #{productId}
     </select>
+    <delete id="deleteByUserId">
+        DELETE FROM tbl_wishlist
+        WHERE userId = #{userId}
+    </delete>
+
 </mapper>

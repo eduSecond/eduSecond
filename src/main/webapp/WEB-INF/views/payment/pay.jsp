@@ -1,3 +1,6 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -81,12 +84,15 @@
             border-top: 1px solid #ddd;
             width: 100%;
         }
+        .error-message {
+            color : red;
+        }
     </style>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </head>
 <body>
-<%@ include file="/main/header.jsp"%>
+<%@ include file="../main/header.jsp"%>
 
 <div class="mainpage">
     <div class="sidebar col-2">
@@ -98,55 +104,104 @@
     </div>
 
     <div class="content col-7">
-        <form action="/es/payment/pay" method="post">
-        <h2></h2>
-        <br>
-        <div class="mb-3">
-            <label for="name" class="form-label">받는 사람</label>
-            <input type="text" class="form-control" id="name" name="recipientName">
-        </div>
-        <div class="mb-3">
-            <label for="tel" class="form-label">전화번호</label>
-            <input type="text" class="form-control" id="tel" name="recipientPhone">
-        </div>
-        <div class="mb-3">
-            <label for="email" class="form-label">이메일</label>
-            <input type="email" class="form-control" id="email" placeholder="name@example.com" name="recipientEmail">
-        </div>
-        <div class="mb-3">
-            <label for="email" class="form-label">주소</label>
-            <input type="text" class="form-control" id="addr" name="shippingAddress">
-        </div>
-        <div class="mb-3">
-            <label for="email" class="form-label">우편번호</label>
-            <input type="text" class="form-control" id="zipcode" name="shippingPostcode">
-        </div>
-        <div class="mb-3">
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" id="inlineCheckbox1" value="신용카드" name="paymentMethod">
-                <label class="form-check-label" for="inlineCheckbox1">신용카드</label>
+        <form action="/es/payment/pay" method="post" >
+            <div class="mb-3">
+                <label for="name" class="form-label">받는 사람</label>
+                <input name="recipientName" class="form-control" id="name" />
+                <c:if test="${errors != null && errors.hasFieldErrors('recipientName')}">
+                    <span class="error-message">${errors.getFieldError('recipientName').defaultMessage}</span>
+                </c:if>
             </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" id="inlineCheckbox2" value="무통장입금" name="paymentMethod">
-                <label class="form-check-label" for="inlineCheckbox2">무통장입금</label>
+            <div class="mb-3">
+                <label for="tel" class="form-label">전화번호</label>
+                <input name="recipientPhone" class="form-control" id="tel" />
+                <c:if test="${errors != null && errors.hasFieldErrors('recipientPhone')}">
+                    <span class="error-message">${errors.getFieldError('recipientPhone').defaultMessage}</span>
+                </c:if>
             </div>
-        </div>
-        <div class="mb-3">
-            <label for="paymentCompany" class="form-label">결제회사</label> <!-- 신용카드 체크하면 보여주는게 좋을 듯 -->
-            <input type="text" class="form-control" id="paymentCompany" name="paymentCompany">
-        </div>
-        <div class="mb-3">
-            <label for="orderQuantity" class="form-label">결제수량(최대 : ${dto.quantity})</label>
-            <input type="number" class="form-control" id="orderQuantity" name="orderQuantity" max="${dto.quantity}">
-        </div>
-        <input type="hidden" value="${dto.price}" name="unitPrice">
-        <input type="hidden" value="${dto.productId}" name="productId">
+            <div class="mb-3">
+                <label for="email" class="form-label">이메일</label>
+                <input name="recipientEmail" type="email" class="form-control" id="email" placeholder="name@example.com" />
+                <c:if test="${errors != null && errors.hasFieldErrors('recipientEmail')}">
+                    <span class="error-message">${errors.getFieldError('recipientEmail').defaultMessage}</span>
+                </c:if>
+            </div>
+            <div class="mb-3">
+                <label for="zipcode" class="form-label">우편번호</label>
+                <input name="shippingPostcode" class="form-control" id="zipcode" />
+                <input type="button" class="btn btn-secondary" onclick="goZip()" value="우편번호 찾기" />
+                <c:if test="${errors != null && errors.hasFieldErrors('shippingPostcode')}">
+                    <span class="error-message">${errors.getFieldError('shippingPostcode').defaultMessage}</span>
+                </c:if>
+            </div>
+            <div class="mb-3">
+                <label for="addr" class="form-label">주소</label>
+                <input name="shippingAddress" class="form-control" id="addr" />
+                <c:if test="${errors != null && errors.hasFieldErrors('shippingAddress')}">
+                    <span class="error-message">${errors.getFieldError('shippingAddress').defaultMessage}</span>
+                </c:if>
+            </div>
+            <div class="mb-3">
+                <label for="paymentCompany" class="form-label">결제회사</label>
+                <input name="paymentCompany" class="form-control" id="paymentCompany" />
+                <c:if test="${errors != null && errors.hasFieldErrors('paymentCompany')}">
+                    <span class="error-message">${errors.getFieldError('paymentCompany').defaultMessage}</span>
+                </c:if>
+            </div>
+            <div class="mb-3">
+                <label for="orderQuantity" class="form-label">결제수량(최대 : ${dto.quantity})</label>
+                <input type="number" class="form-control" id="orderQuantity" name="orderQuantity" max="${dto.quantity}">
+                <c:if test="${errors != null && errors.hasFieldErrors('orderQuantity')}">
+                    <span class="error-message">${errors.getFieldError('orderQuantity').defaultMessage}</span>
+                </c:if>
+            </div>
+            <input type="hidden" value="${dto.price}" name="unitPrice">
+            <input type="hidden" value="${dto.productId}" name="productId">
             <input type="hidden" value="${dto.quantity}" name="totalQuantity">
-            <button>결제하기</button>
+            <button type="submit" class="btn btn-primary">결제하기</button>
         </form>
     </div>
 
 </div>
-<%@include file="/main/footer.jsp"%>
+<%@include file="../main/footer.jsp"%>
+
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+    function goZip() {
+        // 팝업 창을 명시적으로 열기
+        var postcodeWindow = window.open('', '_blank', 'width=500,height=600');
+
+        new daum.Postcode({
+            oncomplete: function (data) {
+                var roadAddr = data.roadAddress; // 도로명 주소
+                var extraRoadAddr = ""; // 참고 항목
+
+                // 법정동명이 있을 경우 추가
+                if (data.bname !== "" && /[동|로|가]$/g.test(data.bname)) {
+                    extraRoadAddr += data.bname;
+                }
+                // 건물명이 있고, 공동주택일 경우 추가
+                if (data.buildingName !== "" && data.apartment === "Y") {
+                    extraRoadAddr += (extraRoadAddr !== "" ? ", " + data.buildingName : data.buildingName);
+                }
+                // 참고항목이 있을 경우 괄호까지 추가
+                if (extraRoadAddr !== "") {
+                    extraRoadAddr = " (" + extraRoadAddr + ")";
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣음
+                document.getElementsByName("shippingPostcode")[0].value = data.zonecode;
+                document.getElementsByName("shippingAddress")[0].value = roadAddr + extraRoadAddr;
+
+                // 팝업 창 닫기
+                postcodeWindow.close();
+            },
+            // 팝업 창 내부에 띄우기
+            width: '100%',
+            height: '100%'
+        }).embed(postcodeWindow.document.body);
+    }
+</script>
+
 </body>
 </html>

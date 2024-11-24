@@ -58,24 +58,24 @@ public class AdminController {
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
-        model.addAttribute("productCount", productService.totalCount(null, null));
+        model.addAttribute("productCount", productService.totalCount(null, null, ""));
         model.addAttribute("memberCount", memberService.getTotalCount(null, null));
         return "admin/dashboard";
     }
 
     @GetMapping("/member/list")
     public String memberList(@RequestParam(defaultValue = "1") int pageNo,
-                           @RequestParam(required = false) String searchType,
+                           @RequestParam(required = false) String searchCategory,
                            @RequestParam(required = false) String searchValue,
                            Model model) {
-        int totalCount = memberService.getTotalCount(searchType, searchValue);
+        int totalCount = memberService.getTotalCount(searchCategory, searchValue);
         Paging paging = new Paging(pageNo, 10, 5, totalCount);
 
-        List<MemberDTO> members = memberService.getList(pageNo, 10, searchType, searchValue);
+        List<MemberDTO> members = memberService.getList(pageNo, 10, searchCategory, searchValue);
 
         model.addAttribute("members", members);
         model.addAttribute("paging", paging);
-        model.addAttribute("searchType", searchType);
+        model.addAttribute("searchCategory", searchCategory);
         model.addAttribute("searchValue", searchValue);
 
         return "admin/member/list";
@@ -84,7 +84,7 @@ public class AdminController {
     @GetMapping("/member/status")
     public String updateMemberStatus(
             @RequestParam String userId,
-            @RequestParam boolean enabled,
+            @RequestParam String enabled,
             RedirectAttributes rttr) {
         
         if(memberService.updateEnabled(userId, enabled)) {
@@ -110,17 +110,17 @@ public class AdminController {
     public String productList(
             @RequestParam(defaultValue = "1") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize,
-            @RequestParam(required = false) String searchType,
+            @RequestParam(required = false) String searchCategory,
             @RequestParam(required = false) String searchValue,
             Model model) {
         try {
-            List<ProductDTO> products = productService.list(pageNo, pageSize, 5, searchType, searchValue);
-            int totalCount = productService.totalCount(searchType, searchValue);
+            List<ProductDTO> products = productService.list(pageNo, pageSize, 5, searchCategory, searchValue, "");
+            int totalCount = productService.totalCount(searchCategory, searchValue, "");
             Paging paging = new Paging(pageNo, pageSize, 5, totalCount);
 
             model.addAttribute("products", products);
             model.addAttribute("paging", paging);
-            model.addAttribute("searchType", searchType);
+            model.addAttribute("searchCategory", searchCategory);
             model.addAttribute("searchValue", searchValue);
 
             return "admin/product/list";
@@ -149,21 +149,33 @@ public class AdminController {
         }
     }
     
+    @GetMapping("/product/delete")
+    public String productDelete(@RequestParam int productId, RedirectAttributes rttr) {
+        try{
+            productService.deleteProduct(productId);
+            rttr.addFlashAttribute("message", "상품이 삭제되었습니다.");
+        } catch (Exception e) {
+            log.error("상품 삭제 중 오류 발생: ", e);
+            rttr.addFlashAttribute("error", "상품 삭제 중 오류가 발생했습니다.");
+        }
+        return "redirect:/admin/product/list";
+    }
+    
     @GetMapping("/notice/list")
     public String noticeList(
             @RequestParam(defaultValue = "1") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize,
-            @RequestParam(required = false) String searchType,
+            @RequestParam(required = false) String searchCategory,
             @RequestParam(required = false) String searchValue,
             Model model) {
         try {
-            List<NoticeDTO> notices = noticeService.getList(pageNo, pageSize, searchType, searchValue);
-            int totalCount = noticeService.getTotalCount(searchType, searchValue);
+            List<NoticeDTO> notices = noticeService.getList(pageNo, pageSize, searchCategory, searchValue);
+            int totalCount = noticeService.getTotalCount(searchCategory, searchValue);
             Paging paging = new Paging(pageNo, pageSize, 5, totalCount);
             
             model.addAttribute("notices", notices);
             model.addAttribute("paging", paging);
-            model.addAttribute("searchType", searchType);
+            model.addAttribute("searchCategory", searchCategory);
             model.addAttribute("searchValue", searchValue);
             
             return "admin/notice/list";
@@ -244,5 +256,47 @@ public class AdminController {
             rttr.addFlashAttribute("error", "공지사항 삭제에 실패했습니다.");
         }
         return "redirect:/admin/notice/list";
+    }
+
+    @GetMapping("/member/withdrawal/list")
+    public String withdrawalList(
+            @RequestParam(defaultValue = "1") int pageNo,
+            @RequestParam(required = false) String searchCategory,
+            @RequestParam(required = false) String searchValue,
+            Model model) {
+        
+        int pageSize = 10;
+        List<MemberDTO> members = memberService.getWithdrawalList(pageNo, pageSize, searchCategory, searchValue);
+        int totalCount = memberService.getWithdrawalTotalCount(searchCategory, searchValue);
+        
+        model.addAttribute("members", members);
+        model.addAttribute("paging", new Paging(pageNo, pageSize, 5, totalCount));
+        model.addAttribute("searchCategory", searchCategory);
+        model.addAttribute("searchValue", searchValue);
+        
+        return "admin/member/withdrawalList";
+    }
+
+    @PostMapping("/member/withdrawal/process")
+    public String processWithdrawal(
+            @RequestParam String userId,
+            @RequestParam String action,
+            RedirectAttributes rttr) {
+        
+        if ("approve".equals(action)) {
+            if (memberService.processWithdrawal(userId)) {
+                rttr.addFlashAttribute("message", "회원 탈퇴가 승인되었습니다.");
+            } else {
+                rttr.addFlashAttribute("error", "탈퇴 처리 중 오류가 발생했습니다.");
+            }
+        } else if ("reject".equals(action)) {
+            if (memberService.updateEnabled(userId, "Y")) {
+                rttr.addFlashAttribute("message", "회원 탈퇴가 거절되었습니다.");
+            } else {
+                rttr.addFlashAttribute("error", "탈퇴 거절 처리 중 오류가 발생했습니다.");
+            }
+        }
+        
+        return "redirect:/admin/member/withdrawal/list";
     }
 }

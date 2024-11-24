@@ -320,7 +320,7 @@
   </style>
 </head>
 <body>
-<%@ include file="/main/header.jsp"%>
+<%@include file="../main/header.jsp"%>
 
 <%--<div class="tab-container">--%>
 <%--  <div class="tab">--%>
@@ -333,7 +333,7 @@
   <h1 class="section-title">회사소개</h1>
 
   <div class="banner">
-    <img src="<%= request.getContextPath() %>/resources/images/introbanner/intro2.png" alt="IT Shop Cityscape Banner">
+    <img src="<%= request.getContextPath() %>/resources/images/introbanner/intro2.png">
   </div>
 
   <div class="content">
@@ -439,27 +439,46 @@
   <h2>찾아오는 길</h2>
   <hr>
   <div class="banner">
-    <img src="<%= request.getContextPath() %>/resources/images/introbanner/guidemap.png" alt="IT Shop Cityscape Banner">
+    <div id="map" style="width:100%;height:400px;"></div>
   </div>
+
 
   <p>
     도로명 : 서울 금천구 벚꽃로 266 마리오아울렛3관 지번 : 가산동 60-20 우편번호 : 08511
   </p>
-  <p>
+  <p style="text-align: left">
     17가산디지털단지역 3번 출구에서 247m
   </p>
 
 </section>
-
-
-
-
 <%--<section id="brand" class="tab-content">--%>
 <%--  <h1 class="section-title">브랜드소개</h1>--%>
 <%--  <p>브랜드 소개 내용이 여기에 표시됩니다.</p>--%>
 <%--</section>--%>
-<%@ include file="/main/footer.jsp"%>
+<%@ include file="../main/footer.jsp"%>
 
+<script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=iaof4vxmpl"></script>
+<script>
+  var mapOptions = {
+    center: new naver.maps.LatLng(37.4787, 126.8866),
+    zoom: 15
+  };
+
+  var map = new naver.maps.Map('map', mapOptions);
+
+  // Create custom marker with arrow icon
+  var marker = new naver.maps.Marker({
+    position: new naver.maps.LatLng(37.4787, 126.8866), // Replace with your desired marker coordinates
+    map: map,
+    icon: {
+      url: 'https://path-to-your-arrow-icon.png', // Replace with the URL of your arrow icon
+      size: new naver.maps.Size(50, 50),          // Adjust the icon size
+      scaledSize: new naver.maps.Size(50, 50),     // Scale to fit the icon
+      origin: new naver.maps.Point(0, 0),
+      anchor: new naver.maps.Point(25, 50)         // Adjust the anchor point to position the arrow correctly
+    }
+  });
+</script>
 <script>
   function showTab(tabId) {
     const tabs = document.querySelectorAll('.tab-content');

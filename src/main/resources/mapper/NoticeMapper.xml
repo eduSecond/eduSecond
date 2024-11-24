@@ -13,10 +13,10 @@
             modDate
         FROM tbl_notice
         <where>
-            <if test="searchType != null and searchType == 'title' and searchValue != null">
+            <if test="searchCategory != null and searchCategory == 'title' and searchValue != null">
                 title LIKE CONCAT('%', #{searchValue}, '%')
             </if>
-            <if test="searchType != null and searchType == 'content' and searchValue != null">
+            <if test="searchCategory != null and searchCategory == 'content' and searchValue != null">
                 content LIKE CONCAT('%', #{searchValue}, '%')
             </if>
         </where>
@@ -28,10 +28,10 @@
         SELECT COUNT(*)
         FROM tbl_notice
         WHERE 1=1
-        <if test="searchType != null and searchType == 'title'">
+        <if test="searchCategory != null and searchCategory == 'title'">
             AND title LIKE CONCAT('%', #{searchValue}, '%')
         </if>
-        <if test="searchType != null and searchType == 'content'">
+        <if test="searchCategory != null and searchCategory == 'content'">
             AND content LIKE CONCAT('%', #{searchValue}, '%')
         </if>
     </select>

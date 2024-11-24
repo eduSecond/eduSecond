@@ -28,6 +28,7 @@ public class PaymentVO {
     private String paymentNumber;
     private String deliveryStatus;
     private LocalDateTime regDate;
+    private String orderStatus;
 
 
 }

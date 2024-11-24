@@ -5,12 +5,27 @@
     <insert id="insert">
         INSERT INTO tbl_order(
             productId, unitPrice, totalPrice, buyerId, orderQuantity, recipientName, recipientPhone, recipientEmail, shippingAddress, shippingPostcode,
-            paymentMethod, paymentCompany, paymentNumber, deliveryStatus
+            paymentMethod, paymentCompany, paymentNumber
         )
         VALUES (
            #{productId}, #{unitPrice}, #{totalPrice}, #{buyerId}, #{orderQuantity}, #{recipientName}, #{recipientPhone}, #{recipientEmail}, #{shippingAddress}, #{shippingPostcode},
-           #{paymentMethod}, #{paymentCompany}, #{paymentNumber}, #{deliveryStatus}
+           #{paymentMethod}, #{paymentCompany}, #{paymentNumber}
            );
+    </insert>
 
+    <select id="getPaymentInfo" resultType="net.fullstack7.edusecond.edusecond.dto.payment.PaymentDTO">
+        SELECT * FROM tbl_order
+        WHERE paymentNumber = #{paymentNumber}
+    </select>
+
+    <insert id="insert_1">
+        INSERT INTO tbl_order(
+            productId, unitPrice, totalPrice, buyerId, orderQuantity, recipientName, recipientPhone, recipientEmail, shippingAddress, shippingPostcode,
+            paymentMethod, paymentCompany, paymentNumber, deliveryStatus, orderStatus
+        )
+        VALUES (
+                   #{productId}, #{unitPrice}, #{totalPrice}, #{buyerId}, #{orderQuantity}, #{recipientName}, #{recipientPhone}, #{recipientEmail}, #{shippingAddress}, #{shippingPostcode},
+                   #{paymentMethod}, #{paymentCompany}, #{paymentNumber}, #{deliveryStatus}, #{orderStatus}
+               );
     </insert>
 </mapper>

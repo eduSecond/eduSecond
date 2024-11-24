@@ -4,6 +4,7 @@ package net.fullstack7.edusecond.edusecond.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberDTO;
+import net.fullstack7.edusecond.edusecond.dto.member.MemberLoginDTO;
 import net.fullstack7.edusecond.edusecond.dto.member.MemberRegistDTO;
 import net.fullstack7.edusecond.edusecond.service.member.MemberServiceIf;
 import net.fullstack7.edusecond.edusecond.service.member.MemberServiceImpl;
@@ -22,6 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.time.LocalDate;
+
 
 @Controller
 @RequestMapping("/login")
@@ -48,36 +51,20 @@ public class LoginController extends HttpServlet {
 
     @PostMapping("/login")
     public String loginOk (
-            @Valid MemberDTO dto
-            , BindingResult bindingResult
-            , RedirectAttributes redirectAttributes
-            , @RequestParam String userId
+             @RequestParam String userId
             , @RequestParam String password
-//          , @RequestParam String saveId
-            , HttpServletRequest req, HttpServletResponse res, HttpSession session
+            ,HttpSession session,
+             RedirectAttributes redirectAttributes
     ){
-        log.info("============================================");
-        log.info("loginOK");
-//        if(bindingResult.hasErrors()){
-//            log.info("hasErrors");
-//            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
-//            return "redirect:/login/login";
-//        }
-
 
         try{
-//            if("Y".equals(saveId)){
-//                session.setAttribute("userId", userId);
-//                cUtil.setCookiesInfo(req, res, "/",30 * 24 * 60 * 60,"userId",userId);
-//                req.setAttribute("userId", userId);
-//            }
             boolean result = MemberService.loginMember(userId, password);
-            if(result == true){
-                session.setAttribute("userId", userId);
+            if(result){
+                MemberLoginDTO mdto = MemberService.getLoginMember(userId);
+                session.setAttribute("memberInfo", mdto);
                 return "redirect:/main/main";
             } else{
-                res.setContentType("text/html;charset=UTF-8");
-                res.getWriter().println("<script>alert('존재하지 않습니다');history.back();</script>");
+                redirectAttributes.addFlashAttribute("errorMessage", "존재하지 않는 계정입니다.");
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -88,26 +75,49 @@ public class LoginController extends HttpServlet {
 
     @PostMapping("/regist")
     public String registOk(
-            @Valid MemberRegistDTO dto
-            , BindingResult bindingResult
-            , RedirectAttributes redirectAttributes
-            , @RequestParam String userId
-            , @RequestParam String password
-            , @RequestParam String confirmPassword
-            , @RequestParam String name
-            , @RequestParam String addr
-            , @RequestParam String year
-            , @RequestParam String month
-            , @RequestParam String day
-            , @RequestParam String phone
-            , @RequestParam String email
-            , @RequestParam String userBirth
-            , HttpServletRequest req, HttpServletResponse res
+            @Valid MemberRegistDTO memberRegistDTO,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes,
+            HttpServletResponse response
     ){
-        boolean result = MemberService.registerMember(dto);
-        if(result == true){
+        response.setCharacterEncoding("UTF-8");
+        try{
+            if(bindingResult.hasErrors()){
+                redirectAttributes.addFlashAttribute("errors", bindingResult);
+                return "redirect:/login/regist";
+            }
 
+            boolean result = MemberService.registerMember(memberRegistDTO);
+            if(result){
+                net.fullstack7.edusecond.edusecond.util.JSFunc.alertLocation("회원가입 성공", "/main/main", response);
+                return null;
+            }else{
+                net.fullstack7.edusecond.edusecond.util.JSFunc.alertBack("회원가입 실패", response);
+                return null;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return "login/regist";
     }
+
+    //아이디 중복 확인
+//    @GetMapping("/regist")
+//    public String idCheck(
+//            @RequestParam String userId
+//            , RedirectAttributes redirectAttributes
+//    ){
+//        try{
+//            MemberDTO result = MemberService.getMember(userId);
+//            if(result == null){
+//                redirectAttributes.addFlashAttribute("errorMessage", "사용가능한 아이디 입니다.");
+//                return "redirect:/main/regist";
+//            } else{
+//                redirectAttributes.addFlashAttribute("errorMessage", "이미 존재하는 아이디 입니다.");
+//            }
+//
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//        return "login/regist";
+//    }
 }

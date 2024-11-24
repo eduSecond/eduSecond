@@ -16,15 +16,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChatMessageDTO {
-    private int messageId;
+    private Long id;
+    private int roomId;
     private String senderId;
     private String senderName;
     private String message;
     private String isRead;
     private Date regDate;
-    private MessageType type;
-    
-    public enum MessageType {
-        ENTER, TALK, LEAVE
-    }
+    private String type;
+    private String targetId;
 }

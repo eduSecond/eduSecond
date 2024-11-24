@@ -15,10 +15,10 @@
             
             <!-- 검색 폼 -->
             <form class="d-flex gap-2" method="get" action="/admin/member/list">
-                <select name="searchType" class="form-select" style="width: 120px;">
-                    <option value="userId" ${searchType == 'userId' ? 'selected' : ''}>아이디</option>
-                    <option value="userName" ${searchType == 'userName' ? 'selected' : ''}>이름</option>
-                    <option value="userEmail" ${searchType == 'userEmail' ? 'selected' : ''}>이메일</option>
+                <select name="searchCategory" class="form-select" style="width: 120px;">
+                    <option value="userId" ${searchCategory == 'userId' ? 'selected' : ''}>아이디</option>
+                    <option value="userName" ${searchCategory == 'userName' ? 'selected' : ''}>이름</option>
+                    <option value="userEmail" ${searchCategory == 'userEmail' ? 'selected' : ''}>이메일</option>
                 </select>
                 <input type="text" name="searchValue" value="${searchValue}" class="form-control" placeholder="검색어 입력">
                 <button type="submit" class="btn btn-dark">검색</button>
@@ -55,16 +55,34 @@
                         <td>${member.userPhone}</td>
                         <td>${member.regDate}</td>
                         <td>
-                            <span class="badge ${member.enabled ? 'bg-success' : 'bg-danger'}">
-                                ${member.enabled ? '활성' : '비활성'}
-                            </span>
+                            <c:choose>
+                                <c:when test="${member.enabled eq 'Q'}">
+                                    <span class="badge bg-warning">탈퇴 신청</span>
+                                </c:when>
+                                <c:when test="${member.enabled eq 'Y'}">
+                                    <span class="badge bg-success">활성</span>
+                                </c:when>
+                                <c:when test="${member.enabled eq 'N'}">
+                                    <span class="badge bg-danger">비활성</span>
+                                </c:when>
+                            </c:choose>
                         </td>
                         <td>
-                            <a href="/admin/member/status?userId=${member.userId}&enabled=${!member.enabled}" 
-                               class="btn btn-sm btn-outline-dark"
-                               onclick="return confirm('회원 상태를 변경하시겠습니까?')">
-                                ${member.enabled ? '비활성화' : '활성화'}
-                            </a>
+                            <c:choose>
+                                <c:when test="${member.enabled eq 'Q'}">
+                                    <a href="/admin/member/withdrawal/list" 
+                                       class="btn btn-sm btn-warning">
+                                        탈퇴 관리
+                                    </a>
+                                </c:when>
+                                <c:otherwise>
+                                    <a href="/admin/member/status?userId=${member.userId}&enabled=${member.enabled eq 'Y' ? 'N' : 'Y'}" 
+                                       class="btn btn-sm btn-outline-dark"
+                                       onclick="return confirm('회원 상태를 변경하시겠습니까?')">
+                                        ${member.enabled eq 'Y' ? '비활성화' : '활성화'}
+                                    </a>
+                                </c:otherwise>
+                            </c:choose>
                             <a href="/admin/member/delete?userId=${member.userId}" 
                                class="btn btn-sm btn-outline-danger"
                                onclick="return confirm('정말 삭제하시겠습니까?')">
